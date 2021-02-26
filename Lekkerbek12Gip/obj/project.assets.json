@@ -7419,19 +7419,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\mustafa\\.nuget\\packages\\": {}
+    "C:\\Users\\burack\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mustafa\\Desktop\\Lekkerbek\\Lekkerbek12Gip\\Lekkerbek12Gip.csproj",
+      "projectUniqueName": "C:\\Users\\burack\\Source\\Repos\\LekkerbekFeature\\Lekkerbek12Gip\\Lekkerbek12Gip.csproj",
       "projectName": "Lekkerbek12Gip",
-      "projectPath": "C:\\Users\\mustafa\\Desktop\\Lekkerbek\\Lekkerbek12Gip\\Lekkerbek12Gip.csproj",
-      "packagesPath": "C:\\Users\\mustafa\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mustafa\\Desktop\\Lekkerbek\\Lekkerbek12Gip\\obj\\",
+      "projectPath": "C:\\Users\\burack\\Source\\Repos\\LekkerbekFeature\\Lekkerbek12Gip\\Lekkerbek12Gip.csproj",
+      "packagesPath": "C:\\Users\\burack\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\burack\\Source\\Repos\\LekkerbekFeature\\Lekkerbek12Gip\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\mustafa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\burack\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
