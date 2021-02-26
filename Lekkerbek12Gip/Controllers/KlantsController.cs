@@ -53,7 +53,7 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("KlantId,Name")] Klant klant)
+        public async Task<IActionResult> Create([Bind("KlantId,Name,Adress")] Klant klant)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name")] Klant klant)
+        public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name,Adress")] Klant klant)
         {
             if (id != klant.KlantId)
             {
