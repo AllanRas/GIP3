@@ -26,20 +26,52 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Afgerekend")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("AfhaalTijd")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("KlantId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("SpecialeWensen")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("KlantId");
 
                     b.ToTable("Bestellings");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BestellingId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Categorie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Naam")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Omschrijving")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Prijs")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BestellingId");
+
+                    b.ToTable("Gerechten");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>
@@ -67,6 +99,18 @@ namespace Lekkerbek12Gip.Migrations
                         .HasForeignKey("KlantId");
 
                     b.Navigation("Klant");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
+                {
+                    b.HasOne("Lekkerbek12Gip.Models.Bestelling", null)
+                        .WithMany("Gerechten")
+                        .HasForeignKey("BestellingId");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
+                {
+                    b.Navigation("Gerechten");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>

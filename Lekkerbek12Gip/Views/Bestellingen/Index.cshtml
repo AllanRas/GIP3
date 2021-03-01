@@ -16,7 +16,10 @@
                 @Html.DisplayNameFor(model => model.AfhaalTijd)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TotalPrijs)
+                @Html.DisplayNameFor(model => model.SpecialeWensen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Afgerekend)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Klant)
@@ -31,7 +34,10 @@
                 @Html.DisplayFor(modelItem => item.AfhaalTijd)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TotalPrijs)
+                @Html.DisplayFor(modelItem => item.SpecialeWensen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Afgerekend)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Klant.KlantId)

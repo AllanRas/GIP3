@@ -18,13 +18,18 @@
                 <span asp-validation-for="AfhaalTijd" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TotalPrijs" class="control-label"></label>
-                <input asp-for="TotalPrijs" class="form-control" />
-                <span asp-validation-for="TotalPrijs" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="KlantId" class="control-label"></label>
                 <select asp-for="KlantId" class ="form-control" asp-items="ViewBag.KlantId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SpecialeWensen" class="control-label"></label>
+                <input asp-for="SpecialeWensen" class="form-control" />
+                <span asp-validation-for="SpecialeWensen" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Afgerekend" /> @Html.DisplayNameFor(model => model.Afgerekend)
+                </label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

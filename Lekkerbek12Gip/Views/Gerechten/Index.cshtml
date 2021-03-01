@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Lekkerbek12Gip.Models.Bestelling>
+﻿@model IEnumerable<Lekkerbek12Gip.Models.Gerecht>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,13 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.AfhaalTijd)
+                @Html.DisplayNameFor(model => model.Naam)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TotalPrijs)
+                @Html.DisplayNameFor(model => model.Omschrijving)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Klant)
+                @Html.DisplayNameFor(model => model.Prijs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Categorie)
             </th>
             <th></th>
         </tr>
@@ -28,13 +31,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.AfhaalTijd)
+                @Html.DisplayFor(modelItem => item.Naam)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TotalPrijs)
+                @Html.DisplayFor(modelItem => item.Omschrijving)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Klant.KlantId)
+                @Html.DisplayFor(modelItem => item.Prijs)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Categorie)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

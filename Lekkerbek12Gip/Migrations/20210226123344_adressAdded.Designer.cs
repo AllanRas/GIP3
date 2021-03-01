@@ -31,7 +31,7 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<int?>("KlantId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("OrderDate")
+                    b.Property<DateTime>("AfhaalTijd")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Total")

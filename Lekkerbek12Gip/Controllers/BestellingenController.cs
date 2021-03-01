@@ -9,23 +9,23 @@ using Lekkerbek12Gip.Models;
 
 namespace Lekkerbek12Gip.Controllers
 {
-    public class BestellingsController : Controller
+    public class BestellingenController : Controller
     {
         private readonly LekkerbekContext _context;
 
-        public BestellingsController(LekkerbekContext context)
+        public BestellingenController(LekkerbekContext context)
         {
             _context = context;
         }
 
-        // GET: Bestellings
+        // GET: Bestellingen
         public async Task<IActionResult> Index()
         {
             var lekkerbekContext = _context.Bestellings.Include(b => b.Klant);
             return View(await lekkerbekContext.ToListAsync());
         }
 
-        // GET: Bestellings/Details/5
+        // GET: Bestellingen/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,19 +44,19 @@ namespace Lekkerbek12Gip.Controllers
             return View(bestelling);
         }
 
-        // GET: Bestellings/Create
+        // GET: Bestellingen/Create
         public IActionResult Create()
         {
             ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId");
             return View();
         }
 
-        // POST: Bestellings/Create
+        // POST: Bestellingen/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AfhaalTijd,Total,KlantId")] Bestelling bestelling)
+        public async Task<IActionResult> Create([Bind("Id,AfhaalTijd,KlantId,SpecialeWensen,Afgerekend")] Bestelling bestelling)
         {
             if (ModelState.IsValid)
             {
@@ -68,7 +68,7 @@ namespace Lekkerbek12Gip.Controllers
             return View(bestelling);
         }
 
-        // GET: Bestellings/Edit/5
+        // GET: Bestellingen/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,12 +85,12 @@ namespace Lekkerbek12Gip.Controllers
             return View(bestelling);
         }
 
-        // POST: Bestellings/Edit/5
+        // POST: Bestellingen/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AfhaalTijd,Total,KlantId")] Bestelling bestelling)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,AfhaalTijd,KlantId,SpecialeWensen,Afgerekend")] Bestelling bestelling)
         {
             if (id != bestelling.Id)
             {
@@ -121,7 +121,7 @@ namespace Lekkerbek12Gip.Controllers
             return View(bestelling);
         }
 
-        // GET: Bestellings/Delete/5
+        // GET: Bestellingen/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,7 +140,7 @@ namespace Lekkerbek12Gip.Controllers
             return View(bestelling);
         }
 
-        // POST: Bestellings/Delete/5
+        // POST: Bestellingen/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -9,23 +9,22 @@ using Lekkerbek12Gip.Models;
 
 namespace Lekkerbek12Gip.Controllers
 {
-    public class BestellingsController : Controller
+    public class GerechtenController : Controller
     {
         private readonly LekkerbekContext _context;
 
-        public BestellingsController(LekkerbekContext context)
+        public GerechtenController(LekkerbekContext context)
         {
             _context = context;
         }
 
-        // GET: Bestellings
+        // GET: Gerechten
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Bestellings.Include(b => b.Klant);
-            return View(await lekkerbekContext.ToListAsync());
+            return View(await _context.Gerechten.ToListAsync());
         }
 
-        // GET: Bestellings/Details/5
+        // GET: Gerechten/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +32,39 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var bestelling = await _context.Bestellings
-                .Include(b => b.Klant)
+            var gerecht = await _context.Gerechten
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (bestelling == null)
+            if (gerecht == null)
             {
                 return NotFound();
             }
 
-            return View(bestelling);
+            return View(gerecht);
         }
 
-        // GET: Bestellings/Create
+        // GET: Gerechten/Create
         public IActionResult Create()
         {
-            ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId");
             return View();
         }
 
-        // POST: Bestellings/Create
+        // POST: Gerechten/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AfhaalTijd,Total,KlantId")] Bestelling bestelling)
+        public async Task<IActionResult> Create([Bind("Id,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(bestelling);
+                _context.Add(gerecht);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId", bestelling.KlantId);
-            return View(bestelling);
+            return View(gerecht);
         }
 
-        // GET: Bestellings/Edit/5
+        // GET: Gerechten/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +72,22 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var bestelling = await _context.Bestellings.FindAsync(id);
-            if (bestelling == null)
+            var gerecht = await _context.Gerechten.FindAsync(id);
+            if (gerecht == null)
             {
                 return NotFound();
             }
-            ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId", bestelling.KlantId);
-            return View(bestelling);
+            return View(gerecht);
         }
 
-        // POST: Bestellings/Edit/5
+        // POST: Gerechten/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AfhaalTijd,Total,KlantId")] Bestelling bestelling)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
         {
-            if (id != bestelling.Id)
+            if (id != gerecht.Id)
             {
                 return NotFound();
             }
@@ -101,12 +96,12 @@ namespace Lekkerbek12Gip.Controllers
             {
                 try
                 {
-                    _context.Update(bestelling);
+                    _context.Update(gerecht);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BestellingExists(bestelling.Id))
+                    if (!GerechtExists(gerecht.Id))
                     {
                         return NotFound();
                     }
@@ -117,11 +112,10 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId", bestelling.KlantId);
-            return View(bestelling);
+            return View(gerecht);
         }
 
-        // GET: Bestellings/Delete/5
+        // GET: Gerechten/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,31 +123,30 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var bestelling = await _context.Bestellings
-                .Include(b => b.Klant)
+            var gerecht = await _context.Gerechten
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (bestelling == null)
+            if (gerecht == null)
             {
                 return NotFound();
             }
 
-            return View(bestelling);
+            return View(gerecht);
         }
 
-        // POST: Bestellings/Delete/5
+        // POST: Gerechten/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var bestelling = await _context.Bestellings.FindAsync(id);
-            _context.Bestellings.Remove(bestelling);
+            var gerecht = await _context.Gerechten.FindAsync(id);
+            _context.Gerechten.Remove(gerecht);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BestellingExists(int id)
+        private bool GerechtExists(int id)
         {
-            return _context.Bestellings.Any(e => e.Id == id);
+            return _context.Gerechten.Any(e => e.Id == id);
         }
     }
 }
