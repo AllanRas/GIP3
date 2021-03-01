@@ -1,4 +1,4 @@
-﻿@model Lekkerbek12Gip.Models.Bestelling
+﻿@model Lekkerbek12Gip.Models.Gerecht
 
 @{
     ViewData["Title"] = "Delete";
@@ -8,27 +8,33 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Bestelling</h4>
+    <h4>Gerecht</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.OrderDate)
+            @Html.DisplayNameFor(model => model.Naam)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OrderDate)
+            @Html.DisplayFor(model => model.Naam)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Total)
+            @Html.DisplayNameFor(model => model.Omschrijving)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Total)
+            @Html.DisplayFor(model => model.Omschrijving)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Klant)
+            @Html.DisplayNameFor(model => model.Prijs)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Klant.KlantId)
-        </dd class>
+            @Html.DisplayFor(model => model.Prijs)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Categorie)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Categorie)
+        </dd>
     </dl>
     
     <form asp-action="Delete">

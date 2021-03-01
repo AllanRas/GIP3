@@ -10,7 +10,8 @@ namespace Lekkerbek12Gip.Models
         public int KlantId { get; set; }
         public string Name { get; set; }
         public string Adress { get; set; }
-
+        public int GetrouwheidsScore{ get; set; }
+        public DateTime Geboortedatum { get; set; }
         public virtual ICollection<Bestelling> Bestellings { get; set; }
     }
 }
