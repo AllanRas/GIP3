@@ -60,6 +60,9 @@ namespace Lekkerbek12Gip.Controllers
         {
             if (ModelState.IsValid)
             {
+                var bestellingCount = _context.Bestellings.Where(x => x.KlantId == bestelling.KlantId).Count();
+
+                _=bestellingCount >= 2 ? bestelling.Korting = 10 : bestelling.Korting = 0;
                 _context.Add(bestelling);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
