@@ -4,22 +4,19 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Bestellingen</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Bestelling aanmaken</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.SpecialeWensen)
+                @Html.DisplayNameFor(model => model.Klant)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OrderDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Afgerekend)
+                @Html.DisplayNameFor(model => model.Klant.Adress)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AfhaalTijd)
@@ -30,9 +27,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.TotalPrijs)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Klant)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -41,13 +35,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SpecialeWensen)
+                    @Html.DisplayFor(modelItem => item.Klant.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OrderDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Afgerekend)
+                    @Html.DisplayFor(modelItem => item.Klant.Adress)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AfhaalTijd)
@@ -59,9 +50,7 @@
                     @Html.DisplayFor(modelItem => item.TotalPrijs)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Klant.KlantId)
-                </td>
-                <td>
+                    <!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
                     @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-1)) < 0)
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
@@ -71,7 +60,8 @@
                         <a>Edit</a>
                     }
                     |   <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0)
+                    <!--Comparing time now with afhaaltijd minus 2 hours, if now is earlier than afhaaltijd - 2 hours : delete  else not editable-->
+                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0 )
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     }
@@ -79,6 +69,15 @@
                     {
                         <a>Delete</a>
                     }
+                    @if(item.Afgerekend == true)
+                    {
+                        <a>Afgerekend</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Afrekenen" asp-route-id="@item.Id">Afrekenen</a>
+                    }
+                        
                 </td>
             </tr>
         }
