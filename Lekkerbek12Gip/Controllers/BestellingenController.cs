@@ -77,7 +77,7 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var bestelling = await _context.Bestellings.FindAsync(id);
-            if (bestelling == null)
+            if (bestelling == null || DateTime.Compare(DateTime.Now, bestelling.AfhaalTijd.AddHours(-1)) > 0)
             {
                 return NotFound();
             }
@@ -132,7 +132,7 @@ namespace Lekkerbek12Gip.Controllers
             var bestelling = await _context.Bestellings
                 .Include(b => b.Klant)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (bestelling == null)
+            if (bestelling == null || DateTime.Compare(DateTime.Now, bestelling.AfhaalTijd.AddHours(-2)) > 0)
             {
                 return NotFound();
             }

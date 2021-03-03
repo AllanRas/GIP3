@@ -37,35 +37,50 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SpecialeWensen)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Afgerekend)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AfhaalTijd)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Korting)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPrijs)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Klant.KlantId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SpecialeWensen)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Afgerekend)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AfhaalTijd)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Korting)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrijs)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Klant.KlantId)
+                </td>
+                <td>
+                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-1)) < 0)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    else
+                    {
+                        <a>Edit</a>
+                    }
+                    |   <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                    else
+                    {
+                        <a>Delete</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
