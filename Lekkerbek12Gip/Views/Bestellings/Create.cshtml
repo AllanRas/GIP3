@@ -18,8 +18,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="SpecialeWensen" class="control-label"></label>
-                <input asp-for="SpecialeWensen" class="form-control" />
-                <span asp-validation-for="SpecialeWensen" class="text-danger"></span>
+                <select asp-for="SpecialeWensen" asp-items="Html.GetEnumSelectList<Bestelling.SpecialWensen>()" class="form-control" >
+                    <option value=@null>special</option>
+                </select>
+                
             </div>
             <div class="form-group">
                 <label asp-for="OrderDate" class="control-label"></label>
@@ -40,11 +42,6 @@
                 <label asp-for="Korting" class="control-label"></label>
                 <input asp-for="Korting" class="form-control" />
                 <span asp-validation-for="Korting" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalPrijs" class="control-label"></label>
-                <input asp-for="TotalPrijs" class="form-control" />
-                <span asp-validation-for="TotalPrijs" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
