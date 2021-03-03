@@ -80,7 +80,7 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var bestelling = await _context.Bestellings.FindAsync(id);
-            if (bestelling == null)
+            if (bestelling == null || DateTime.Compare(DateTime.Now, bestelling.AfhaalTijd.AddHours(-1)) > 0)
             {
                 return NotFound();
             }
@@ -135,7 +135,7 @@ namespace Lekkerbek12Gip.Controllers
             var bestelling = await _context.Bestellings
                 .Include(b => b.Klant)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (bestelling == null)
+            if (bestelling == null || DateTime.Compare(DateTime.Now, bestelling.AfhaalTijd.AddHours(-2)) > 0)
             {
                 return NotFound();
             }
@@ -150,6 +150,35 @@ namespace Lekkerbek12Gip.Controllers
         {
             var bestelling = await _context.Bestellings.FindAsync(id);
             _context.Bestellings.Remove(bestelling);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Afrekenen(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var bestelling = await _context.Bestellings
+                .Include(b => b.Klant)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (bestelling == null)
+            {
+                return NotFound();
+            }
+
+            return View(bestelling);
+        }
+
+        // POST: Bestellingen/Afrekenen/5
+        [HttpPost, ActionName("Afrekenen")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Afrekenen(int id)
+        {
+            var bestelling = await _context.Bestellings.FindAsync(id);
+            bestelling.Afgerekend = true;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
