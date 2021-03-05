@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Bestellingen</h1>
+<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Bestelling aanmaken</a>
@@ -12,26 +12,21 @@
 <table class="table">
     <thead>
         <tr>
+
             <th>
-                @Html.DisplayNameFor(model => model.Klant)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Klant.Adress)
+                @Html.DisplayNameFor(model => model.OrderDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AfhaalTijd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SpecialeWensen)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Korting)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Klant)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPrijs)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SpecialeWensen)
             </th>
             <th></th>
         </tr>
@@ -40,20 +35,21 @@
         @foreach (var item in Model)
         {
             <tr>
+
                 <td>
-                    @Html.DisplayFor(modelItem => item.Klant.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Klant.Adress)
+                    @Html.DisplayFor(modelItem => item.OrderDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AfhaalTijd)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.SpecialeWensen)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Korting)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TotalPrijs)
+                    @Html.DisplayFor(modelItem => item.Klant.KlantId)
                 </td>
                 <td>
                     <!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
@@ -67,7 +63,7 @@
                     }
                     |   <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <!--Comparing time now with afhaaltijd minus 2 hours, if now is earlier than afhaaltijd - 2 hours : delete  else not editable-->
-                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0 )
+                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0)
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     }
@@ -75,7 +71,10 @@
                     {
                         <a>Delete</a>
                     }
-                    @if(item.Afgerekend == true)
+
+                    |
+
+                    @if (item.Afgerekend == true)
                     {
                         <a>Afgerekend</a>
                     }
@@ -83,7 +82,7 @@
                     {
                         <a asp-action="Afrekenen" asp-route-id="@item.Id">Afrekenen</a>
                     }
-                        
+
                 </td>
             </tr>
         }
