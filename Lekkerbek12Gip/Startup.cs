@@ -27,7 +27,8 @@ namespace Lekkerbek12Gip
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<LekkerbekContext>(options => {
+            services.AddDbContext<LekkerbekContext>(options =>
+            {
                 options.UseSqlServer(Configuration.GetConnectionString("Lekkerbek"));
             });
         }
@@ -47,6 +48,7 @@ namespace Lekkerbek12Gip
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseDefaultFiles();
 
             app.UseRouting();
 

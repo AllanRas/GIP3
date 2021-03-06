@@ -21,7 +21,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Klants
         public async Task<IActionResult> Index()
         {
-            return View(await _context.klants.ToListAsync());
+            return View(await _context.Klants.ToListAsync());
         }
 
         // GET: Klants/Details/5
@@ -32,7 +32,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var klant = await _context.klants
+            var klant = await _context.Klants
                 .FirstOrDefaultAsync(m => m.KlantId == id);
             if (klant == null)
             {
@@ -72,7 +72,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var klant = await _context.klants.FindAsync(id);
+            var klant = await _context.Klants.FindAsync(id);
             if (klant == null)
             {
                 return NotFound();
@@ -123,7 +123,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var klant = await _context.klants
+            var klant = await _context.Klants
                 .FirstOrDefaultAsync(m => m.KlantId == id);
             if (klant == null)
             {
@@ -138,15 +138,15 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var klant = await _context.klants.FindAsync(id);
-            _context.klants.Remove(klant);
+            var klant = await _context.Klants.FindAsync(id);
+            _context.Klants.Remove(klant);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool KlantExists(int id)
         {
-            return _context.klants.Any(e => e.KlantId == id);
+            return _context.Klants.Any(e => e.KlantId == id);
         }
     }
 }

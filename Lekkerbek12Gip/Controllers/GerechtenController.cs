@@ -33,7 +33,7 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var gerecht = await _context.Gerechten
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.GerechtId == id);
             if (gerecht == null)
             {
                 return NotFound();
@@ -53,7 +53,7 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
+        public async Task<IActionResult> Create([Bind("GerechtId,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
         {
             if (ModelState.IsValid)
             {
@@ -85,9 +85,9 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
+        public async Task<IActionResult> Edit(int id, [Bind("GerechtId,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
         {
-            if (id != gerecht.Id)
+            if (id != gerecht.GerechtId)
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GerechtExists(gerecht.Id))
+                    if (!GerechtExists(gerecht.GerechtId))
                     {
                         return NotFound();
                     }
@@ -124,7 +124,7 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var gerecht = await _context.Gerechten
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.GerechtId == id);
             if (gerecht == null)
             {
                 return NotFound();
@@ -146,7 +146,7 @@ namespace Lekkerbek12Gip.Controllers
 
         private bool GerechtExists(int id)
         {
-            return _context.Gerechten.Any(e => e.Id == id);
+            return _context.Gerechten.Any(e => e.GerechtId == id);
         }
     }
 }

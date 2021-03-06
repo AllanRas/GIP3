@@ -28,6 +28,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Klant)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Chef)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -52,20 +55,23 @@
                     @Html.DisplayFor(modelItem => item.Klant.KlantId)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.ChefId)
+                </td>
+                <td>
                     <!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
                     @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-1)) < 0)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.BestellingId">Edit</a>
                     }
                     else
                     {
                         <a>Edit</a>
                     }
-                    |   <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    |   <a asp-action="Details" asp-route-id="@item.BestellingId">Details</a> |
                     <!--Comparing time now with afhaaltijd minus 2 hours, if now is earlier than afhaaltijd - 2 hours : delete  else not editable-->
                     @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0)
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.BestellingId">Delete</a>
                     }
                     else
                     {
@@ -80,8 +86,9 @@
                     }
                     else
                     {
-                        <a asp-action="Afrekenen" asp-route-id="@item.Id">Afrekenen</a>
+                        <a asp-action="Afrekenen" asp-route-id="@item.BestellingId">Afrekenen</a>
                     }
+
 
                 </td>
             </tr>
