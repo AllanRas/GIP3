@@ -35,7 +35,7 @@ namespace Lekkerbek12Gip.Controllers
 
             var bestelling = await _context.Bestellings
                 .Include(b => b.Klant)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.BestellingId == id);
             if (bestelling == null)
             {
                 return NotFound();
@@ -47,7 +47,8 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Bestellings/Create
         public IActionResult Create()
         {
-            ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId");
+            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId");
+            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId");
             return View();
         }
 
@@ -56,7 +57,7 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
+        public async Task<IActionResult> Create([Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
             if (ModelState.IsValid)
             {
@@ -70,7 +71,10 @@ namespace Lekkerbek12Gip.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId", bestelling.KlantId);
+            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId", bestelling.KlantId);
+            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);
+
+
             return View(bestelling);
         }
 
@@ -83,13 +87,14 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var bestelling = await _context.Bestellings.FindAsync(id);
-            
+
             if (bestelling == null)
             {
                 return NotFound();
             }
-           
-            ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId", bestelling.KlantId);
+
+            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId", bestelling.KlantId);
+            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);
             return View(bestelling);
         }
 
@@ -98,9 +103,9 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
+        public async Task<IActionResult> Edit(int id, [Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
-            if (id != bestelling.Id)
+            if (id != bestelling.BestellingId)
             {
                 return NotFound();
             }
@@ -114,7 +119,7 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BestellingExists(bestelling.Id))
+                    if (!BestellingExists(bestelling.BestellingId))
                     {
                         return NotFound();
                     }
@@ -125,7 +130,8 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId", bestelling.KlantId);
+            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId", bestelling.KlantId);
+            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);
             return View(bestelling);
         }
 
@@ -139,7 +145,7 @@ namespace Lekkerbek12Gip.Controllers
 
             var bestelling = await _context.Bestellings
                 .Include(b => b.Klant)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.BestellingId == id);
             if (bestelling == null)
             {
                 return NotFound();
@@ -159,9 +165,41 @@ namespace Lekkerbek12Gip.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Afrekenen(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var bestelling = await _context.Bestellings
+                .Include(b => b.Klant)
+                .FirstOrDefaultAsync(m => m.BestellingId == id);
+            if (bestelling == null)
+            {
+                return NotFound();
+            }
+
+            return View(bestelling);
+        }
+
+
+        // POST: Bestellingen/Afrekenen/5
+        [HttpPost, ActionName("Afrekenen")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Afrekenen(int id)
+        {
+            var bestelling = await _context.Bestellings.FindAsync(id);
+            bestelling.Afgerekend = true;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
         private bool BestellingExists(int id)
         {
-            return _context.Bestellings.Any(e => e.Id == id);
+            return _context.Bestellings.Any(e => e.BestellingId == id);
         }
+
     }
 }

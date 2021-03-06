@@ -8,12 +8,12 @@ namespace Lekkerbek12Gip.Models
 {
     public class Gerecht
     {
-        public int Id { get; set; }
+        public int GerechtId { get; set; }
         public string Naam { get; set; }
         public string Omschrijving { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal Prijs { get; set; }
         public string Categorie { get; set; }
-        public virtual ICollection<Bestelling> bestellingen { get; set; }
+        public virtual ICollection<Bestelling> Bestellingen { get; set; }
     }
 }
