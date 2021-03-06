@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20210306174807_updateChefTable")]
+    [Migration("20210306185045_updateChefTable")]
     partial class updateChefTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

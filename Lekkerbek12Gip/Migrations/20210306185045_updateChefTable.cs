@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Lekkerbek12Gip.Migrations
 {
-    public partial class AddChef_ChangeIdNameOfModels : Migration
+    public partial class updateChefTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,8 +13,7 @@ namespace Lekkerbek12Gip.Migrations
                 {
                     ChefId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ChefName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BestellingId = table.Column<int>(type: "int", nullable: true)
+                    ChefName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

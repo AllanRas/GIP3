@@ -47,8 +47,8 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Bestellings/Create
         public IActionResult Create()
         {
-            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId");
-            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId");
+            ViewData["Name"] = new SelectList(_context.Klants, "KlantId", "Name");
+            ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
             return View();
         }
 
