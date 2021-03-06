@@ -56,10 +56,16 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,OrderDate,Total,KlantId")] Bestelling bestelling)
+        public async Task<IActionResult> Create([Bind("Id,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
             if (ModelState.IsValid)
             {
+                var bestellingCount = _context.Bestellings.Where(x => x.KlantId == bestelling.KlantId).Count();
+
+                if (bestellingCount >= 3)
+                {
+                    bestelling.Korting = 10;
+                }
                 _context.Add(bestelling);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -77,10 +83,12 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var bestelling = await _context.Bestellings.FindAsync(id);
+
             if (bestelling == null)
             {
                 return NotFound();
             }
+
             ViewData["KlantId"] = new SelectList(_context.klants, "KlantId", "KlantId", bestelling.KlantId);
             return View(bestelling);
         }
@@ -90,7 +98,7 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,OrderDate,Total,KlantId")] Bestelling bestelling)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
             if (id != bestelling.Id)
             {
@@ -150,6 +158,37 @@ namespace Lekkerbek12Gip.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
+        public async Task<IActionResult> Afrekenen(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var bestelling = await _context.Bestellings
+                .Include(b => b.Klant)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (bestelling == null)
+            {
+                return NotFound();
+            }
+
+            return View(bestelling);
+        }
+
+        // POST: Bestellingen/Afrekenen/5
+        [HttpPost, ActionName("Afrekenen")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Afrekenen(int id)
+        {
+            var bestelling = await _context.Bestellings.FindAsync(id);
+            bestelling.Afgerekend = true;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
 
         private bool BestellingExists(int id)
         {

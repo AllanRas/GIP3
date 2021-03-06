@@ -4,27 +4,39 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Bestelling</h1>
 
-<h4>Bestelling</h4>
+<h4>Aanmaken</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="KlantId" class="control-label"></label>
+                <select asp-for="KlantId" class ="form-control" asp-items="ViewBag.KlantId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SpecialeWensen" class="control-label"></label>
+                <select asp-for="SpecialeWensen" asp-items="Html.GetEnumSelectList<Bestelling.SpecialWensen>()" class="form-control" >
+                    <option value=@null>special</option>
+                </select>
+                
+            </div>
+            <div class="form-group">
                 <label asp-for="OrderDate" class="control-label"></label>
                 <input asp-for="OrderDate" class="form-control" />
                 <span asp-validation-for="OrderDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Total" class="control-label"></label>
-                <input asp-for="Total" class="form-control" />
-                <span asp-validation-for="Total" class="text-danger"></span>
+                <label asp-for="AfhaalTijd" class="control-label"></label>
+                <input asp-for="AfhaalTijd" class="form-control" />
+                <span asp-validation-for="AfhaalTijd" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="KlantId" class="control-label"></label>
-                <select asp-for="KlantId" class ="form-control" asp-items="ViewBag.KlantId"></select>
+                <label asp-for="Korting" class="control-label"></label>
+                <input asp-for="Korting" class="form-control" />
+                <span asp-validation-for="Korting" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -34,7 +46,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar Bestellingslijst</a>
 </div>
 
 @section Scripts {
