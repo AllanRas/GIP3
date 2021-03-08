@@ -21,7 +21,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Bestellings
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Bestellings.Include(b => b.Klant);
+            var lekkerbekContext = _context.Bestellings.Include("Gerechten").Include(x=>x.Klant);
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -43,6 +43,33 @@ namespace Lekkerbek12Gip.Controllers
 
             return View(bestelling);
         }
+        //Gerech kies
+        [HttpGet]
+        public async Task<IActionResult> Gerechten(Bestelling bestelling)
+        {
+            ViewData["data"] = bestelling.BestellingId;          
+            return View(await _context.Gerechten.ToListAsync());
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> GerechPOST(IEnumerable<Gerecht> gerechts, int bestellingId)
+        {
+                       
+            foreach(var a in gerechts)
+            {
+                if (a.Aantal > 0) 
+                {
+                    var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == a.GerechtId);
+                    gerecht.Aantal = a.Aantal;
+                    _context.Bestellings.Include("Gerechten").FirstOrDefault(x => x.BestellingId == bestellingId).Gerechten.Add(gerecht);                    
+                }              
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
 
         // GET: Bestellings/Create
         public IActionResult Create()
@@ -62,14 +89,16 @@ namespace Lekkerbek12Gip.Controllers
             if (ModelState.IsValid)
             {
                 var bestellingCount = _context.Bestellings.Where(x => x.KlantId == bestelling.KlantId).Count();
-
+                //var klant = _context.Klants.FirstOrDefault(x => x.KlantId==bestelling.KlantId);
+                //klant.GetrouwheidsScore += 1;
                 if (bestellingCount >= 3)
                 {
                     bestelling.Korting = 10;
                 }
+               
                 _context.Add(bestelling);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Gerechten),bestelling);
             }
             ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId", bestelling.KlantId);
             ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);

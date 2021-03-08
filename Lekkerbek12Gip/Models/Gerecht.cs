@@ -13,7 +13,10 @@ namespace Lekkerbek12Gip.Models
         public string Omschrijving { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal Prijs { get; set; }
+        public int? Aantal { get; set; }
         public string Categorie { get; set; }
-        public virtual ICollection<Bestelling> Bestellingen { get; set; }
+
+        public virtual ICollection<Bestelling> Bestellings { get; set; }
+
     }
 }
