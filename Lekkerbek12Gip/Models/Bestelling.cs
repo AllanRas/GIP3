@@ -31,7 +31,7 @@ namespace Lekkerbek12Gip.Models
                 {
                     foreach (var item in Gerechten)
                     {
-                        totalPrijs += item.Prijs;
+                        totalPrijs += item.Prijs*Convert.ToDecimal(item.Aantal);
                     }
                     if (Korting == 10)
                     {
@@ -44,7 +44,7 @@ namespace Lekkerbek12Gip.Models
                 }
                 return totalPrijs;
             }
-        }
+        }         
         public virtual ICollection<Gerecht> Gerechten { get; set; }
         public virtual Klant Klant { get; set; }
         public virtual Chef Chef { get; set; }

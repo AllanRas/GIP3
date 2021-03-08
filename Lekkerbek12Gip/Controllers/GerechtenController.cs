@@ -21,7 +21,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Gerechten
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Gerechten.ToListAsync());
+            return View(await _context.Gerechten.OrderBy(x=>x.Categorie).ToListAsync());
         }
 
         // GET: Gerechten/Details/5
@@ -45,6 +45,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Gerechten/Create
         public IActionResult Create()
         {
+           
             return View();
         }
 

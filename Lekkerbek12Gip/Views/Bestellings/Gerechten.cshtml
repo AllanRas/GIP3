@@ -1,14 +1,13 @@
 ﻿@model IEnumerable<Lekkerbek12Gip.Models.Gerecht>
 
+
 @{
     ViewData["Title"] = "Index";
+
 }
 <img id="logo" src="~/img/Lekkerbek.jpeg" />
 <h1>Menu</h1>
-
-<p>
-    <a asp-action="Create">Nieuw gerecht aanmaken</a>
-</p>
+<span>Ordernummer : </span><p style="display:inline" id="bestellingId">@ViewBag.data</p>
 
 <h2>SANDWICHES</h2>
 
@@ -24,7 +23,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Prijs)
             </th>
-           
+
             <th></th>
         </tr>
     </thead>
@@ -42,11 +41,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Prijs) $
                 </td>
-             
+
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.GerechtId" class="btn btn-success">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.GerechtId" class="btn btn-info">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.GerechtId" class="btn btn-danger">Delete</a>
+                    <button id="plus" class="btn btn-success">+</button> |
+                    <button class="btn btn-danger">-</button>
+                    <input id=@item.GerechtId class="input" style="width:25px" value="0" readonly />
                 </td>
             </tr>
         </tbody>
@@ -65,7 +64,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Prijs)
             </th>
-       
+
             <th></th>
         </tr>
     </thead>
@@ -83,11 +82,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Prijs) $
                 </td>
-              
+
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.GerechtId" class="btn btn-success">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.GerechtId" class="btn btn-info">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.GerechtId" class="btn btn-danger">Delete</a>
+                    <button class="btn btn-success">+</button> |
+                    <button class="btn btn-danger">-</button>
+                    <input id=@item.GerechtId class="input" value="0" style="width:25px" readonly />
                 </td>
             </tr>
         </tbody>
@@ -106,7 +105,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Prijs)
             </th>
-          
+
             <th></th>
         </tr>
     </thead>
@@ -125,9 +124,9 @@
                     @Html.DisplayFor(modelItem => item.Prijs) $
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.GerechtId" class="btn btn-success">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.GerechtId" class="btn btn-info">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.GerechtId" class="btn btn-danger">Delete</a>
+                    <button class="btn btn-success">+</button> |
+                    <button class="btn btn-danger">-</button>
+                    <input id=@item.GerechtId class="input"  value="0" style="width:25px" readonly />
                 </td>
             </tr>
         </tbody>
@@ -146,7 +145,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Prijs)
             </th>
-           
+
             <th></th>
         </tr>
     </thead>
@@ -163,14 +162,22 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Prijs) $
-                </td>             
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.GerechtId" class="btn btn-success">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.GerechtId" class="btn btn-info">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.GerechtId" class="btn btn-danger">Delete</a>
                 </td>
+                <td>
+                    <button id="plus" class="btn btn-success">+</button> |
+                    <button class="btn btn-danger">-</button>
+                    <input id=@item.GerechtId class="input" style="width:25px" value="0" readonly />
+                </td>
+
             </tr>
         </tbody>
     }
 </table>
+<a id="dataTake" asp-action="Index" class="btn btn-primary">Naar winkelmand</a>
 
+
+
+@section Scripts{
+    <script src="~/js/bestellingGerecht.js"></script>
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
