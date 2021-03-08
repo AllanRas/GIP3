@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Lekkerbek12Gip.Migrations
 {
-    public partial class updateChefTable : Migration
+    public partial class DbRecreated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,6 +29,7 @@ namespace Lekkerbek12Gip.Migrations
                     Naam = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Omschrijving = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Prijs = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Aantal = table.Column<int>(type: "int", nullable: true),
                     Categorie = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -87,15 +88,15 @@ namespace Lekkerbek12Gip.Migrations
                 name: "BestellingGerecht",
                 columns: table => new
                 {
-                    BestellingenBestellingId = table.Column<int>(type: "int", nullable: false),
+                    BestellingsBestellingId = table.Column<int>(type: "int", nullable: false),
                     GerechtenGerechtId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BestellingGerecht", x => new { x.BestellingenBestellingId, x.GerechtenGerechtId });
+                    table.PrimaryKey("PK_BestellingGerecht", x => new { x.BestellingsBestellingId, x.GerechtenGerechtId });
                     table.ForeignKey(
-                        name: "FK_BestellingGerecht_Bestellings_BestellingenBestellingId",
-                        column: x => x.BestellingenBestellingId,
+                        name: "FK_BestellingGerecht_Bestellings_BestellingsBestellingId",
+                        column: x => x.BestellingsBestellingId,
                         principalTable: "Bestellings",
                         principalColumn: "BestellingId",
                         onDelete: ReferentialAction.Cascade);

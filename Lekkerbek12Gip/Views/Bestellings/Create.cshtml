@@ -38,34 +38,32 @@
                 <span asp-validation-for="AfhaalTijd" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Korting" class="control-label"></label>
-                <input asp-for="Korting" class="form-control" />
-                <span asp-validation-for="Korting" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input id="button" type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 
+
     <div class="col-sm-2">
         <div>
             <h4>
-                Chef Micheal
+                Chef1
+            </h4>
+            <h5 id="slotNumberChef1">@ViewBag.lastHourChef1  Slot Left</h5>
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <div>
+            <h4>
+                Chef2
             </h4>
             <h5 id="slotNumberChef2">@ViewBag.lastHourChef2 Slot Left </h5>
         </div>
 
 
     </div>
-    <div class="col-sm-2">
-        <div>
-            <h4>
-                Chef John
-            </h4>
-            <h5 id="slotNumberChef1">@ViewBag.lastHourChef1  Slot Left</h5>
-        </div>
-    </div>
+
 
 </div>
 
