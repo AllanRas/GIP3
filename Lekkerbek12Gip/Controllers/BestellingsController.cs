@@ -49,6 +49,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             ViewData["Name"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
+            ViewData["Gerecht"] = new SelectList(_context.Gerechten, "GerechtId", "Naam");
             return View();
         }
 
