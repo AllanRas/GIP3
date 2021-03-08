@@ -7,10 +7,7 @@
 }
 <img id="logo" src="~/img/Lekkerbek.jpeg" />
 <h1>Menu</h1>
-<p id="bestellingId">@ViewBag.data</p>
-<p>
-    <a>Nieuw gerecht aanmaken</a>
-</p>
+<span>Ordernummer : </span><p style="display:inline" id="bestellingId">@ViewBag.data</p>
 
 <h2>SANDWICHES</h2>
 
@@ -89,7 +86,7 @@
                 <td>
                     <button class="btn btn-success">+</button> |
                     <button class="btn btn-danger">-</button>
-                    <input id=@item.GerechtId class="input" style="width:25px" readonly />
+                    <input id=@item.GerechtId class="input" value="0" style="width:25px" readonly />
                 </td>
             </tr>
         </tbody>
@@ -129,7 +126,7 @@
                 <td>
                     <button class="btn btn-success">+</button> |
                     <button class="btn btn-danger">-</button>
-                    <input id=@item.GerechtId class="input" style="width:25px" readonly />
+                    <input id=@item.GerechtId class="input"  value="0" style="width:25px" readonly />
                 </td>
             </tr>
         </tbody>
@@ -176,7 +173,7 @@
         </tbody>
     }
 </table>
-<a id="dataTake" class="btn btn-primary">Naar winkelmand</a>
+<a id="dataTake" asp-action="Index" class="btn btn-primary">Naar winkelmand</a>
 
 
 

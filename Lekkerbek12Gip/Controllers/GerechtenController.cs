@@ -45,6 +45,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Gerechten/Create
         public IActionResult Create()
         {
+           
             return View();
         }
 

@@ -92,7 +92,7 @@ namespace Lekkerbek12Gip.Controllers
                 var bestellingCount = _context.Bestellings.Where(x => x.KlantId == bestelling.KlantId).Count();
                 //var klant = _context.Klants.FirstOrDefault(x => x.KlantId==bestelling.KlantId);
                 //klant.GetrouwheidsScore += 1;
-                if (bestellingCount >= 3)
+                if (bestellingCount % 3==0)
                 {
                     bestelling.Korting = 10;
                 }
