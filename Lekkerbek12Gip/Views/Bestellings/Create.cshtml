@@ -18,7 +18,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ChefId" class="control-label">Chef</label>
-                <select asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefName"></select>
+                <select id="chefList" asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefName"></select>
             </div>
             <div class="form-group">
                 <label asp-for="SpecialeWensen" class="control-label"></label>
@@ -29,7 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="OrderDate" class="control-label"></label>
-                <input asp-for="OrderDate" class="form-control" />
+                <input id="orderDate" asp-for="OrderDate" class="form-control" />
                 <span asp-validation-for="OrderDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -43,10 +43,32 @@
                 <span asp-validation-for="Korting" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input id="button" type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
+
+    <div class="col-md-4">
+        <div>
+            <h4>
+                Slof Left Chef Micheal
+            </h4>
+            <h5 id="slotNumberChef2">@ViewBag.lastHourChef2</h5>
+        </div>
+
+
+    </div>
+    <div class="col-md-4">
+        <div>
+            <h4>
+                Slof Left Chef John
+            </h4>
+            <h5 id="slotNumberChef1">@ViewBag.lastHourChef1</h5>
+        </div>
+
+
+    </div>
+
 </div>
 
 <div>
@@ -54,5 +76,6 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/assign.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
