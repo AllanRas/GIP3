@@ -37,7 +37,6 @@ namespace Lekkerbek12Gip.Models
                     {
                         totalPrijs = totalPrijs * 9 / 10;
                     }
-
                 }
                 if (SpecialeWensen != null)
                 {
