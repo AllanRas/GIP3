@@ -49,7 +49,18 @@ namespace Lekkerbek12Gip.Controllers
         {
             ViewData["Name"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
-            ViewData["Gerecht"] = new SelectList(_context.Gerechten, "GerechtId", "Naam");
+
+            var lastHourChef2 = _context.Bestellings
+                 .Where(p => (p.OrderDate > DateTime.Now && p.OrderDate < DateTime.Now.AddMinutes(20)) && p.ChefId == 2).Count();
+
+            ViewBag.lastHourChef2 = 4 - lastHourChef2;
+
+
+
+            var lastHourChef1 = _context.Bestellings
+                 .Where(p => (p.OrderDate > DateTime.Now && p.OrderDate < DateTime.Now.AddMinutes(20)) && p.ChefId == 1).Count();
+
+            ViewBag.lastHourChef1 = 4 - lastHourChef1;
             return View();
         }
 
@@ -60,8 +71,11 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
+
             if (ModelState.IsValid)
             {
+
+
                 var bestellingCount = _context.Bestellings.Where(x => x.KlantId == bestelling.KlantId).Count();
 
                 if (bestellingCount >= 3)
