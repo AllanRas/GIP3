@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
+ 
+
     public class GerechtenController : Controller
     {
         private readonly LekkerbekContext _context;
@@ -21,7 +24,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Gerechten
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Gerechten.ToListAsync());
+            return View(await _context.Gerechten.OrderBy(x=>x.Categorie).ToListAsync());
         }
 
         // GET: Gerechten/Details/5
@@ -45,6 +48,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Gerechten/Create
         public IActionResult Create()
         {
+           
             return View();
         }
 

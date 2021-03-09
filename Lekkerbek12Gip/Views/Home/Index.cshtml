@@ -3,14 +3,17 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome To Lekkerbek</h1>
+    <img src="~/img/Lekkerbek.png" class="img-fluid" alt="Responsive image" style="width:60%; margin-top:-60px">
 
 </div>
+
 <div class="row">
-    <div class="col">
-        <a class="nav-link  btn btn-primary" role="button" asp-area="" asp-controller="Bestellingen" asp-action="Index">Naar Bestellingen</a>
+    <div class="col-6">
+        <a href="https://localhost:44327/Login/Index?ReturnUrl=%2FBestellings"><img src="~/img/admin2.jpeg" style="width:100%; height:400px" /></a> 
+        <a class="nav-link  btn btn-primary" role="button" asp-area="" asp-controller="Bestellings" asp-action="Index">Beheerder</a>
     </div>
-    <div class="col">
-        <a class="nav-link  btn btn-primary" role="button" asp-area="" asp-controller="Klants" asp-action="Index">Naar Klants</a>
+    <div class="col-6">
+        <a href="https://localhost:44327/Login/Index?ReturnUrl=%2FBestellings"> <img src="~/img/kassa1.png" style="width:100%; height:400px" /></a>
+        <a class="nav-link  btn btn-primary" role="button" asp-area="" asp-controller="Klants" asp-action="Index">Kassa</a>
     </div>
 </div>

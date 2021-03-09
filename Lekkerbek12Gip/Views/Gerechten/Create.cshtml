@@ -29,7 +29,11 @@
             </div>
             <div class="form-group">
                 <label asp-for="Categorie" class="control-label"></label>
-                <select asp-for="Categorie" asp-items="Html.GetEnumSelectList<Gerecht.Categorieën>()" class="form-control">
+                <select asp-for="Categorie" class="form-control">
+                    <option>SANDWICHES</option>
+                    <option>SALADES</option>
+                    <option>VLEESGERECHTEN</option>
+                    <option>VISGERECHTEN</option>
                 </select>
             </div>
             <div class="form-group">

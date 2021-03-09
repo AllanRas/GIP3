@@ -21,13 +21,13 @@ namespace Lekkerbek12Gip.Migrations
 
             modelBuilder.Entity("BestellingGerecht", b =>
                 {
-                    b.Property<int>("BestellingenBestellingId")
+                    b.Property<int>("BestellingsBestellingId")
                         .HasColumnType("int");
 
                     b.Property<int>("GerechtenGerechtId")
                         .HasColumnType("int");
 
-                    b.HasKey("BestellingenBestellingId", "GerechtenGerechtId");
+                    b.HasKey("BestellingsBestellingId", "GerechtenGerechtId");
 
                     b.HasIndex("GerechtenGerechtId");
 
@@ -99,6 +99,9 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<int>("Categorie")
                         .HasColumnType("int");
 
+                    b.Property<string>("Categorie")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Naam")
                         .HasColumnType("nvarchar(max)");
 
@@ -132,16 +135,43 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("emailadres")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("KlantId");
 
                     b.ToTable("Klants");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Password")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("UserRole")
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BestellingGerecht", b =>
                 {
                     b.HasOne("Lekkerbek12Gip.Models.Bestelling", null)
                         .WithMany()
-                        .HasForeignKey("BestellingenBestellingId")
+                        .HasForeignKey("BestellingsBestellingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

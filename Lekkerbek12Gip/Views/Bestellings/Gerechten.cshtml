@@ -1,0 +1,183 @@
+﻿@model IEnumerable<Lekkerbek12Gip.Models.Gerecht>
+
+
+@{
+    ViewData["Title"] = "Index";
+
+}
+<img id="logo" src="~/img/Lekkerbek.jpeg" />
+<h1>Menu</h1>
+<span>Ordernummer : </span><p style="display:inline" id="bestellingId">@ViewBag.data</p>
+
+<h2>SANDWICHES</h2>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Naam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Omschrijving)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prijs)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model.Where(x => x.Categorie == "SANDWICHES"))
+    {
+        <tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Naam)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Omschrijving)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prijs) $
+                </td>
+
+                <td>
+                    <button id="plus" class="btn btn-success">+</button> |
+                    <button class="btn btn-danger">-</button>
+                    <input id=@item.GerechtId class="input" style="width:25px" value="0" readonly />
+                </td>
+            </tr>
+        </tbody>
+    }
+</table>
+<h2>SALADES</h2>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Naam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Omschrijving)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prijs)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model.Where(x => x.Categorie == "SALADES"))
+    {
+        <tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Naam)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Omschrijving)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prijs) $
+                </td>
+
+                <td>
+                    <button class="btn btn-success">+</button> |
+                    <button class="btn btn-danger">-</button>
+                    <input id=@item.GerechtId class="input" value="0" style="width:25px" readonly />
+                </td>
+            </tr>
+        </tbody>
+    }
+</table>
+<h2>VLEESGERECHTEN</h2>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Naam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Omschrijving)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prijs)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model.Where(x => x.Categorie == "VLEESGERECHTEN"))
+    {
+        <tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Naam)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Omschrijving)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prijs) $
+                </td>
+                <td>
+                    <button class="btn btn-success">+</button> |
+                    <button class="btn btn-danger">-</button>
+                    <input id=@item.GerechtId class="input"  value="0" style="width:25px" readonly />
+                </td>
+            </tr>
+        </tbody>
+    }
+</table>
+<h2>VISGERECHTEN</h2>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Naam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Omschrijving)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prijs)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model.Where(x => x.Categorie == "VISGERECHTEN"))
+    {
+        <tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Naam)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Omschrijving)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prijs) $
+                </td>
+                <td>
+                    <button id="plus" class="btn btn-success">+</button> |
+                    <button class="btn btn-danger">-</button>
+                    <input id=@item.GerechtId class="input" style="width:25px" value="0" readonly />
+                </td>
+
+            </tr>
+        </tbody>
+    }
+</table>
+<a id="dataTake" asp-action="Index" class="btn btn-primary">Naar winkelmand</a>
+
+
+
+@section Scripts{
+    <script src="~/js/bestellingGerecht.js"></script>
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
