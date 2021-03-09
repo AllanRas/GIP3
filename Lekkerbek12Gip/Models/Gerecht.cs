@@ -13,20 +13,19 @@ namespace Lekkerbek12Gip.Models
             this.Bestellingen = new HashSet<Bestelling>();
         }
 
-        public enum Categorieën
+        public enum Categorieen
         {
-            Sandwiches,
-            Salades,
-            Vleesgerechten,
-            Visgerechten,
+            Sandwiches = 0,
+            Salades = 1,
+            Vleesgerechten = 2,
+            Visgerechten = 3,
         }
         public int GerechtId { get; set; }
         public string Naam { get; set; }
         public string Omschrijving { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal Prijs { get; set; }
-        public Categorieën Categorie { get; set; }
-        public int? Aantal { get; set; }
+        public Categorieen Categorie { get; set; }
         public virtual ICollection<Bestelling> Bestellingen { get; set; }
     }
 }

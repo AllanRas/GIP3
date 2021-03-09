@@ -36,7 +36,7 @@ namespace Lekkerbek12Gip.Models
                 {
                     foreach (var item in Gerechten)
                     {
-                        totalPrijs += item.Prijs*Convert.ToDecimal(item.Aantal);
+                        totalPrijs += item.Prijs;
                     }
                     if (Korting == 10)
                     {

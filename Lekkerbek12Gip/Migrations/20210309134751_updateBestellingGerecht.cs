@@ -2,7 +2,7 @@
 
 namespace Lekkerbek12Gip.Migrations
 {
-    public partial class usersupdate : Migration
+    public partial class updateBestellingGerecht : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

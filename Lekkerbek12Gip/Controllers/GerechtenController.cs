@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
- 
+
 
     public class GerechtenController : Controller
     {
@@ -24,7 +24,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Gerechten
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Gerechten.OrderBy(x=>x.Categorie).ToListAsync());
+            return View(await _context.Gerechten.ToListAsync());
         }
 
         // GET: Gerechten/Details/5
