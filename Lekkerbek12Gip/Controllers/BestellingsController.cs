@@ -44,16 +44,16 @@ namespace Lekkerbek12Gip.Controllers
             return View(bestelling);
         }
 
-        /**
+        
         //Gerech kies
         [HttpGet]
         public async Task<IActionResult> Gerechten(Bestelling bestelling)
         {
             ViewData["data"] = bestelling.BestellingId;
             return View(await _context.Gerechten.ToListAsync());
-        }**/
+        }
 
-            /**
+        /**
         [HttpPost]
         public async Task<IActionResult> GerechPOST(IEnumerable<Gerecht> gerechts, int bestellingId)
         {

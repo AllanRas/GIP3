@@ -58,22 +58,29 @@ namespace Lekkerbek12Gip.Migrations
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerecht", b =>
                 {
-                    b.Property<int>("GerechtId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BestellingId")
-                        .HasColumnType("int");
+                    b.Property<int>("BestellingGerechtId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Aantal")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValueSql("0");
 
-                    b.HasKey("GerechtId", "BestellingId");
+                    b.Property<int>("BestellingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GerechtId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BestellingGerechtId");
 
                     b.HasIndex("BestellingId");
 
-                    b.ToTable("BestellingGerechts");
+                    b.HasIndex("GerechtId");
+
+                    b.ToTable("BestellingGerecht");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>

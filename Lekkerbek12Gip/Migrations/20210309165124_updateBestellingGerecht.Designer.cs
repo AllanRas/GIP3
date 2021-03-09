@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20210309134751_updateBestellingGerecht")]
+    [Migration("20210309165124_updateBestellingGerecht")]
     partial class updateBestellingGerecht
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,22 +60,29 @@ namespace Lekkerbek12Gip.Migrations
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerecht", b =>
                 {
-                    b.Property<int>("GerechtId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BestellingId")
-                        .HasColumnType("int");
+                    b.Property<int>("BestellingGerechtId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Aantal")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValueSql("0");
 
-                    b.HasKey("GerechtId", "BestellingId");
+                    b.Property<int>("BestellingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GerechtId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BestellingGerechtId");
 
                     b.HasIndex("BestellingId");
 
-                    b.ToTable("BestellingGerechts");
+                    b.HasIndex("GerechtId");
+
+                    b.ToTable("BestellingGerecht");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
@@ -99,9 +106,6 @@ namespace Lekkerbek12Gip.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("Aantal")
-                        .HasColumnType("int");
 
                     b.Property<int>("Categorie")
                         .HasColumnType("int");
