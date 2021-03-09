@@ -1,0 +1,60 @@
+﻿@model Lekkerbek12Gip.Models.Bestelling
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Bestelling</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SpecialeWensen)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SpecialeWensen)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.OrderDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Afgerekend)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Afgerekend)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AfhaalTijd)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AfhaalTijd)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Korting)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Korting)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Klant)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Klant.KlantId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Chef)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Chef.ChefId)
+        </dd>
+    </dl>
+</div>
+<div>
+    
+    <a asp-action="Index">Back to List</a>
+</div>
