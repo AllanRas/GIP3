@@ -45,12 +45,12 @@ namespace Lekkerbek12Gip.Controllers
             return View();
 
         }
-
-       [HttpGet]
+      
+        [HttpGet]
        public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Login");
+            return RedirectToAction("Index", "Home");
 
         }
 
