@@ -2,7 +2,7 @@
 
 
     $("#button").click(function (e) {
-
+        
         var slotNumberChef1 = $("#slotNumberChef1").text();
 
         var slotNumberChef2 = $("#slotNumberChef2").text();

@@ -78,14 +78,14 @@ namespace Lekkerbek12Gip.Controllers
             ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
 
             var lastHourChef2 = _context.Bestellings
-                 .Where(p => (p.OrderDate > DateTime.Now && p.OrderDate < DateTime.Now.AddMinutes(20)) && p.ChefId == 2).Count();
+                 .Where(p => (p.OrderDate > DateTime.Now && p.OrderDate < DateTime.Now.AddMinutes(60)) && p.ChefId == 2).Count();
 
             ViewBag.lastHourChef2 = 4 - lastHourChef2;
 
 
 
             var lastHourChef1 = _context.Bestellings
-                 .Where(p => (p.OrderDate > DateTime.Now && p.OrderDate < DateTime.Now.AddMinutes(20)) && p.ChefId == 1).Count();
+                 .Where(p => (p.OrderDate > DateTime.Now && p.OrderDate < DateTime.Now.AddMinutes(60)) && p.ChefId == 1).Count();
 
             ViewBag.lastHourChef1 = 4 - lastHourChef1;
             return View();
