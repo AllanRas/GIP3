@@ -23,6 +23,21 @@
                 <span asp-validation-for="Adress" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="GetrouwheidsScore" class="control-label"></label>
+                <input asp-for="GetrouwheidsScore" class="form-control" />
+                <span asp-validation-for="GetrouwheidsScore" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Geboortedatum" class="control-label"></label>
+                <input asp-for="Geboortedatum" class="form-control" />
+                <span asp-validation-for="Geboortedatum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="emailadres" class="control-label"></label>
+                <input asp-for="emailadres" class="form-control" type="email"/>
+                <span asp-validation-for="emailadres" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -33,6 +48,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

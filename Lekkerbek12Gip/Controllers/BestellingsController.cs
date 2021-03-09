@@ -66,7 +66,9 @@ namespace Lekkerbek12Gip.Controllers
                 if (bestellingCount >= 3)
                 {
                     bestelling.Korting = 10;
+                    
                 }
+                
                 _context.Add(bestelling);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
