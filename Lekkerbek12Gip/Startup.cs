@@ -1,7 +1,10 @@
 using Lekkerbek12Gip.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +34,18 @@ namespace Lekkerbek12Gip
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Lekkerbek"));
             });
+            services.AddAuthentication(
+                CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(x =>
+                {
+                    x.LoginPath = "/Login/Index";
+                });
+            services.AddMvc(config =>
+            {
+
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +64,7 @@ namespace Lekkerbek12Gip
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseDefaultFiles();
-
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseAuthorization();

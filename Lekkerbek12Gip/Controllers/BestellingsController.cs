@@ -115,6 +115,7 @@ namespace Lekkerbek12Gip.Controllers
                 if (bestellingCount % 3 == 0)
                 {
                     bestelling.Korting = 10;
+                    
                 }
 
                 _context.Add(bestelling);
