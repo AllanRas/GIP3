@@ -4,14 +4,16 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210308211800_updateGerechten2")]
+    partial class updateGerechten2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,6 +96,9 @@ namespace Lekkerbek12Gip.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("Aantal")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BestellingId")
                         .HasColumnType("int");
 
                     b.Property<int>("Categorie")

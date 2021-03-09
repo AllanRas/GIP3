@@ -4,35 +4,22 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210308231210_addBestellingGerecht")]
+    partial class addBestellingGerecht
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("BestellingGerecht", b =>
-                {
-                    b.Property<int>("BestellingenBestellingId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GerechtenGerechtId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BestellingenBestellingId", "GerechtenGerechtId");
-
-                    b.HasIndex("GerechtenGerechtId");
-
-                    b.ToTable("BestellingGerecht");
-                });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
                 {
@@ -137,19 +124,19 @@ namespace Lekkerbek12Gip.Migrations
                     b.ToTable("Klants");
                 });
 
-            modelBuilder.Entity("BestellingGerecht", b =>
+            modelBuilder.Entity("Lekkerbek12Gip.ViewModels.BestellingGerecht", b =>
                 {
-                    b.HasOne("Lekkerbek12Gip.Models.Bestelling", null)
-                        .WithMany()
-                        .HasForeignKey("BestellingenBestellingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("BestellingId")
+                        .HasColumnType("int");
 
-                    b.HasOne("Lekkerbek12Gip.Models.Gerecht", null)
-                        .WithMany()
-                        .HasForeignKey("GerechtenGerechtId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("GerechtId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BestellingId", "GerechtId");
+
+                    b.HasIndex("GerechtId");
+
+                    b.ToTable("BestellingGerecht");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
@@ -167,9 +154,38 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Klant");
                 });
 
+            modelBuilder.Entity("Lekkerbek12Gip.ViewModels.BestellingGerecht", b =>
+                {
+                    b.HasOne("Lekkerbek12Gip.Models.Bestelling", "Bestelling")
+                        .WithMany("Gerechten")
+                        .HasForeignKey("BestellingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Lekkerbek12Gip.Models.Gerecht", "Gerecht")
+                        .WithMany("Bestellingen")
+                        .HasForeignKey("GerechtId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bestelling");
+
+                    b.Navigation("Gerecht");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
+                {
+                    b.Navigation("Gerechten");
+                });
+
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
                 {
                     b.Navigation("Bestellings");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
+                {
+                    b.Navigation("Bestellingen");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>

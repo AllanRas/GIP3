@@ -8,6 +8,11 @@ namespace Lekkerbek12Gip.Models
 {
     public class Bestelling
     {
+        public Bestelling()
+        {
+            this.Gerechten = new HashSet<Gerecht>();
+        }
+
         public enum SpecialWensen
         {
             Pikant = 1,

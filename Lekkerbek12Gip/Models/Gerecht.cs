@@ -8,6 +8,11 @@ namespace Lekkerbek12Gip.Models
 {
     public class Gerecht
     {
+        public Gerecht()
+        {
+            this.Bestellingen = new HashSet<Bestelling>();
+        }
+
         public enum Categorieën
         {
             Sandwiches,
@@ -21,6 +26,7 @@ namespace Lekkerbek12Gip.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Prijs { get; set; }
         public Categorieën Categorie { get; set; }
+        public int? Aantal { get; set; }
         public virtual ICollection<Bestelling> Bestellingen { get; set; }
     }
 }

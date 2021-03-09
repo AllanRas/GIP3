@@ -1,4 +1,4 @@
-﻿@model Lekkerbek12Gip.Models.Bestelling
+﻿@model Lekkerbek12Gip.Models.Bestelling 
 
 @{
     ViewData["Title"] = "Create";
@@ -10,6 +10,17 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <form asp-action="AddGerecht">
+            <div class="form-group">
+                <label class="control-label">Gerechten</label>
+                <select class="form-control" asp-items=" (IEnumerable<SelectListItem>)ViewBag.Gerecht"></select>
+            </div>
+            <div class="form-group">
+                <input type="button" value="AddGerecht" name="AddGerecht" class="btn btn-primary" />
+            </div>
+        </form>
+        
+        <br />
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -22,10 +33,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="SpecialeWensen" class="control-label"></label>
-                <select asp-for="SpecialeWensen" asp-items="Html.GetEnumSelectList<Bestelling.SpecialWensen>()" class="form-control">
-                    <option value=@null>special</option>
-                </select>
-
+                <select asp-for="SpecialeWensen" asp-items="Html.GetEnumSelectList<Bestelling.SpecialWensen>()" class="form-control"></select>
             </div>
             <div class="form-group">
                 <label asp-for="OrderDate" class="control-label"></label>
@@ -43,12 +51,11 @@
                 <span asp-validation-for="Korting" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" name="create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
 <div>
     <a asp-action="Index">Terug naar Bestellingslijst</a>
 </div>
