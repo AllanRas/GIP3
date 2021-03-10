@@ -4,28 +4,40 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Bestelling</h1>
+<h1 id="best">Bestelling </h1>
 
 <h4>Aanmaken</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <form asp-action="AddGerecht">
+            <div class="form-group">
+                <label class="control-label">Gerechten</label>
+                <select class="form-control" asp-items=" (IEnumerable<SelectListItem>)ViewBag.Gerecht"></select>
+            </div>
+            <div class="form-group">
+                <input type="button" value="AddGerecht" name="AddGerecht" class="btn btn-primary" />
+            </div>
+        </form>
+
+        <br />
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="KlantId" class="control-label"></label>
-                <select asp-for="KlantId" class ="form-control" asp-items="ViewBag.KlantId"></select>
+                <label asp-for="KlantId" class="control-label">Klant </label>
+                <select asp-for="KlantId" class="form-control" asp-items="ViewBag.Name"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ChefId" class="control-label">Chef</label>
+                <select id="chefList" asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefName"></select>
             </div>
             <div class="form-group">
                 <label asp-for="SpecialeWensen" class="control-label"></label>
-                <select asp-for="SpecialeWensen" asp-items="Html.GetEnumSelectList<Bestelling.SpecialWensen>()" class="form-control" >
-                    <option value=@null>special</option>
-                </select>
-                
+                <select asp-for="SpecialeWensen" asp-items="Html.GetEnumSelectList<Bestelling.SpecialWensen>()" class="form-control"></select>
             </div>
             <div class="form-group">
                 <label asp-for="OrderDate" class="control-label"></label>
-                <input asp-for="OrderDate" class="form-control" />
+                <input id="orderDate" asp-for="OrderDate" class="form-control" />
                 <span asp-validation-for="OrderDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -34,21 +46,39 @@
                 <span asp-validation-for="AfhaalTijd" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Korting" class="control-label"></label>
-                <input asp-for="Korting" class="form-control" />
-                <span asp-validation-for="Korting" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input id="button" type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
 
+
+    <div class="col-sm-2">
+        <div>
+            <h4>
+                Chef1
+            </h4>
+            <h5 id="slotNumberChef1">@ViewBag.lastHourChef1 Slot Left</h5>
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <div>
+            <h4>
+                Chef2
+            </h4>
+            <h5 id="slotNumberChef2">@ViewBag.lastHourChef2 Slot Left</h5>
+        </div>
+
+
+    </div>
+
+
+</div>
 <div>
     <a asp-action="Index">Terug naar Bestellingslijst</a>
 </div>
 
 @section Scripts {
+    <script src="~/js/assign.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

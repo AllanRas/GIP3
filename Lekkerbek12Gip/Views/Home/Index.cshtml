@@ -1,16 +1,48 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@{
+    Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome To Lekkerbek</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Lekkerbek12Gip</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
 
-</div>
-<div class="row">
-    <div class="col">
-        <a class="nav-link  btn btn-primary" role="button" asp-area="" asp-controller="Bestellingen" asp-action="Index">Naar Bestellingen</a>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <div class="text-center">
+                <img src="~/img/Lekkerbek.png" class="img-fluid" alt="Responsive image" style="width:50%; margin-top:-60px">
+
+            </div>
+
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-5">
+                    <a asp-area="" asp-controller="Bestellings" asp-action="Index"><img src="~/img/admin2.jpeg" style="width:100%; height:400px" /></a>
+                    <a class="nav-link  btn btn-primary" role="button" asp-area="" asp-controller="Bestellings" asp-action="Index">Beheerder</a>
+                </div>
+                <div class="col-md-5">
+                    <a asp-area="" asp-controller="KassaBestellings" asp-action="Index"> <img src="~/img/cashbox.png" style="width:100%; height:400px; padding:60px" /></a>
+                    <a class="nav-link  btn btn-primary" role="button" asp-area="" asp-controller="KassaBestellings" asp-action="Index">Kassa</a>
+                </div>
+            </div>
+        </main>
     </div>
-    <div class="col">
-        <a class="nav-link  btn btn-primary" role="button" asp-area="" asp-controller="Klants" asp-action="Index">Naar Klants</a>
-    </div>
-</div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - Lekkerbek12Gip - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+</body>
+</html>
+

@@ -13,12 +13,27 @@ namespace Lekkerbek12Gip.Models
 
         }
         public DbSet<Bestelling> Bestellings { get; set; }
-        public DbSet<Klant> klants { get; set; }
-        public DbSet<Gerecht> Gerechten { get; set; }
+        public DbSet<Klant> Klants { get; set; }
+        public DbSet<Gerecht> Gerechten { get; set; }      
+        public DbSet<Chef> Chefs { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<BestellingGerecht> BestellingGerechts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            modelBuilder.Entity<Bestelling>()
+                .HasMany(b => b.Gerechten)
+                .WithMany(g => g.Bestellingen)
+                .UsingEntity<BestellingGerecht>(
+                    bg => bg.HasOne(prop => prop.Gerecht).WithMany().HasForeignKey(prop => prop.GerechtId),
+                    bg => bg.HasOne(prop => prop.Bestelling).WithMany().HasForeignKey(prop => prop.BestellingId),
+                    bg =>
+                    {
+                        bg.HasKey(prop => new { prop.GerechtId, prop.BestellingId });
+                        bg.Property(prop => prop.Aantal).HasDefaultValueSql("0");
+                    }
+              );
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
