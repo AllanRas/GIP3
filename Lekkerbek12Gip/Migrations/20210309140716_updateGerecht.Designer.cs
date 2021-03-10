@@ -75,7 +75,7 @@ namespace Lekkerbek12Gip.Migrations
 
                     b.HasIndex("BestellingId");
 
-                    b.ToTable("BestellingGerechts");
+                    b.ToTable("BestellingGerecht");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>

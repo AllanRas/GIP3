@@ -56,12 +56,12 @@ namespace Lekkerbek12Gip.Migrations
                     b.ToTable("Bestellings");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerecht", b =>
+            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerechten", b =>
                 {
-                    b.Property<int>("GerechtId")
+                    b.Property<int?>("BestellingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BestellingId")
+                    b.Property<int?>("GerechtId")
                         .HasColumnType("int");
 
                     b.Property<int>("Aantal")
@@ -69,11 +69,11 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("int")
                         .HasDefaultValueSql("0");
 
-                    b.HasKey("GerechtId", "BestellingId");
+                    b.HasKey("BestellingId", "GerechtId");
 
-                    b.HasIndex("BestellingId");
+                    b.HasIndex("GerechtId");
 
-                    b.ToTable("BestellingGerechts");
+                    b.ToTable("BestellingGerechten");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
@@ -181,7 +181,7 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Klant");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerecht", b =>
+            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerechten", b =>
                 {
                     b.HasOne("Lekkerbek12Gip.Models.Bestelling", "Bestelling")
                         .WithMany()
