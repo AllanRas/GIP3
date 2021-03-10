@@ -21,7 +21,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Bestellings
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant);
+            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef");
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -58,14 +58,13 @@ namespace Lekkerbek12Gip.Controllers
             var bestelling = await _context.Bestellings.FindAsync(bestellingId);
             var gerecht = await _context.Gerechten.FindAsync(gerechtId);
 
-            var bestaandebg = await _context.BestellingGerechten.FirstAsync(item => item.BestellingId == bestelling.BestellingId && item.GerechtId == gerecht.GerechtId);
+            var bestellinGerecht = _context.BestellingGerechten.FirstOrDefault(x => x.BestellingId == bestellingId);
 
-            BestellingGerechten bg;
-            if(bestaandebg == null)
+            bestelling.Gerechten.Add(gerecht);
+            gerecht.Bestellingen.Add(bestelling);
+            if (bestellinGerecht == null)
             {
-                bestelling.Gerechten.Add(gerecht);
-                gerecht.Bestellingen.Add(bestelling);
-                bg = new BestellingGerechten
+                BestellingGerechten bg = new BestellingGerechten
                 {
                     Aantal = aantal,
                     Bestelling = bestelling,
@@ -77,8 +76,11 @@ namespace Lekkerbek12Gip.Controllers
             }
             else
             {
-                bestaandebg.Aantal = aantal; 
+                bestellinGerecht.Aantal = aantal;
             }
+
+
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -125,7 +127,7 @@ namespace Lekkerbek12Gip.Controllers
                 if (bestellingCount % 3 == 0)
                 {
                     bestelling.Korting = 10;
-                    
+
                 }
 
                 _context.Add(bestelling);
