@@ -58,21 +58,30 @@ namespace Lekkerbek12Gip.Controllers
             var bestelling = await _context.Bestellings.FindAsync(bestellingId);
             var gerecht = await _context.Gerechten.FindAsync(gerechtId);
 
-            bestelling.Gerechten.Add(gerecht);
-            gerecht.Bestellingen.Add(bestelling);
-            BestellingGerechten bg = new BestellingGerechten
-            {
-                Aantal = aantal,
-                Bestelling = bestelling,
-                BestellingId = bestelling.BestellingId,
-                Gerecht = gerecht,
-                GerechtId = gerecht.GerechtId
-            };  
+            var bestaandebg = await _context.BestellingGerechten.FirstAsync(item => item.BestellingId == bestelling.BestellingId && item.GerechtId == gerecht.GerechtId);
 
-            await _context.BestellingGerechten.AddAsync(bg);
+            BestellingGerechten bg;
+            if(bestaandebg == null)
+            {
+                bestelling.Gerechten.Add(gerecht);
+                gerecht.Bestellingen.Add(bestelling);
+                bg = new BestellingGerechten
+                {
+                    Aantal = aantal,
+                    Bestelling = bestelling,
+                    BestellingId = bestelling.BestellingId,
+                    Gerecht = gerecht,
+                    GerechtId = gerecht.GerechtId
+                };
+                await _context.BestellingGerechten.AddAsync(bg);
+            }
+            else
+            {
+                bestaandebg.Aantal = aantal; 
+            }
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        } 
+        }
 
         // GET: Bestellings/Create
         public IActionResult Create()
