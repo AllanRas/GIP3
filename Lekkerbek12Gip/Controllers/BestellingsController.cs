@@ -79,6 +79,15 @@ namespace Lekkerbek12Gip.Controllers
         {
             ViewData["Name"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
+            var date = DateTime.Now;
+            var dateOneHourBefore = DateTime.Now.AddMinutes(-60);
+            var lastHourChef2 = _context.Bestellings
+                 .Where(p => (p.OrderDate < date && p.OrderDate > dateOneHourBefore) && p.ChefId == 2).Count();
+            ViewBag.lastHourChef2 = 4 - lastHourChef2;
+            var lastHourChef1 = _context.Bestellings
+                 .Where(p => (p.OrderDate < date && p.OrderDate > dateOneHourBefore) && p.ChefId == 1).Count();
+            ViewBag.lastHourChef1 = 4 - lastHourChef1;
+
             ViewData["GerechtData"] = _context.Gerechten.ToListAsync();
             return View();
         }
