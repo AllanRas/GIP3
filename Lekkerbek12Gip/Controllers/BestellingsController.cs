@@ -97,7 +97,7 @@ namespace Lekkerbek12Gip.Controllers
                  .Where(p => (p.OrderDate < date && p.OrderDate > dateOneHourBefore) && p.ChefId == 1).Count();
             ViewBag.lastHourChef1 = 4 - lastHourChef1;
 
-            ViewData["GerechtData"] = _context.Gerechten.ToListAsync();
+            ViewData["GerechtData"] = _context.Gerechten.ToList();
             return View();
         }
 
