@@ -45,24 +45,21 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Prijs) $
                         </td>
-
                         <td>
-                            <button id="plus" class="btn btn-success">+</button> |
-                            <button class="btn btn-danger">-</button>
-                            <input id=@item.GerechtId class="input" style="width:25px" value="0" readonly />
+                            <form asp-action="Gerechten">
+                                <input type="number" name="aantal"/>
+                                <input type="hidden" name="gerechtId" value="@item.GerechtId"/>
+                                <input type="hidden" name="bestellingId" value="@ViewBag.data"/>
+                                <button type="submit" value="Gerechten">+</button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>
             }
-            
         }
     </table>
 }
-             <div class="form-group">
-                <input type="submit" value="Opslaan" class="btn btn-primary" />
-            </div>
 
 @section Scripts{
-    <script src="~/js/bestellingGerecht.js"></script>
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

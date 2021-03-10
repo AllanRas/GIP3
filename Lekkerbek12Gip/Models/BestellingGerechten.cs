@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace Lekkerbek12Gip.Models
 {
-    public class BestellingGerecht
+    public class BestellingGerechten
     {
-        public int BestellingGerechtId { get; set; }
         public int? BestellingId { get; set; }
         public int? GerechtId { get; set; }
         public virtual Bestelling Bestelling { get; set; }

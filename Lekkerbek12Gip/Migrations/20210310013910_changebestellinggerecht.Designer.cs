@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20210309174305_updatedbBestellingGerecht")]
-    partial class updatedbBestellingGerecht
+    [Migration("20210310013910_changebestellinggerecht")]
+    partial class changebestellinggerecht
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,9 +37,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<int?>("ChefId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GerechtId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("KlantId")
                         .HasColumnType("int");
 
@@ -56,36 +53,29 @@ namespace Lekkerbek12Gip.Migrations
 
                     b.HasIndex("ChefId");
 
-                    b.HasIndex("GerechtId");
-
                     b.HasIndex("KlantId");
 
                     b.ToTable("Bestellings");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerecht", b =>
+            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerechten", b =>
                 {
-                    b.Property<int>("BestellingGerechtId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Aantal")
-                        .HasColumnType("int");
-
                     b.Property<int?>("BestellingId")
                         .HasColumnType("int");
 
                     b.Property<int?>("GerechtId")
                         .HasColumnType("int");
 
-                    b.HasKey("BestellingGerechtId");
+                    b.Property<int>("Aantal")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("0");
 
-                    b.HasIndex("BestellingId");
+                    b.HasKey("BestellingId", "GerechtId");
 
                     b.HasIndex("GerechtId");
 
-                    b.ToTable("BestellingGerecht");
+                    b.ToTable("BestellingGerechten");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
@@ -184,10 +174,6 @@ namespace Lekkerbek12Gip.Migrations
                         .WithMany("Bestellings")
                         .HasForeignKey("ChefId");
 
-                    b.HasOne("Lekkerbek12Gip.Models.Gerecht", null)
-                        .WithMany("Bestellingen")
-                        .HasForeignKey("GerechtId");
-
                     b.HasOne("Lekkerbek12Gip.Models.Klant", "Klant")
                         .WithMany("Bestellings")
                         .HasForeignKey("KlantId");
@@ -197,34 +183,28 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Klant");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerecht", b =>
+            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerechten", b =>
                 {
                     b.HasOne("Lekkerbek12Gip.Models.Bestelling", "Bestelling")
-                        .WithMany("BestellingGerechts")
-                        .HasForeignKey("BestellingId");
+                        .WithMany()
+                        .HasForeignKey("BestellingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Lekkerbek12Gip.Models.Gerecht", "Gerecht")
                         .WithMany()
-                        .HasForeignKey("GerechtId");
+                        .HasForeignKey("GerechtId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Bestelling");
 
                     b.Navigation("Gerecht");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
-                {
-                    b.Navigation("BestellingGerechts");
-                });
-
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
                 {
                     b.Navigation("Bestellings");
-                });
-
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
-                {
-                    b.Navigation("Bestellingen");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>

@@ -51,27 +51,25 @@ namespace Lekkerbek12Gip.Controllers
             return View(await _context.Gerechten.ToListAsync());
         }
 
-        
+
         [HttpPost]
-        public async Task<IActionResult> GerechPOST(IEnumerable<Gerecht> gerechts, int bestellingId, int aantal)
+        public async Task<IActionResult> Gerechten(int bestellingId, int gerechtId, int aantal)
         {
-            var bestelling = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId);
-            foreach (var a in gerechts)
+            var bestelling = await _context.Bestellings.FindAsync(bestellingId);
+            var gerecht = await _context.Gerechten.FindAsync(gerechtId);
+
+            bestelling.Gerechten.Add(gerecht);
+            gerecht.Bestellingen.Add(bestelling);
+            BestellingGerechten bg = new BestellingGerechten
             {
-                if (aantal > 0)
-                {
-                    var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == a.GerechtId);
-                    BestellingGerecht bg = new BestellingGerecht() 
-                    { 
-                        Bestelling = bestelling,
-                        BestellingId = bestelling.BestellingId,
-                        Aantal = aantal, Gerecht = gerecht,
-                        GerechtId = gerecht.GerechtId
-                    };
-                    bestelling.Gerechten.Add(gerecht);
-                    gerecht.Bestellingen.Add(bestelling);
-                }
-            }
+                Aantal = aantal,
+                Bestelling = bestelling,
+                BestellingId = bestelling.BestellingId,
+                Gerecht = gerecht,
+                GerechtId = gerecht.GerechtId
+            };  
+
+            await _context.BestellingGerechten.AddAsync(bg);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         } 
