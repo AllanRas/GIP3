@@ -23,7 +23,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Bestellings
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant);
+            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef");
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -37,6 +37,7 @@ namespace Lekkerbek12Gip.Controllers
 
             var bestelling = await _context.Bestellings
                 .Include(b => b.Klant)
+                .Include("Chef")
                 .FirstOrDefaultAsync(m => m.BestellingId == id);
             if (bestelling == null)
             {
@@ -45,40 +46,6 @@ namespace Lekkerbek12Gip.Controllers
 
             return View(bestelling);
         }
-
-        /**
-        //Gerech kies
-        [HttpGet]
-        public async Task<IActionResult> Gerechten(Bestelling bestelling)
-        {
-            ViewData["data"] = bestelling.BestellingId;
-            return View(await _context.Gerechten.ToListAsync());
-        }**/
-
-        /**
-    [HttpPost]
-    public async Task<IActionResult> GerechPOST(IEnumerable<Gerecht> gerechts, int bestellingId)
-    {
-
-        foreach (var a in gerechts)
-        {
-            if (a.Aantal > 0)
-            {
-                var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == a.GerechtId);
-                gerecht.Aantal = a.Aantal;
-                _context.Bestellings.Include("Gerechten").FirstOrDefault(x => x.BestellingId == bestellingId).Gerechten.Add(gerecht);
-            }
-        }
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    } **/
-
-
-
-
-
-
-
 
 
 
