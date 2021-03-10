@@ -43,56 +43,43 @@ namespace Lekkerbek12Gip.Controllers
 
             return View(bestelling);
         }
-
-        /**
         //Gerech kies
         [HttpGet]
-        public async Task<IActionResult> Gerechten(Bestelling bestelling)
+        public async Task<IActionResult> Gerechten(int? id)
         {
-            ViewData["data"] = bestelling.BestellingId;
+            ViewData["data"] = id;
             return View(await _context.Gerechten.ToListAsync());
-        }**/
-
-        /**
-    [HttpPost]
-    public async Task<IActionResult> GerechPOST(IEnumerable<Gerecht> gerechts, int bestellingId)
-    {
-
-        foreach (var a in gerechts)
-        {
-            if (a.Aantal > 0)
-            {
-                var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == a.GerechtId);
-                gerecht.Aantal = a.Aantal;
-                _context.Bestellings.Include("Gerechten").FirstOrDefault(x => x.BestellingId == bestellingId).Gerechten.Add(gerecht);
-            }
         }
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    } **/
 
 
+        [HttpPost]
+        public async Task<IActionResult> Gerechten(int bestellingId, int gerechtId, int aantal)
+        {
+            var bestelling = await _context.Bestellings.FindAsync(bestellingId);
+            var gerecht = await _context.Gerechten.FindAsync(gerechtId);
+
+            bestelling.Gerechten.Add(gerecht);
+            gerecht.Bestellingen.Add(bestelling);
+            BestellingGerechten bg = new BestellingGerechten
+            {
+                Aantal = aantal,
+                Bestelling = bestelling,
+                BestellingId = bestelling.BestellingId,
+                Gerecht = gerecht,
+                GerechtId = gerecht.GerechtId
+            };  
+
+            await _context.BestellingGerechten.AddAsync(bg);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        } 
 
         // GET: Bestellings/Create
         public IActionResult Create()
         {
             ViewData["Name"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
-
-            var date = DateTime.Now;
-            var dateOneHourBefore = DateTime.Now.AddMinutes(-60);
-
-            var lastHourChef2 = _context.Bestellings
-                 .Where(p => (p.OrderDate < date && p.OrderDate > dateOneHourBefore) && p.ChefId == 2).Count();
-
-            ViewBag.lastHourChef2 = 4 - lastHourChef2;
-
-
-
-            var lastHourChef1 = _context.Bestellings
-                 .Where(p => (p.OrderDate < date && p.OrderDate > dateOneHourBefore) && p.ChefId == 1).Count();
-
-            ViewBag.lastHourChef1 = 4 - lastHourChef1;
+            ViewData["GerechtData"] = _context.Gerechten.ToListAsync();
             return View();
         }
 
@@ -120,7 +107,7 @@ namespace Lekkerbek12Gip.Controllers
                 if (bestellingCount % 3 == 0)
                 {
                     bestelling.Korting = 10;
-
+                    
                 }
 
                 _context.Add(bestelling);
