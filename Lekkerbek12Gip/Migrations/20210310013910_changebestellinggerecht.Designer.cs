@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20210309134751_updateBestellingGerecht")]
-    partial class updateBestellingGerecht
+    [Migration("20210310013910_changebestellinggerecht")]
+    partial class changebestellinggerecht
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -58,12 +58,12 @@ namespace Lekkerbek12Gip.Migrations
                     b.ToTable("Bestellings");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerecht", b =>
+            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerechten", b =>
                 {
-                    b.Property<int>("GerechtId")
+                    b.Property<int?>("BestellingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BestellingId")
+                    b.Property<int?>("GerechtId")
                         .HasColumnType("int");
 
                     b.Property<int>("Aantal")
@@ -71,11 +71,11 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("int")
                         .HasDefaultValueSql("0");
 
-                    b.HasKey("GerechtId", "BestellingId");
+                    b.HasKey("BestellingId", "GerechtId");
 
-                    b.HasIndex("BestellingId");
+                    b.HasIndex("GerechtId");
 
-                    b.ToTable("BestellingGerechts");
+                    b.ToTable("BestellingGerechten");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
@@ -99,9 +99,6 @@ namespace Lekkerbek12Gip.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("Aantal")
-                        .HasColumnType("int");
 
                     b.Property<int>("Categorie")
                         .HasColumnType("int");
@@ -186,7 +183,7 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Klant");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerecht", b =>
+            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerechten", b =>
                 {
                     b.HasOne("Lekkerbek12Gip.Models.Bestelling", "Bestelling")
                         .WithMany()
