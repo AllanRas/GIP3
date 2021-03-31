@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lekkerbek12Gip.Validators;
+using System;
 using System.Collections.Generic;
 
 using System.Linq;
@@ -23,8 +24,10 @@ namespace Lekkerbek12Gip.Models
         public int? KlantId { get; set; }
         public int? ChefId { get; set; }
         public SpecialWensen? SpecialeWensen { get; set; }
+        [BestelDateAttribute]
         public DateTime OrderDate { get; set; }
         public bool Afgerekend { get; set; }
+        [BestelDateAttribute]
         public DateTime AfhaalTijd { get; set; }
         public decimal Korting { get; set; }
         public decimal TotalPrijs
