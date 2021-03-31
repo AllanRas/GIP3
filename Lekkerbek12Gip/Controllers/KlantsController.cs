@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
+using System.Linq.Dynamic.Core;
 
 namespace Lekkerbek12Gip.Controllers
 {
@@ -148,5 +149,72 @@ namespace Lekkerbek12Gip.Controllers
         {
             return _context.Klants.Any(e => e.KlantId == id);
         }
+
+        [HttpGet]
+        public IActionResult LoadAllCustomers()
+        {
+            try
+            {
+                // getting all Customer data
+                var customerData = (from c in _context.Klants
+                                    select c).ToList<Klant>();
+                //Returning Json Data
+                return Json(new { data = customerData });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public IActionResult LoadAllCustomersSS()
+        {
+            try
+            {
+                int start = Convert.ToInt32(Request.Form["start"]);
+                int length = Convert.ToInt32(Request.Form["length"]);
+                string searchValue = Request.Form["search[value]"];
+                string sortColumnName = Request.Form["columns[" +
+               HttpContext.Request.Form["order[0][column]"] + "][name]"];
+                string sortDirection = Request.Form["order[0][dir]"];
+                var customerData = (from c in _context.Klants
+                                    select c);
+                int recordsTotal = customerData.Count();
+                //search
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    customerData = (from c in _context.Klants
+                                    where c.Name.ToLower().Contains(searchValue.ToLower())
+                                   ||
+                                    c.Adress.ToLower().Contains(searchValue.ToLower())                                
+                                    
+                                    select c);
+                }
+                //sorting
+                customerData = customerData.OrderBy(sortColumnName + " " + sortDirection);
+                //paging
+                customerData = customerData.Skip(start).Take(length);
+                //footer info
+                int draw;
+                int.TryParse(Request.Form["draw"], out draw);
+
+                int recordsFiltered = customerData.Count();
+                return Json(new
+                {
+                    data = customerData.ToList<Klant>(),
+                    recordsTotal =
+               recordsTotal,
+                    recordsFiltered = recordsFiltered,
+                    draw = draw
+                });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

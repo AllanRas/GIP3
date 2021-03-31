@@ -1,4 +1,63 @@
-﻿@model IEnumerable<Lekkerbek12Gip.Models.Klant>
+﻿@section Scripts
+{
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script>
+        $(function () {
+            //$('#custtable').DataTable({
+            //    "ajax": {
+            //        "url": "/klants/LoadAllCustomers",
+            //        "type": "GET",
+            //        "datatype": "json"
+            //    },
+            //    "columns": [
+            //        { "data": "klantId", "name": "klantId" },
+            //        { "data": "name", "name": "name" },
+            //        { "data": "adress", "name": "adress" },
+            //        { "data": "getrouwheidsScore", "name": "getrouwheidsScore" },
+            //        { "data": "geboortedatum", "name": "geboortedatum" },
+            //        { "data": "emailadres", "name": "emailadres" },
+            //        { "data": "bestellings", "name": "bestellings" },
+            //        { "data": null, "defaultContent": "<a href='' class='del'>Delete</a>" }                    
+            //    ]
+            //});                       $('#custtable').DataTable({
+                "ajax": {
+                    "url": "/klants/LoadAllCustomersSS",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "klantId", "name": "klantId" },
+                    { "data": "name", "name": "name" },
+                    { "data": "adress", "name": "adress" },
+                    { "data": "getrouwheidsScore", "name": "getrouwheidsScore" },
+                    { "data": "geboortedatum", "name": "geboortedatum" },
+                    { "data": "emailadres", "name": "emailadres" },
+                    { "data": "bestellings", "name": "bestellings" }
+                ],
+                "serverSide": true,
+                "order": [0, "asc"],
+                "proccessing": true
+            });        });
+     
+       $('#custtable tbody').on('click', 'tr', function (e) {
+ e.preventDefault();
+ var id = $("td:first", this).text();
+ if ($(e.target).is("a.del")) {
+    $.get('@Url.Action("Delete","Klants")', { id: id }, function (data) {
+    $("body").html(data);
+    });
+ return;
+    }
+    $.get('@Url.Action("Edit","Klants")', { id: id }, function (data) {
+    $("body").html(data);
+        });
+        });
+     
+    </script>
+}
+
+@model IEnumerable<Lekkerbek12Gip.Models.Klant>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,9 +68,12 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table id="custtable" class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.KlantId)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -31,8 +93,12 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.KlantId)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -47,14 +113,21 @@
             </td>
             <td>
                 <a href="https://www.google.com/intl/tr/gmail/about/">@Html.DisplayFor(modelItem => item.emailadres)</a>
-               
+
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.KlantId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.KlantId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.KlantId">Delete</a>
+                <a class="del" asp-action="Delete" asp-route-id="@item.KlantId">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>
+
+<style>
+    #custtable tbody tr {
+        cursor: pointer;
+    }
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.
+20/css/jquery.dataTables.css">
