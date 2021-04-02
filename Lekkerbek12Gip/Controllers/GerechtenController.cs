@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Lekkerbek12Gip.Controllers
 {
 
-
+    [Authorize(Roles = "Admin")]
     public class GerechtenController : Controller
     {
         private readonly LekkerbekContext _context;

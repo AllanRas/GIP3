@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
 using System.Linq.Dynamic.Core;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
+    [Authorize(Roles = "Admin,Kassamedewerker")]
     public class KlantsController : Controller
     {
         private readonly LekkerbekContext _context;
@@ -44,6 +46,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Klants/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
