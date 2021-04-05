@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
-    [Authorize(Roles = "Admin,Kassamedewerker")]
+    
     public class BestellingsController : Controller
     {
         
@@ -92,7 +92,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Bestellings/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Kassamedewerker")]
         public IActionResult Create()
         {
             ViewData["Name"] = new SelectList(_context.Klants, "KlantId", "Name");

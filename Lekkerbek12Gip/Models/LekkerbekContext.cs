@@ -18,6 +18,8 @@ namespace Lekkerbek12Gip.Models
         public DbSet<Gerecht> Gerechten { get; set; }      
         public DbSet<Chef> Chefs { get; set; }     
         public DbSet<BestellingGerechten> BestellingGerechten { get; set; }
+        public DbSet<PlanningsModule> PlanningsModules { get; set; }
+        public DbSet<Event> Events { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

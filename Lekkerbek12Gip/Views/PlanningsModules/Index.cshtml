@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Lekkerbek12Gip.Models.PlanningsModule>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js" integrity="sha256-ekrJn2FeZaiUFq99QswpQCUTME/HxaDfX7R8INzKJGE=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.css">
+<link href="~/css/Calendar.css" rel="stylesheet" />
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New Plan</a>
+</p>
+
+<a class="btn btn-success" asp-action="CreateEvent">Event Add</a>
+
+<div class="body-container">
+    <div id='calendar'></div>
+    <div id="index">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        @Html.DisplayName("Datum")
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.OpeningsUren)
+                    </th>
+                    <th>
+                        @Html.DisplayName("Werknemer")
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Events)
+                    </th>
+
+
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+            
+                @foreach (var item in Model)
+                {
+                    
+                    <div id=@item.OpeningsUren.ToString("yyyy-MM-d")>
+                        <div class="d-xl-inline-flex">
+                            <div>
+                                @Html.DisplayName(item.OpeningsUren.ToShortDateString() + "\t" + item.OpeningsUren.DayOfWeek)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.OpeningsUren.TimeOfDay)
+                            </div>
+                            <div>
+                                <select id="chefList" class="form-control" asp-items="ViewBag.ChefName"></select>
+                            </div>
+                            <div>
+                               
+                                <select id="eventlist" class="form-control" asp-items="ViewBag.EventTitle"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> |
+                            <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> |
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PlanningsModuleId">Delete</a>
+                    </div>
+
+                    </div>
+
+                }                       
+                
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Calendar.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

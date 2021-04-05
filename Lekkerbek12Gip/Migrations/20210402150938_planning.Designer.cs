@@ -4,14 +4,16 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210402150938_planning")]
+    partial class planning
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,40 +89,9 @@ namespace Lekkerbek12Gip.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PlanningsModuleId")
-                        .HasColumnType("int");
-
                     b.HasKey("ChefId");
 
-                    b.HasIndex("PlanningsModuleId");
-
                     b.ToTable("Chefs");
-                });
-
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Event", b =>
-                {
-                    b.Property<int>("EventId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("End")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("PlanningsModuleId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("EventId");
-
-                    b.HasIndex("PlanningsModuleId");
-
-                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
@@ -177,18 +148,8 @@ namespace Lekkerbek12Gip.Migrations
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.PlanningsModule", b =>
                 {
-                    b.Property<int>("PlanningsModuleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ChefId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("OpeningsUren")
                         .HasColumnType("datetime2");
-
-                    b.HasKey("PlanningsModuleId");
 
                     b.ToTable("PlanningsModules");
                 });
@@ -427,20 +388,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Gerecht");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
-                {
-                    b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", null)
-                        .WithMany("chefs")
-                        .HasForeignKey("PlanningsModuleId");
-                });
-
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Event", b =>
-                {
-                    b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", null)
-                        .WithMany("Events")
-                        .HasForeignKey("PlanningsModuleId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -500,13 +447,6 @@ namespace Lekkerbek12Gip.Migrations
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>
                 {
                     b.Navigation("Bestellings");
-                });
-
-            modelBuilder.Entity("Lekkerbek12Gip.Models.PlanningsModule", b =>
-                {
-                    b.Navigation("chefs");
-
-                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }
