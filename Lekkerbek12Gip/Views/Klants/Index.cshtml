@@ -1,7 +1,8 @@
 ﻿@section Scripts
 {
     <script type="text/javascript"
-            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js">
+    </script>
     <script>
         $(function () {
             //$('#custtable').DataTable({
@@ -18,9 +19,10 @@
             //        { "data": "geboortedatum", "name": "geboortedatum" },
             //        { "data": "emailadres", "name": "emailadres" },
             //        { "data": "bestellings", "name": "bestellings" },
-            //        { "data": null, "defaultContent": "<a href='' class='del'>Delete</a>" }                    
+            //        { "data": null, "defaultContent": "<a href='' class='del'>Delete</a>" }
             //    ]
-            //});                       $('#custtable').DataTable({
+            //});
+            $('#custtable').DataTable({
                 "ajax": {
                     "url": "/klants/LoadAllCustomersSS",
                     "type": "POST",
@@ -38,8 +40,10 @@
                 "serverSide": true,
                 "order": [0, "asc"],
                 "proccessing": true
-            });        });
-     
+            });
+        });
+
+
        $('#custtable tbody').on('click', 'tr', function (e) {
  e.preventDefault();
  var id = $("td:first", this).text();
@@ -53,7 +57,7 @@
     $("body").html(data);
         });
         });
-     
+
     </script>
 }
 
@@ -61,6 +65,7 @@
 
 @{
     ViewData["Title"] = "Index";
+
 }
 
 <h1>Index</h1>
@@ -95,30 +100,30 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.KlantId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GetrouwheidsScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Geboortedatum)
-            </td>
-            <td>
-                <a href="https://www.google.com/intl/tr/gmail/about/">@Html.DisplayFor(modelItem => item.emailadres)</a>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.KlantId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GetrouwheidsScore)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Geboortedatum)
+                </td>
+                <td>
+                    <a href="https://www.google.com/intl/tr/gmail/about/">@Html.DisplayFor(modelItem => item.emailadres)</a>
 
-            </td>
-            <td>
-                <a class="del" asp-action="Delete" asp-route-id="@item.KlantId">Delete</a>
-            </td>
-        </tr>
+                </td>
+                <td>
+                    <a class="del" asp-action="Delete" asp-route-id="@item.KlantId">Delete</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

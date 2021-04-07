@@ -11,3 +11,18 @@
     background-color:aqua;    
     cursor:pointer;
 }
+.EventButtons a{
+    margin:25px;
+}
+.textarea{
+    margin:25px;
+}
+textarea{
+    width:75%;
+    resize:none;    
+    height:200px;
+}
+.info{
+    display:flex;
+    justify-content:space-between;
+}

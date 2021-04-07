@@ -22,7 +22,7 @@ namespace Lekkerbek12Gip.Controllers
         public async Task<IActionResult> Index()
         {
             ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
-            ViewData["EventTitle"] = new SelectList(_context.Events, "EventId", "Title");
+            
             return View(await _context.PlanningsModules.ToListAsync());
         }
 
