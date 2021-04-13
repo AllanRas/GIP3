@@ -21,9 +21,8 @@ namespace Lekkerbek12Gip.Controllers
         // GET: PlanningsModules
         public async Task<IActionResult> Index()
         {
-            ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
-            
-            return View(await _context.PlanningsModules.ToListAsync());
+            var indexlist = _context.PlanningsModules.Include(x => x.chefs);
+            return View(await indexlist.ToListAsync());
         }
 
         // GET: PlanningsModules/Details/5
@@ -44,33 +43,6 @@ namespace Lekkerbek12Gip.Controllers
             return View(planningsModule);
         }
 
-        public IActionResult CreateEvent()
-        {
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateEvent([Bind("EventId,Title,Start,End")] Event eventX)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(eventX);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(eventX);
-        }
-
-
-        public async Task<List<Event>> Event()//Event
-        {
-            
-           
-            await _context.SaveChangesAsync();
-
-            return await _context.Events.ToListAsync();
-        }
-
         // GET: PlanningsModules/Create
         public IActionResult Create()
         {
@@ -82,7 +54,7 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PlanningsModuleId,ChefId,OpeningsUren")] PlanningsModule planningsModule)
+        public async Task<IActionResult> Create([Bind("PlanningsModuleId,ChefId,Description,OpeningsUren")] PlanningsModule planningsModule)
         {
             if (ModelState.IsValid)
             {
@@ -114,7 +86,7 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PlanningsModuleId,ChefId,OpeningsUren")] PlanningsModule planningsModule)
+        public async Task<IActionResult> Edit(int id, [Bind("PlanningsModuleId,ChefId,Description,OpeningsUren")] PlanningsModule planningsModule)
         {
             if (id != planningsModule.PlanningsModuleId)
             {
@@ -142,6 +114,33 @@ namespace Lekkerbek12Gip.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(planningsModule);
+        }
+
+        public IActionResult CreateEvent()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateEvent([Bind("EventId,Title,Start,End")] Event eventX)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(eventX);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(eventX);
+        }
+
+
+        public async Task<List<Event>> Event()//Event
+        {
+
+
+            await _context.SaveChangesAsync();
+
+            return await _context.Events.ToListAsync();
         }
 
         // GET: PlanningsModules/Delete/5

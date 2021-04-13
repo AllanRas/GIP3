@@ -1,12 +1,10 @@
 ﻿@model IEnumerable<Lekkerbek12Gip.Models.PlanningsModule>
 
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-   
-}
+@{ ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js" integrity="sha256-ekrJn2FeZaiUFq99QswpQCUTME/HxaDfX7R8INzKJGE=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.css">
+<script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" data-auto-replace-svg="nest"></script>
 <link href="~/css/Calendar.css" rel="stylesheet" />
 <h1>Index</h1>
 
@@ -44,46 +42,45 @@
         @foreach (var item in Model)
         {
 
-    <div id=@item.OpeningsUren.ToString("yyyy-MM-dd") style="display:none" >
-        <div class="info">
-            <div>
-                @Html.DisplayName(item.OpeningsUren.DayOfWeek.ToString())
-                <br />
-                @Html.DisplayName(item.OpeningsUren.ToShortDateString())
-            </div>
-            <div>
-                @Html.DisplayFor(modelItem => item.OpeningsUren.TimeOfDay)
-            </div>
-            <div>
-                <select id="chefList" class="form-control" asp-items="ViewBag.ChefName"></select>
-            </div>
-            <div>
+<div id=@item.OpeningsUren.ToString("yyyy-MM-dd") style="display:none">
+    <div class="info">
+        <div>
+            @Html.DisplayName(item.OpeningsUren.DayOfWeek.ToString())
+            <br />
+            @Html.DisplayName(item.OpeningsUren.ToShortDateString())
+        </div>
+        <div>
+            @Html.DisplayFor(modelItem => item.OpeningsUren.TimeOfDay)
+        </div>
+        <div>
+            <select id="chefList" class="form-control" asp-items="ViewBag.ChefName"></select>
+        </div>
+        <div>
 
-            </div>
         </div>
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">Description head</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-            </div>
-        </div>
-        <div class="EventButtons">
-            <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> |
-            <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> |
-            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PlanningsModuleId">Delete</a>
-        </div>
-
     </div>
-            }
-            <section id="Create">
-                <h2> Plan eklenmedi henuz </h2>
-                <a asp-action="Create">Create New Plan</a>
-            </section>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Description head</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+            <p class="card-text">@Html.DisplayFor(modelitem => item.Description)</p>
+            <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a>
+        </div>
+    </div>
+    <div class="EventButtons">
+        <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> |
+        <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> |
+        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PlanningsModuleId">Delete</a>
+    </div>
 
-        
+</div>      }
+        <section id="Create">
+            <h2> Plan eklenmedi henuz </h2>
+            <a asp-action="Create">Create New Plan</a>
+        </section>
+
+
 
     </div>
 
@@ -93,3 +90,4 @@
     <script src="~/js/Calendar.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+

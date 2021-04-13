@@ -4,14 +4,16 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210410094113_descr")]
+    partial class descr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,12 +71,7 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("int")
                         .HasDefaultValueSql("0");
 
-                    b.Property<int?>("BestellingId1")
-                        .HasColumnType("int");
-
                     b.HasKey("BestellingId", "GerechtId");
-
-                    b.HasIndex("BestellingId1");
 
                     b.HasIndex("GerechtId");
 
@@ -424,10 +421,6 @@ namespace Lekkerbek12Gip.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Lekkerbek12Gip.Models.Bestelling", null)
-                        .WithMany("BestellingGerechten")
-                        .HasForeignKey("BestellingId1");
-
                     b.HasOne("Lekkerbek12Gip.Models.Gerecht", "Gerecht")
                         .WithMany()
                         .HasForeignKey("GerechtId")
@@ -502,11 +495,6 @@ namespace Lekkerbek12Gip.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
-                {
-                    b.Navigation("BestellingGerechten");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>

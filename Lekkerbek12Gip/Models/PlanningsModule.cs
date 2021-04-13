@@ -22,6 +22,7 @@ namespace Lekkerbek12Gip.Models
             }
         }
         public int ChefId { get; set; }
+        public string Description { get; set; }       
         public ICollection<Event> Events { get; set; }
         public DateTime OpeningsUren { get; set; }//Event varsa eklenemeyecek
         public ICollection<Chef> chefs { get; set; } // o gun calisacak chefler Event tarihi icindeyse chefler izinli olucak

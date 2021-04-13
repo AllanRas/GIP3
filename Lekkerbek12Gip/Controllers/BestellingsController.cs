@@ -25,7 +25,7 @@ namespace Lekkerbek12Gip.Controllers
         
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef");
+            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x=>x.BestellingGerechten);
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -64,11 +64,9 @@ namespace Lekkerbek12Gip.Controllers
             var bestelling = await _context.Bestellings.FindAsync(bestellingId);
             var gerecht = await _context.Gerechten.FindAsync(gerechtId);
 
-            var bestellinGerecht = _context.BestellingGerechten.FirstOrDefault(x => x.BestellingId == bestellingId);
+            var bestellinGerecht = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId );
 
-            bestelling.Gerechten.Add(gerecht);
-            gerecht.Bestellingen.Add(bestelling);
-            if (bestellinGerecht == null)
+            if(bestellinGerecht!=null && bestellinGerecht.FirstOrDefault(x=>x.GerechtId==gerecht.GerechtId) ==null) 
             {
                 BestellingGerechten bg = new BestellingGerechten
                 {
@@ -77,15 +75,31 @@ namespace Lekkerbek12Gip.Controllers
                     BestellingId = bestelling.BestellingId,
                     Gerecht = gerecht,
                     GerechtId = gerecht.GerechtId
-                };
+                };       
+                bestelling.Gerechten.Add(gerecht);
+                bestelling.BestellingGerechten.Add(bg);
                 await _context.BestellingGerechten.AddAsync(bg);
+           
             }
-            else
+            else if(bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null) 
             {
-                bestellinGerecht.Aantal = aantal;
+                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal=aantal;
             }
+            
+            //if (bestellinGerecht == null)
+            //{
+            //    BestellingGerechten bg = new BestellingGerechten
+            //    {
+            //        Aantal = aantal,
+            //        Bestelling = bestelling,
+            //        BestellingId = bestelling.BestellingId,
+            //        Gerecht = gerecht,
+            //        GerechtId = gerecht.GerechtId
+            //    };
+            //    bestelling.BestellingGerechten.Add(bg);
+            //    await _context.BestellingGerechten.AddAsync(bg);
 
-
+            //}
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

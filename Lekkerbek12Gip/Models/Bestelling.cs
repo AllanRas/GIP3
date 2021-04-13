@@ -12,6 +12,10 @@ namespace Lekkerbek12Gip.Models
         public Bestelling()
         {
             this.Gerechten = new HashSet<Gerecht>();
+            if (this.BestellingGerechten == null)
+            {
+            this.BestellingGerechten = new List<BestellingGerechten>();
+            }
         }
 
         public enum SpecialWensen
@@ -22,7 +26,7 @@ namespace Lekkerbek12Gip.Models
         }
         public int BestellingId { get; set; }
         public int? KlantId { get; set; }
-        public int? ChefId { get; set; }
+        public int? ChefId { get; set; }        
         public SpecialWensen? SpecialeWensen { get; set; }
         [BestelDateAttribute]
         public DateTime OrderDate { get; set; }
@@ -35,12 +39,15 @@ namespace Lekkerbek12Gip.Models
             get
             {
                 decimal totalPrijs = 0;
-                if (Gerechten != null)
+                if (BestellingGerechten != null)
                 {
-                    foreach (var item in Gerechten)
+                    
+                        totalPrijs += 0;
+                    foreach(var item in BestellingGerechten) 
                     {
-                        totalPrijs += item.Prijs;
+                        totalPrijs += item.Aantal * item.Gerecht.Prijs;
                     }
+                    
                     if (Korting == 10)
                     {
                         totalPrijs = totalPrijs * 9 / 10;
@@ -54,6 +61,7 @@ namespace Lekkerbek12Gip.Models
             }
         }         
         public virtual ICollection<Gerecht> Gerechten { get; set; }
+        public virtual ICollection<BestellingGerechten> BestellingGerechten { get; set; }
         public virtual Klant Klant { get; set; }
         public virtual Chef Chef { get; set; }
     }

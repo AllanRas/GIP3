@@ -24,7 +24,7 @@ namespace Lekkerbek12Gip.Models
         {
 
             modelBuilder.Entity<Bestelling>()
-                .HasMany(b => b.Gerechten)
+                .HasMany<Gerecht>(b => b.Gerechten)
                 .WithMany(g => g.Bestellingen)
                 .UsingEntity<BestellingGerechten>(
                     bg => bg.HasOne(prop => prop.Gerecht).WithMany().HasForeignKey(prop => prop.GerechtId),

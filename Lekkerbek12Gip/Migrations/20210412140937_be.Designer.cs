@@ -4,14 +4,16 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210412140937_be")]
+    partial class be
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,7 +76,9 @@ namespace Lekkerbek12Gip.Migrations
 
                     b.HasKey("BestellingId", "GerechtId");
 
-                    b.HasIndex("BestellingId1");
+                    b.HasIndex("BestellingId1")
+                        .IsUnique()
+                        .HasFilter("[BestellingId1] IS NOT NULL");
 
                     b.HasIndex("GerechtId");
 
@@ -425,8 +429,8 @@ namespace Lekkerbek12Gip.Migrations
                         .IsRequired();
 
                     b.HasOne("Lekkerbek12Gip.Models.Bestelling", null)
-                        .WithMany("BestellingGerechten")
-                        .HasForeignKey("BestellingId1");
+                        .WithOne("BestellingGerechten")
+                        .HasForeignKey("Lekkerbek12Gip.Models.BestellingGerechten", "BestellingId1");
 
                     b.HasOne("Lekkerbek12Gip.Models.Gerecht", "Gerecht")
                         .WithMany()
