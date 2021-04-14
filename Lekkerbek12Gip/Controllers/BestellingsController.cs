@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
-    
+
     public class BestellingsController : Controller
     {
-        
+
         private readonly LekkerbekContext _context;
 
         public BestellingsController(LekkerbekContext context)
@@ -22,10 +22,10 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Bestellings
-        
+
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x=>x.BestellingGerechten);
+            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten);
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -64,9 +64,9 @@ namespace Lekkerbek12Gip.Controllers
             var bestelling = await _context.Bestellings.FindAsync(bestellingId);
             var gerecht = await _context.Gerechten.FindAsync(gerechtId);
 
-            var bestellinGerecht = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId );
+            var bestellinGerecht = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
 
-            if(bestellinGerecht!=null && bestellinGerecht.FirstOrDefault(x=>x.GerechtId==gerecht.GerechtId) ==null) 
+            if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) == null)
             {
                 BestellingGerechten bg = new BestellingGerechten
                 {
@@ -75,17 +75,17 @@ namespace Lekkerbek12Gip.Controllers
                     BestellingId = bestelling.BestellingId,
                     Gerecht = gerecht,
                     GerechtId = gerecht.GerechtId
-                };       
+                };
                 bestelling.Gerechten.Add(gerecht);
                 bestelling.BestellingGerechten.Add(bg);
                 await _context.BestellingGerechten.AddAsync(bg);
-           
+
             }
-            else if(bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null) 
+            else if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null)
             {
-                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal=aantal;
+                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal = aantal;
             }
-            
+
             //if (bestellinGerecht == null)
             //{
             //    BestellingGerechten bg = new BestellingGerechten
@@ -110,15 +110,7 @@ namespace Lekkerbek12Gip.Controllers
         public IActionResult Create()
         {
             ViewData["Name"] = new SelectList(_context.Klants, "KlantId", "Name");
-            ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
-            var date = DateTime.Now;
-            var dateOneHourBefore = DateTime.Now.AddMinutes(-60);
-            var lastHourChef2 = _context.Bestellings
-                 .Where(p => (p.OrderDate < date && p.OrderDate > dateOneHourBefore) && p.ChefId == 2).Count();
-            ViewBag.lastHourChef2 = 4 - lastHourChef2;
-            var lastHourChef1 = _context.Bestellings
-                 .Where(p => (p.OrderDate < date && p.OrderDate > dateOneHourBefore) && p.ChefId == 1).Count();
-            ViewBag.lastHourChef1 = 4 - lastHourChef1;
+
 
             ViewData["GerechtData"] = _context.Gerechten.ToList();
             return View();

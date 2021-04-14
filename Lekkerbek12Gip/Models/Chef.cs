@@ -9,7 +9,7 @@ namespace Lekkerbek12Gip.Models
     public class Chef
     {
         public int ChefId { get; set; }
-        [Required(ErrorMessage ="Naam is verplicht")]
+        [Required(ErrorMessage = "Naam is verplicht")]
         public string ChefName { get; set; }
         public virtual ICollection<Bestelling> Bestellings { get; set; }
 
