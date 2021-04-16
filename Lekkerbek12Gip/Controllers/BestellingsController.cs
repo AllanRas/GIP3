@@ -239,7 +239,7 @@ namespace Lekkerbek12Gip.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        // GET: Bestellingen/Afrekenen/5
         public async Task<IActionResult> Afrekenen(int? id)
         {
             if (id == null)
@@ -267,7 +267,27 @@ namespace Lekkerbek12Gip.Controllers
             var bestelling = await _context.Bestellings.FindAsync(id);
             bestelling.Afgerekend = true;
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Factuur(int id)
+        {
+            Bestelling bestelling = await (from b in _context.Bestellings
+                                    .Include(b => b.Klant)
+                                    .Include(b => b.BestellingGerechten)
+                                    .ThenInclude(bg => bg.Gerecht)
+                                           where b.BestellingId == id
+                                           select b).FirstOrDefaultAsync();
+            if (bestelling == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                ViewData["Prijs"] = bestelling.TotalPrijs;
+                return View(bestelling);
+            }
         }
 
 
