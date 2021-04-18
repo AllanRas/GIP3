@@ -4,14 +4,16 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210414120650_AddBestellingStatus")]
+    partial class AddBestellingStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,9 +49,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PlanningsModuleId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("SpecialeWensen")
                         .HasColumnType("int");
 
@@ -58,8 +57,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.HasIndex("ChefId");
 
                     b.HasIndex("KlantId");
-
-                    b.HasIndex("PlanningsModuleId");
 
                     b.ToTable("Bestellings");
                 });
@@ -419,10 +416,6 @@ namespace Lekkerbek12Gip.Migrations
                         .WithMany("Bestellings")
                         .HasForeignKey("KlantId");
 
-                    b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", null)
-                        .WithMany("Bestellings")
-                        .HasForeignKey("PlanningsModuleId");
-
                     b.Navigation("Chef");
 
                     b.Navigation("Klant");
@@ -533,8 +526,6 @@ namespace Lekkerbek12Gip.Migrations
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.PlanningsModule", b =>
                 {
-                    b.Navigation("Bestellings");
-
                     b.Navigation("chefs");
 
                     b.Navigation("Events");

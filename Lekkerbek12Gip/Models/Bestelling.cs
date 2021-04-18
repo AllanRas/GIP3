@@ -14,8 +14,14 @@ namespace Lekkerbek12Gip.Models
             this.Gerechten = new HashSet<Gerecht>();
             if (this.BestellingGerechten == null)
             {
-            this.BestellingGerechten = new List<BestellingGerechten>();
+                this.BestellingGerechten = new List<BestellingGerechten>();
             }
+        }
+        public enum BestelStatus
+        {
+            NotReady,
+            GettingReady,
+            Done
         }
 
         public enum SpecialWensen
@@ -24,9 +30,12 @@ namespace Lekkerbek12Gip.Models
             Extra_groenten = 3,
             Extra_saus = 2
         }
+
+        public BestelStatus BestelingStatus { get; set; } = BestelStatus.NotReady;
+
         public int BestellingId { get; set; }
         public int? KlantId { get; set; }
-        public int? ChefId { get; set; }        
+        public int? ChefId { get; set; }
         public SpecialWensen? SpecialeWensen { get; set; }
         [BestelDateAttribute]
         public DateTime OrderDate { get; set; }
@@ -41,13 +50,13 @@ namespace Lekkerbek12Gip.Models
                 decimal totalPrijs = 0;
                 if (BestellingGerechten != null)
                 {
-                    
-                        totalPrijs += 0;
-                    foreach(var item in BestellingGerechten) 
+
+                    totalPrijs += 0;
+                    foreach (var item in BestellingGerechten)
                     {
                         totalPrijs += item.Aantal * item.Gerecht.Prijs;
                     }
-                    
+
                     if (Korting == 10)
                     {
                         totalPrijs = totalPrijs * 9 / 10;
@@ -59,7 +68,7 @@ namespace Lekkerbek12Gip.Models
                 }
                 return totalPrijs;
             }
-        }         
+        }
         public virtual ICollection<Gerecht> Gerechten { get; set; }
         public virtual ICollection<BestellingGerechten> BestellingGerechten { get; set; }
         public virtual Klant Klant { get; set; }
