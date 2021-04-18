@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
 
+
 namespace Lekkerbek12Gip.Controllers
 {
     public class PlanningsModulesController : Controller
@@ -21,9 +22,11 @@ namespace Lekkerbek12Gip.Controllers
         // GET: PlanningsModules
         public async Task<IActionResult> Index()
         {
-            var indexlist = _context.PlanningsModules.Include(x => x.chefs);
+                        
+            var indexlist = _context.PlanningsModules.Include(x => x.chefs).Include(x=>x.Bestellings);          
             return View(await indexlist.ToListAsync());
         }
+
 
         // GET: PlanningsModules/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -46,6 +49,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: PlanningsModules/Create
         public IActionResult Create()
         {
+            ViewData["Chefs"] = _context.Chefs.ToList();
             return View();
         }
 
@@ -54,8 +58,24 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PlanningsModuleId,ChefId,Description,OpeningsUren")] PlanningsModule planningsModule)
+        public async Task<IActionResult> Create([Bind("PlanningsModuleId,ChefId,Description,OpeningsUren")] PlanningsModule planningsModule, string[] statu)
         {
+
+            var list = _context.Bestellings
+                .Where(x => x.OrderDate.Date == planningsModule.OpeningsUren.Date);
+            planningsModule.Bestellings = list.ToList();
+            var chefs = _context.Chefs.ToList(); 
+            int i = 0;
+            foreach (var item in chefs)
+            {               
+               if(statu[i] == "Calisicak") 
+                {
+                    planningsModule.chefs.Add(item);
+                }
+                i++;
+            }
+            
+            
             if (ModelState.IsValid)
             {
                 _context.Add(planningsModule);
@@ -118,6 +138,7 @@ namespace Lekkerbek12Gip.Controllers
 
         public IActionResult CreateEvent()
         {
+          
             return View();
         }
         [HttpPost]
@@ -133,11 +154,35 @@ namespace Lekkerbek12Gip.Controllers
             return View(eventX);
         }
 
-
-        public async Task<List<Event>> Event()//Event
+        //Get Warning and
+        public  List<DateTime> Warning()
         {
+            var indexlist = _context.PlanningsModules.Include(x => x.chefs).Include(x => x.Bestellings);
+
+            List<DateTime> days = new List<DateTime>();
+            foreach (var item in indexlist)
+            {
+                var chefs = item.chefs;
+                if (item.Bestellings.Count > 0)
+                {
+                    var MaxBestellingPerHour = item.Bestellings
+                   .GroupBy(x => x.OrderDate.Hour)
+                   .Max(x => x.Count());
+                    if (MaxBestellingPerHour > (chefs.Count * 4))
+                    {
+                        days.Add(item.OpeningsUren.Date);
+                    }
+                }
+
+            }          
 
 
+            return days;
+        }
+
+        //Get Events
+        public async Task<List<Event>> Event()
+        {
             await _context.SaveChangesAsync();
 
             return await _context.Events.ToListAsync();
@@ -166,7 +211,11 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var planningsModule = await _context.PlanningsModules.FindAsync(id);
+            var planningsModule = await _context.PlanningsModules
+                .Include(x => x.chefs)
+                .Include(x=>x.Bestellings)
+                .FirstOrDefaultAsync(x => x.PlanningsModuleId == id); 
+          
             _context.PlanningsModules.Remove(planningsModule);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

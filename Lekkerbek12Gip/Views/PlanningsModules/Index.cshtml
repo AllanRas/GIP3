@@ -52,11 +52,11 @@
         <div>
             @Html.DisplayFor(modelItem => item.OpeningsUren.TimeOfDay)
         </div>
-        <div>
-            <select id="chefList" class="form-control" asp-items="ViewBag.ChefName"></select>
+        <div>          
         </div>
         <div>
-
+            @foreach (var ob in item.chefs)
+            {<div>@ob.ChefName</div>}
         </div>
     </div>
     <div class="card" style="width: 18rem;">
@@ -68,6 +68,7 @@
             <a href="#" class="card-link">Another link</a>
         </div>
     </div>
+    <p id="Message"></p>
     <div class="EventButtons">
         <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> |
         <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> |

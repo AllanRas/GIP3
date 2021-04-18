@@ -8,7 +8,14 @@ using System.Threading.Tasks;
 namespace Lekkerbek12Gip.Models
 {   
     public class PlanningsModule
-    {       
+    {
+        public PlanningsModule() 
+        {
+            if (chefs == null) 
+            {
+               chefs = new List<Chef>();
+            }
+        }
         public int PlanningsModuleId { get; set; }
         public int PlanningsModuleDate // gun ay ve yil olarak yapilabilir
         { 
@@ -22,7 +29,8 @@ namespace Lekkerbek12Gip.Models
             }
         }
         public int ChefId { get; set; }
-        public string Description { get; set; }       
+        public string Description { get; set; }
+        public ICollection<Bestelling> Bestellings { get; set; }
         public ICollection<Event> Events { get; set; }
         public DateTime OpeningsUren { get; set; }//Event varsa eklenemeyecek
         public ICollection<Chef> chefs { get; set; } // o gun calisacak chefler Event tarihi icindeyse chefler izinli olucak
