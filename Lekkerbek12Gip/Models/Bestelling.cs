@@ -1,7 +1,7 @@
 ﻿using Lekkerbek12Gip.Validators;
 using System;
 using System.Collections.Generic;
-
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,8 +32,9 @@ namespace Lekkerbek12Gip.Models
         }
 
         public BestelStatus BestelingStatus { get; set; } = BestelStatus.NotReady;
-
+        [Key]
         public int BestellingId { get; set; }
+        [Required(ErrorMessage = "Klant is verplicht")]
         public int? KlantId { get; set; }
         public int? ChefId { get; set; }
         public SpecialWensen? SpecialeWensen { get; set; }

@@ -59,8 +59,10 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant)
         {
+
             if (ModelState.IsValid)
             {
+               
                 _context.Add(klant);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

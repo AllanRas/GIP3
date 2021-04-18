@@ -123,7 +123,7 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
-
+            
             if (ModelState.IsValid)
             {
 
@@ -149,8 +149,9 @@ namespace Lekkerbek12Gip.Controllers
             }
             ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId", bestelling.KlantId);
             ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);
-
+          
             return View(bestelling);
+            
         }
 
         // GET: Bestellings/Edit/5

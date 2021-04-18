@@ -3,6 +3,7 @@
     <script type="text/javascript"
             src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>>
     <script>
         $(function () {
             //$('#custtable').DataTable({
@@ -35,8 +36,13 @@
                     { "data": "getrouwheidsScore", "name": "getrouwheidsScore" },
                     { "data": "geboortedatum", "name": "geboortedatum" },
                     { "data": "emailadres", "name": "emailadres" },
-                    { "data": "bestellings", "name": "bestellings" }
+                    { "data": "bestellings", "name": "bestellings" },
+                    { "data": null, "defaultContent": "<a href='' class='del'>Delete</a>" }
                 ],
+                "columnDefs": [{
+                    targets: 4, render: function (data) {
+                        return moment(data).subtract(10, 'days').calendar();
+                    }}],
                 "serverSide": true,
                 "order": [0, "asc"],
                 "proccessing": true
@@ -94,36 +100,38 @@
             <th>
                 @Html.DisplayNameFor(model => model.emailadres)
             </th>
+            <th>
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.KlantId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Adress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GetrouwheidsScore)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Geboortedatum)
-                </td>
-                <td>
-                    <a href="https://www.google.com/intl/tr/gmail/about/">@Html.DisplayFor(modelItem => item.emailadres)</a>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.KlantId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GetrouwheidsScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Geboortedatum)
+            </td>
+            <td>
+                <a href="https://www.google.com/intl/tr/gmail/about/">@Html.DisplayFor(modelItem => item.emailadres)</a>
 
-                </td>
-                <td>
-                    <a class="del" asp-action="Delete" asp-route-id="@item.KlantId">Delete</a>
-                </td>
-            </tr>
+            </td>
+            <td>
+            </td>
+           
+        </tr>
         }
     </tbody>
 </table>
