@@ -68,7 +68,7 @@ namespace Lekkerbek12Gip.Controllers
 
             var bestellinGerecht = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
 
-            if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) == null)
+            if (aantal > 0 && bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) == null)
             {
                 BestellingGerechten bg = new BestellingGerechten
                 {
@@ -85,7 +85,12 @@ namespace Lekkerbek12Gip.Controllers
             }
             else if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null)
             {
-                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal += aantal;
+                if(aantal == 0)
+                {
+                    var delete = await _context.BestellingGerechten.FirstAsync(x => (x.BestellingId == bestelling.BestellingId) && (x.GerechtId == gerecht.GerechtId));
+                    _context.BestellingGerechten.Remove(delete);
+                }
+                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal = aantal;
             }
 
             //if (bestellinGerecht == null)
