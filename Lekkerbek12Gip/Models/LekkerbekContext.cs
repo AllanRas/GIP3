@@ -20,6 +20,7 @@ namespace Lekkerbek12Gip.Models
         public DbSet<BestellingGerechten> BestellingGerechten { get; set; }
         public DbSet<PlanningsModule> PlanningsModules { get; set; } 
         public DbSet<Event> Events { get; set; }
+        public DbSet<ChefPlanningsModule> ChefPlanningsModules { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -35,8 +36,21 @@ namespace Lekkerbek12Gip.Models
                         bg.Property(prop => prop.Aantal).HasDefaultValueSql("0");
                     }
               );
+            modelBuilder.Entity<PlanningsModule>()
+               .HasMany<Chef>(b => b.chefs)
+               .WithMany(g => g.Plannings)
+               .UsingEntity<ChefPlanningsModule>(
+                   bg => bg.HasOne(prop => prop.Chef).WithMany().HasForeignKey(prop => prop.ChefId),
+                   bg => bg.HasOne(prop => prop.PlanningsModule).WithMany().HasForeignKey(prop => prop.PlanningsModuleId),
+                   bg =>
+                   {
+                       bg.HasKey(prop => new { prop.PlanningsModuleId, prop.ChefId });
+                       bg.Property(prop => prop.ChefStatu);
+                   });
 
-            base.OnModelCreating(modelBuilder);
+
+
+           base.OnModelCreating(modelBuilder);
         }
     }
 }

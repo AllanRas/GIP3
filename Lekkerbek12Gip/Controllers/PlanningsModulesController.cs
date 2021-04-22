@@ -23,7 +23,7 @@ namespace Lekkerbek12Gip.Controllers
         public async Task<IActionResult> Index()
         {
                         
-            var indexlist = _context.PlanningsModules.Include(x => x.chefs).Include(x=>x.Bestellings);          
+            var indexlist = _context.PlanningsModules.Include(x => x.chefs).Include(x=>x.Bestellings).Include(x=>x.ChefPlanningsModules);          
             return View(await indexlist.ToListAsync());
         }
 
@@ -64,18 +64,42 @@ namespace Lekkerbek12Gip.Controllers
             var list = _context.Bestellings
                 .Where(x => x.OrderDate.Date == planningsModule.OpeningsUren.Date);
             planningsModule.Bestellings = list.ToList();
+
             var chefs = _context.Chefs.ToList(); 
             int i = 0;
             foreach (var item in chefs)
             {               
-               if(statu[i] == "Calisicak") 
+               if(statu[i] == "Werken") 
+                {                                        
+                    ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
+                    {
+                        Chef = item,
+                        ChefStatu = ChefPlanningsModule.ChefStatus.Werken,
+                        PlanningsModule=planningsModule
+                    };
+                                    
+                }
+               else if(statu[i] == "Ziek") 
+                    {
+                    ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
+                    {
+                        Chef = item,
+                        ChefStatu = ChefPlanningsModule.ChefStatus.Ziek,
+                        PlanningsModule = planningsModule
+                    };
+                }
+               else if (statu[i] == "Toestemming")
                 {
-                    planningsModule.chefs.Add(item);
+                    ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
+                    {
+                        Chef = item,
+                        ChefStatu = ChefPlanningsModule.ChefStatus.Toestemming,
+                        PlanningsModule = planningsModule
+                    };
                 }
                 i++;
-            }
-            
-            
+            } //
+                        
             if (ModelState.IsValid)
             {
                 _context.Add(planningsModule);

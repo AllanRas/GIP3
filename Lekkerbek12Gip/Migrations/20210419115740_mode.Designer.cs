@@ -4,14 +4,16 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210419115740_mode")]
+    partial class mode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,14 +119,9 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<int>("ChefStatu")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PlanningsModuleId1")
-                        .HasColumnType("int");
-
                     b.HasKey("PlanningsModuleId", "ChefId");
 
                     b.HasIndex("ChefId");
-
-                    b.HasIndex("PlanningsModuleId1");
 
                     b.ToTable("ChefPlanningsModules");
                 });
@@ -486,10 +483,6 @@ namespace Lekkerbek12Gip.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", null)
-                        .WithMany("ChefPlanningsModules")
-                        .HasForeignKey("PlanningsModuleId1");
-
                     b.Navigation("Chef");
 
                     b.Navigation("PlanningsModule");
@@ -571,8 +564,6 @@ namespace Lekkerbek12Gip.Migrations
             modelBuilder.Entity("Lekkerbek12Gip.Models.PlanningsModule", b =>
                 {
                     b.Navigation("Bestellings");
-
-                    b.Navigation("ChefPlanningsModules");
 
                     b.Navigation("Events");
                 });

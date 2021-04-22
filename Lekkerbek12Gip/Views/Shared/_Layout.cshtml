@@ -12,28 +12,39 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="padding:1rem">
             <div class="container">
-                
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Bestellings" asp-action="Index">Bestellingen</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Klants" asp-action="Index">Klanten</a>
-                        </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Bestellings" asp-action="Index">Bestellingen</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Klants" asp-action="Index">Klanten</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Chefs" asp-action="Index">Chef</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="PlanningsModules" asp-action="Index">Planning</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Bestellings" asp-action="Create">Bestel</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Gerechten" asp-action="Index">Menu</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Chefs" asp-action="Index">Chef</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="PlanningsModules" asp-action="Index">Planning</a>
-                        </li>
+
+
                         <li class="nav-item" style="margin-left: 63%;">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
                                 Home
@@ -49,7 +60,7 @@
                         </li>
                     </ul>
                 </div>
-                <partial name="_LoginPartial"/>
+                <partial name="_LoginPartial" />
             </div>
         </nav>
     </header>

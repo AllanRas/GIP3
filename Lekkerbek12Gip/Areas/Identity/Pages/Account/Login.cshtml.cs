@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Lekkerbek12Gip.Models;
 
 namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
 {
@@ -20,14 +21,17 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly LekkerbekContext _context;
 
         public LoginModel(SignInManager<IdentityUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            LekkerbekContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -85,7 +89,20 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                   var User= await _userManager.FindByEmailAsync(Input.Email);
+                    var isKlant = await _userManager.IsInRoleAsync(User, "Klant");
+                    if (isKlant) 
+                    {
+                        if (_context.Klants.FirstOrDefault(x => x.emailadres == User.Email) == null)
+                        {                  
+                            int index = User.Email.IndexOf('@');
+                            var name = User.Email.Remove(index);
+                            _context.Klants.Add(new Klant { Name = name, emailadres = User.Email});
+                            await _context.SaveChangesAsync();
+                        }
+                        return LocalRedirect("/Gerechten");
+                    }
+                    return LocalRedirect("/Bestellings");
                 }
                 if (result.RequiresTwoFactor)
                 {

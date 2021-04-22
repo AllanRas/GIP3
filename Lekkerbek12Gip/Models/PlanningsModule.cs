@@ -15,6 +15,11 @@ namespace Lekkerbek12Gip.Models
             {
                chefs = new List<Chef>();
             }
+            if (ChefPlanningsModules == null)
+            {
+                ChefPlanningsModules = new List<ChefPlanningsModule>();
+            }
+
         }
         public int PlanningsModuleId { get; set; }
         public int PlanningsModuleDate // gun ay ve yil olarak yapilabilir
@@ -34,5 +39,7 @@ namespace Lekkerbek12Gip.Models
         public ICollection<Event> Events { get; set; }
         public DateTime OpeningsUren { get; set; }//Event varsa eklenemeyecek
         public ICollection<Chef> chefs { get; set; } // o gun calisacak chefler Event tarihi icindeyse chefler izinli olucak
+        public ICollection<ChefPlanningsModule> ChefPlanningsModules { get; set; }
+
     }
 }

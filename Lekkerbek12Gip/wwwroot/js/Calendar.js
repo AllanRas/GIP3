@@ -16,8 +16,7 @@ function calender(events,datesarr) {
         events: events,
         //editable: false,
         dayCellContent: function (e) {
-            (e.date.setDate(e.date.getDate() + 1));
-            console.log(e.date.toISOString().slice(0, 10))
+            (e.date.setDate(e.date.getDate() + 1));            
             for (var i in datesarr) {
                 if (e.date.toISOString().slice(0, 10) == datesarr[i]) {
                     e.dayNumberText = { html: `<p><i class= "fas fa-exclamation-circle" style="font-size:24px;color:red;margin-right:10px" ></i>${e.dayNumberText}</p>` }

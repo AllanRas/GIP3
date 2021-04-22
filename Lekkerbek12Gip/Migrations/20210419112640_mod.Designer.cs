@@ -4,20 +4,37 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210419112640_mod")]
+    partial class mod
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("ChefPlanningsModule", b =>
+                {
+                    b.Property<int>("PlanningsModuleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("chefsChefId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PlanningsModuleId", "chefsChefId");
+
+                    b.HasIndex("chefsChefId");
+
+                    b.ToTable("ChefPlanningsModule");
+                });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
                 {
@@ -104,29 +121,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.HasKey("ChefId");
 
                     b.ToTable("Chefs");
-                });
-
-            modelBuilder.Entity("Lekkerbek12Gip.Models.ChefPlanningsModule", b =>
-                {
-                    b.Property<int?>("PlanningsModuleId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ChefId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ChefStatu")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PlanningsModuleId1")
-                        .HasColumnType("int");
-
-                    b.HasKey("PlanningsModuleId", "ChefId");
-
-                    b.HasIndex("ChefId");
-
-                    b.HasIndex("PlanningsModuleId1");
-
-                    b.ToTable("ChefPlanningsModules");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Event", b =>
@@ -428,6 +422,21 @@ namespace Lekkerbek12Gip.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ChefPlanningsModule", b =>
+                {
+                    b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", null)
+                        .WithMany()
+                        .HasForeignKey("PlanningsModuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Lekkerbek12Gip.Models.Chef", null)
+                        .WithMany()
+                        .HasForeignKey("chefsChefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
                 {
                     b.HasOne("Lekkerbek12Gip.Models.Chef", "Chef")
@@ -470,29 +479,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Bestelling");
 
                     b.Navigation("Gerecht");
-                });
-
-            modelBuilder.Entity("Lekkerbek12Gip.Models.ChefPlanningsModule", b =>
-                {
-                    b.HasOne("Lekkerbek12Gip.Models.Chef", "Chef")
-                        .WithMany()
-                        .HasForeignKey("ChefId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", "PlanningsModule")
-                        .WithMany()
-                        .HasForeignKey("PlanningsModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", null)
-                        .WithMany("ChefPlanningsModules")
-                        .HasForeignKey("PlanningsModuleId1");
-
-                    b.Navigation("Chef");
-
-                    b.Navigation("PlanningsModule");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Event", b =>
@@ -571,8 +557,6 @@ namespace Lekkerbek12Gip.Migrations
             modelBuilder.Entity("Lekkerbek12Gip.Models.PlanningsModule", b =>
                 {
                     b.Navigation("Bestellings");
-
-                    b.Navigation("ChefPlanningsModules");
 
                     b.Navigation("Events");
                 });

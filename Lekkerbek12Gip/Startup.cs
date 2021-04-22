@@ -103,18 +103,30 @@ namespace Lekkerbek12Gip
             //Now, we are assinging admin role to this user("El@hotmail.com"). When will we run this project then it will
             //be assigned to that user.
             IdentityUser user = await UserManager.FindByEmailAsync("El@hotmail.com");
-            IdentityUser kassamedewerker = await UserManager.FindByEmailAsync("Kassamedewerker@hotmail.com");
-            if (user != null)
+            IdentityUser kassamedewerker = await UserManager.FindByEmailAsync("Kassamedewerker@hotmail.com");           
+            var identityUser = await UserManager.Users.ToListAsync();
+
+            foreach (var userx in identityUser)
             {
-                foreach (string role in ROLES)
-                {
-                    await UserManager.AddToRoleAsync(user, role);
-                }
+                if (userx.Email == "Admin@hotmail.com") 
+                    await UserManager.AddToRoleAsync(userx, "Admin");
+                else if (userx.Email == "Kassamedewerker@hotmail.com")
+                    await UserManager.AddToRoleAsync(userx, "Kassamedewerker");
+                else                
+                    await UserManager.AddToRoleAsync(userx, "Klant");                
             }
-            if (kassamedewerker != null)
-            {
-                await UserManager.AddToRoleAsync(kassamedewerker, "Kassamedewerker");
-            }
+
+            //if (user != null)
+            //{
+            //    foreach (string role in ROLES)
+            //    {
+            //        await UserManager.AddToRoleAsync(user, role);
+            //    }
+            //}
+            //if (kassamedewerker != null)
+            //{
+            //    await UserManager.AddToRoleAsync(kassamedewerker, "Kassamedewerker");
+            //}
         }
 
 

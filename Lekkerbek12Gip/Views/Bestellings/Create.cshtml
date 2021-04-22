@@ -7,7 +7,7 @@
 <h1 id="best">Bestelling </h1>
 
 <h4>Aanmaken</h4>
-
+@{ var klant = ViewBag.Klant;}
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -16,10 +16,16 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-
-                <label asp-for="KlantId" class="control-label">Klant </label>
-                <select asp-for="KlantId" class="form-control" asp-items="ViewBag.Name"></select>
+                @if (klant != null && klant.KlantId!=null)
+                {
+                <input type="text" asp-for="KlantId" value=@klant.KlantId  readonly/>
                 <span asp-validation-for="KlantId" class="text-danger"></span>
+                }
+                else {
+                <label asp-for="KlantId" class="control-label">Klant </label>
+                <select asp-for="KlantId" class="form-control" asp-items="ViewBag.Klant"></select>
+                <span asp-validation-for="KlantId" class="text-danger"></span>
+                }
             
             </div>
             <div class="form-group">
