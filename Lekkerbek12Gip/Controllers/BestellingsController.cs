@@ -113,14 +113,9 @@ namespace Lekkerbek12Gip.Controllers
                 var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
                 if (klant != null)
                     ViewData["Klant"] = klant;
-                else if (User.IsInRole("Klant"))
-                {
-                Klant klant1 = new Klant { emailadres = User.Identity.Name };               
-                ViewData["Klant"] = klant1;
-                }
             else 
             {
-                ViewData["Klant"] = new SelectList(_context.Klants, "KlantId", "Name"); 
+                ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name"); 
             }
                         
             ViewData["GerechtData"] = _context.Gerechten.ToList();

@@ -155,24 +155,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Firma", b =>
-                {
-                    b.Property<int>("FirmaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BtwNummer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirmaNaam")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("FirmaId");
-
-                    b.ToTable("Firmas");
-                });
-
             modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
                 {
                     b.Property<int>("GerechtId")
@@ -207,9 +189,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<string>("Adress")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FirmaId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Geboortedatum")
                         .HasColumnType("datetime2");
 
@@ -224,8 +203,6 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("KlantId");
-
-                    b.HasIndex("FirmaId");
 
                     b.ToTable("Klants");
                 });
@@ -523,15 +500,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", null)
                         .WithMany("Events")
                         .HasForeignKey("PlanningsModuleId");
-                });
-
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>
-                {
-                    b.HasOne("Lekkerbek12Gip.Models.Firma", "Firma")
-                        .WithMany()
-                        .HasForeignKey("FirmaId");
-
-                    b.Navigation("Firma");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -36,7 +36,7 @@ namespace Lekkerbek12Gip.Controllers
             {
                 return NotFound();
             }
-
+           
             ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
             return View(bestelling);
         }
@@ -50,7 +50,6 @@ namespace Lekkerbek12Gip.Controllers
         {
             var numberOfChef = _context.Bestellings.Where(x => x.ChefId == bestelling.ChefId &&
             x.OrderDate >= DateTime.Now.AddDays(-1) && x.OrderDate < DateTime.Now && x.BestelingStatus == Bestelling.BestelStatus.GettingReady).Count();
-
             if (id != bestelling.BestellingId)
             {
                 return NotFound();
