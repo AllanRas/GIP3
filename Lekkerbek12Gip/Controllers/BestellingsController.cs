@@ -54,6 +54,8 @@ namespace Lekkerbek12Gip.Controllers
         public async Task<IActionResult> Gerechten(int? id)
         {
             ViewData["data"] = id;
+            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
+            ViewData["Aantal"] = bestellingGerechten;
             return View(await _context.Gerechten.ToListAsync());
         }
 
@@ -102,7 +104,7 @@ namespace Lekkerbek12Gip.Controllers
             //}
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction();
         }
 
         // GET: Bestellings/Create

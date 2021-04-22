@@ -6,10 +6,12 @@
 
 <h1>Menu</h1>
 
-<p>
-    <a asp-action="Create">Nieuw gerecht aanmaken</a>
-</p>
-
+@if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+{
+    <p>
+        <a asp-action="Create">Nieuw gerecht aanmaken</a>
+    </p>
+}
 @foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
 {
     <h3>@categorie</h3>
