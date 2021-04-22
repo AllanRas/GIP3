@@ -47,10 +47,10 @@
                         <td>
                             <form asp-action="Gerechten">
                                 @{
-                                    int aantal;
+                                    int aantal = 0;
                                     try
                                     {
-                                        aantal = bestellingGerechten.Single(bg => bg.GerechtId == item.GerechtId).Aantal;
+                                        aantal = bestellingGerechten.First(bg => (bg.GerechtId == item.GerechtId) && (bg.BestellingId == ViewBag.data)).Aantal;
                                     }
                                     catch(InvalidOperationException e)
                                     {
