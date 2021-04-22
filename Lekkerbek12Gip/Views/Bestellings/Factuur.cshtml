@@ -49,13 +49,26 @@
         </tbody>
     </table>
 </section>
-<section id="factuurtotaal">
-    <dl>
-        <dt>
-            Totaal:
-        </dt>
-        <dd>
-            € @ViewBag.Prijs
-        </dd>
-    </dl>
-</section>
+<div class="row">
+    <section class="col-6" id="factuurkorting">
+        <dl>
+            <dt>
+                Korting:
+            </dt>
+            <dd>
+                % @Model.Korting
+            </dd>
+        </dl>
+    </section>
+    <section class="col-6" id="factuurtotaal">
+        <dl>
+            <dt>
+                Totaal:
+            </dt>
+            <dd>
+                € @ViewBag.Prijs
+            </dd>
+        </dl>
+    </section>
+</div>
+
