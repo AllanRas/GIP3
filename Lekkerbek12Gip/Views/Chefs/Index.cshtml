@@ -10,14 +10,13 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@foreach(Bestelling.BestelStatus status in Enum.GetValues(typeof(Bestelling.BestelStatus)))
+{
+<h2>@status</h2>
 <table class="table">
     <thead>
         <tr>
-
-
-            <th>
-                @Html.DisplayNameFor(model => model.BestelingStatus)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Gerechten)
             </th>
@@ -25,24 +24,20 @@
                 @Html.DisplayNameFor(model => model.SpecialeWensen)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OrderDate)
+                @Html.DisplayNameFor(model => model.AfhaalTijd)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Chef.ChefName)
             </th>
             <th></th>
-
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
+            @if (item.BestelingStatus == status)
+            {
             <tr>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.BestelingStatus)
-                </td>
-
                 <td>
                     @foreach (var waarde in item.Gerechten)
                     {
@@ -56,7 +51,7 @@
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.OrderDate)
+                    @Html.DisplayFor(modelItem => item.AfhaalTijd)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Chef.ChefName)
@@ -78,14 +73,14 @@
 
                     }
                     @{
-                        var bestel = Model.OrderBy(m => m.OrderDate).FirstOrDefault(x => x.BestelingStatus == Bestelling.BestelStatus.NotReady);
+                        var bestel = Model.OrderBy(m => m.AfhaalTijd).FirstOrDefault(x => x.BestelingStatus == Bestelling.BestelStatus.NotReady);
                         if (bestel == null)
                         {
                             bestel = item;
                         }
                     }
 
-                    @if (item.OrderDate == bestel.OrderDate && item.Chef == null)
+                    @if (item.AfhaalTijd == bestel.AfhaalTijd && item.Chef == null)
                     {
                         <a class="btn btn-success " asp-action="addChef" asp-route-id="@item.BestellingId">Add Chef</a>
 
@@ -103,6 +98,8 @@
                 </td>
 
             </tr>
-        }
+                        }
+         }
     </tbody>
 </table>
+}
