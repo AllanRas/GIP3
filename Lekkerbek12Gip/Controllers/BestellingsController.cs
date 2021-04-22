@@ -83,7 +83,7 @@ namespace Lekkerbek12Gip.Controllers
             }
             else if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null)
             {
-                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal = aantal;
+                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal += aantal;
             }
 
             //if (bestellinGerecht == null)
