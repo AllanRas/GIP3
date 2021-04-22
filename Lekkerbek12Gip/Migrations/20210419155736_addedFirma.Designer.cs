@@ -4,14 +4,16 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210419155736_addedFirma")]
+    partial class addedFirma
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,32 +103,14 @@ namespace Lekkerbek12Gip.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ChefId");
-
-                    b.ToTable("Chefs");
-                });
-
-            modelBuilder.Entity("Lekkerbek12Gip.Models.ChefPlanningsModule", b =>
-                {
                     b.Property<int?>("PlanningsModuleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ChefId")
-                        .HasColumnType("int");
+                    b.HasKey("ChefId");
 
-                    b.Property<int>("ChefStatu")
-                        .HasColumnType("int");
+                    b.HasIndex("PlanningsModuleId");
 
-                    b.Property<int?>("PlanningsModuleId1")
-                        .HasColumnType("int");
-
-                    b.HasKey("PlanningsModuleId", "ChefId");
-
-                    b.HasIndex("ChefId");
-
-                    b.HasIndex("PlanningsModuleId1");
-
-                    b.ToTable("ChefPlanningsModules");
+                    b.ToTable("Chefs");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Event", b =>
@@ -495,27 +479,11 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Gerecht");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.ChefPlanningsModule", b =>
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
                 {
-                    b.HasOne("Lekkerbek12Gip.Models.Chef", "Chef")
-                        .WithMany()
-                        .HasForeignKey("ChefId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", "PlanningsModule")
-                        .WithMany()
-                        .HasForeignKey("PlanningsModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Lekkerbek12Gip.Models.PlanningsModule", null)
-                        .WithMany("ChefPlanningsModules")
-                        .HasForeignKey("PlanningsModuleId1");
-
-                    b.Navigation("Chef");
-
-                    b.Navigation("PlanningsModule");
+                        .WithMany("chefs")
+                        .HasForeignKey("PlanningsModuleId");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Event", b =>
@@ -604,7 +572,7 @@ namespace Lekkerbek12Gip.Migrations
                 {
                     b.Navigation("Bestellings");
 
-                    b.Navigation("ChefPlanningsModules");
+                    b.Navigation("chefs");
 
                     b.Navigation("Events");
                 });

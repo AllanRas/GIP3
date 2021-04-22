@@ -21,6 +21,7 @@ namespace Lekkerbek12Gip.Models
         public DbSet<PlanningsModule> PlanningsModules { get; set; } 
         public DbSet<Event> Events { get; set; }
         public DbSet<ChefPlanningsModule> ChefPlanningsModules { get; set; }
+        public DbSet<Firma> Firmas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
