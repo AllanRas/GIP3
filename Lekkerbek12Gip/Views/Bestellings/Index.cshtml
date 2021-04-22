@@ -51,7 +51,9 @@
                     @Html.DisplayFor(modelItem => item.SpecialeWensen)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Korting)
+                    @if(item.Korting!=0){
+                    <div>%@item.Korting </div>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Klant.Name)

@@ -85,7 +85,7 @@ namespace Lekkerbek12Gip.Controllers
             }
             else if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null)
             {
-                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal = aantal;
+                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal += aantal;
             }
 
             //if (bestellinGerecht == null)
@@ -145,7 +145,7 @@ namespace Lekkerbek12Gip.Controllers
                 }
 
 
-                if (bestellingCount % 3 == 0)
+                if (bestellingCount!=0 && (bestellingCount+1) % 3 == 0)
                 {
                     bestelling.Korting = 10;
 
