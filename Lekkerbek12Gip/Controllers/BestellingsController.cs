@@ -143,7 +143,7 @@ namespace Lekkerbek12Gip.Controllers
                 }
 
 
-                if (bestellingCount % 3 == 0)
+                if (bestellingCount!=0 && (bestellingCount+1) % 3 == 0)
                 {
                     bestelling.Korting = 10;
 
