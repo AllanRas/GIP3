@@ -22,7 +22,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Bestellings
-
+        [Authorize(Roles ="Admin,Kassamedewerker")]
         public async Task<IActionResult> Index()
         {
             var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten);
@@ -102,6 +102,7 @@ namespace Lekkerbek12Gip.Controllers
             //}
 
             await _context.SaveChangesAsync();
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -151,6 +152,10 @@ namespace Lekkerbek12Gip.Controllers
 
                 _context.Add(bestelling);
                 await _context.SaveChangesAsync();
+                if (User.IsInRole("Klant"))
+                {                   
+                    return RedirectToAction("Gerechten", new {id=bestelling.BestellingId });
+                }                
                 return RedirectToAction(nameof(Index));
             }
             ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId", bestelling.KlantId);

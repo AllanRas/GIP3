@@ -19,6 +19,10 @@ namespace Lekkerbek12Gip.Models
             {
                 ChefPlanningsModules = new List<ChefPlanningsModule>();
             }
+            if (Events == null)
+            {
+                Events = new List<Event>();
+            }
 
         }
         public int PlanningsModuleId { get; set; }

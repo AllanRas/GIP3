@@ -32,29 +32,28 @@ function calender(events,datesarr) {
          const id = dvs[i].id;
          if (id == todayDate) {
              $('#' + id).css('display', 'block');
-         }
+             $('#Create').css('display', 'none');
+         }         
      }
      calendar.on('dateClick', function (info) {         
          var ob = $('#' + info.dateStr);       
          const parag = $('#Create');
          var dvs = $('#index> div'); 
-         if (true) {
-             $('#Message').html("<h2>asd</>");
-         }
-         else { $('#Message').css("background-color:black") };
-         for (var i in dvs) {
-             const id = dvs[i].id;            
-             if (id == info.dateStr){
-                 parag.css('display', 'none');
-                 $('#' + id).css('display', 'block');                 
-                 break;
+
+         let isParag = false;
+         for (var i in dvs) {            
+             const id = dvs[i].id;
+              
+             if (id == info.dateStr){               
+                 $('#' + id).css('display', 'block');
+                 isParag = true;               
              }
              else
              {          
-                 parag.css('display', 'block');
                  $('#' + id).css('display', 'none');
-             }
-         }       
+             }             
+         }
+         isParag ? parag.css('display', 'none') : parag.css('display', 'block');      
     });    
     calendar.render();
 };

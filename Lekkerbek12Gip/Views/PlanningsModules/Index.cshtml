@@ -30,7 +30,7 @@
                         @Html.DisplayName("Werknemer")
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Events)
+                        @Html.DisplayName("Ziek werknemer")
                     </th>
 
 
@@ -42,7 +42,7 @@
         @foreach (var item in Model)
         {
 
-<div id=@item.OpeningsUren.ToString("yyyy-MM-dd") style="display:none">
+<div  id=@item.OpeningsUren.ToString("yyyy-MM-dd") style="display:none">
     <div class="info">
         <div>
             @Html.DisplayName(item.OpeningsUren.DayOfWeek.ToString())
@@ -52,32 +52,59 @@
         <div>
             @Html.DisplayFor(modelItem => item.OpeningsUren.TimeOfDay)
         </div>
-        <div>          
-        </div>
-        <div>
-            @foreach (var ob in item.chefs)
-            {<div>@ob.ChefName</div>}
-        </div>
-    </div>
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">Description head</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">@Html.DisplayFor(modelitem => item.Description)</p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-        </div>
-    </div>
-    <p id="Message"></p>
-    <div class="EventButtons">
-        <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> |
-        <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> |
-        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PlanningsModuleId">Delete</a>
-    </div>
+         
+        @foreach (var ob in item.Events)
+        {
+                <div>@ob.Title</div>}
+            <div>
+        @if (item.ChefPlanningsModules.Where(x => x.ChefStatu == ChefPlanningsModule.ChefStatus.Werken).Count() != 0)
+        {
+    @foreach (var ob in item.ChefPlanningsModules)
+    {
+        if (ob.ChefStatu == ChefPlanningsModule.ChefStatus.Werken)
+        {
+    <div>@ob.Chef.ChefName</div>}
 
-</div>      }
+}}
+else
+{
+    <div>Niemand werkt niet</div>
+          }
+
+    </div>
+        <div>
+            @if (item.ChefPlanningsModules.Where(x=>x.ChefStatu==ChefPlanningsModule.ChefStatus.Ziek).Count() != 0) { 
+            @foreach (var ob in item.ChefPlanningsModules)
+            {
+                if (ob.ChefStatu == ChefPlanningsModule.ChefStatus.Ziek)
+                {
+        <div>@ob.Chef.ChefName</div>}
+
+                 }}
+            else 
+            { 
+                <div>Niemand is ziek</div>
+            }
+        </div>
+
+        </div>
+        <div class="card justify-content-center col-12" style="width: 18rem;">
+            <div class="card-body">
+                <h6 class="card-title">@item.OpeningsUren.ToString("yyyy-MM-dd")</h6>
+                <p class="card-text">@Html.DisplayFor(modelitem => item.Description)</p>
+                <a asp-controller="Bestellings" class="card-link">Ga naar bestellings</a>                
+            </div>
+        </div>
+        <p id="Message"></p>
+        <div class="EventButtons">
+            <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> |
+            <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> |
+            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PlanningsModuleId">Delete</a>
+        </div>
+
+    </div>      }
         <section id="Create">
-            <h2> Plan eklenmedi henuz </h2>
+            <h2> No plan added yet for today </h2>
             <a asp-action="Create">Create New Plan</a>
         </section>
 

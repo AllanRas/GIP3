@@ -59,7 +59,12 @@ namespace Lekkerbek12Gip.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PlanningsModuleId,ChefId,Description,OpeningsUren")] PlanningsModule planningsModule, string[] statu)
-        {
+        { 
+         
+            if (_context.PlanningsModules.FirstOrDefault(x => x.OpeningsUren.Date == planningsModule.OpeningsUren.Date) != null)
+            {
+                ModelState.AddModelError(nameof(planningsModule.OpeningsUren), "Er is al een plan posted");
+            }            
 
             var list = _context.Bestellings
                 .Where(x => x.OrderDate.Date == planningsModule.OpeningsUren.Date);
@@ -67,45 +72,52 @@ namespace Lekkerbek12Gip.Controllers
 
             var chefs = _context.Chefs.ToList(); 
             int i = 0;
-            foreach (var item in chefs)
-            {               
-               if(statu[i] == "Werken") 
-                {                                        
-                    ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
-                    {
-                        Chef = item,
-                        ChefStatu = ChefPlanningsModule.ChefStatus.Werken,
-                        PlanningsModule=planningsModule
-                    };
-                                    
-                }
-               else if(statu[i] == "Ziek") 
-                    {
-                    ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
-                    {
-                        Chef = item,
-                        ChefStatu = ChefPlanningsModule.ChefStatus.Ziek,
-                        PlanningsModule = planningsModule
-                    };
-                }
-               else if (statu[i] == "Toestemming")
-                {
-                    ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
-                    {
-                        Chef = item,
-                        ChefStatu = ChefPlanningsModule.ChefStatus.Toestemming,
-                        PlanningsModule = planningsModule
-                    };
-                }
-                i++;
-            } //
+           
                         
             if (ModelState.IsValid)
             {
+                foreach (var item in chefs)
+                    {               
+                       if(statu[i] == "Werken") 
+                        {                                        
+                            ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
+                            {
+                                Chef = item,
+                                ChefStatu = ChefPlanningsModule.ChefStatus.Werken,
+                                PlanningsModule=planningsModule
+                            };
+                        planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);
+                                    
+                        }
+                       else if(statu[i] == "Ziek") 
+                            {
+                            ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
+                            {
+                                Chef = item,
+                                ChefStatu = ChefPlanningsModule.ChefStatus.Ziek,
+                                PlanningsModule = planningsModule
+                            };
+                        planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);
+                    }
+                       else if (statu[i] == "Toestemming")
+                        {
+                            ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
+                            {
+                                Chef = item,
+                                ChefStatu = ChefPlanningsModule.ChefStatus.Toestemming,
+                                PlanningsModule = planningsModule
+                            };
+                        planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);
+
+                    }
+                    
+                        i++;
+                    } //
                 _context.Add(planningsModule);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Chefs"] = _context.Chefs.ToList();
             return View(planningsModule);
         }
 

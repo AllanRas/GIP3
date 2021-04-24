@@ -26,3 +26,6 @@ textarea{
     display:flex;
     justify-content:space-between;
 }
+.card {
+    margin: 25px auto;
+}
