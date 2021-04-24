@@ -1,9 +1,8 @@
 ﻿@model IEnumerable<Lekkerbek12Gip.Models.Gerecht>
 
-
 @{
     ViewData["Title"] = "Gerechten";
-
+    IEnumerable<BestellingGerechten> bestellingGerechten = ViewData["Aantal"] as IEnumerable<BestellingGerechten>;
 }
 <img id="logo" src="~/img/Lekkerbek.jpeg" />
 <h1>Menu</h1>
@@ -47,10 +46,22 @@
                         </td>
                         <td>
                             <form asp-action="Gerechten">
-                                <input type="number" name="aantal"/>
-                                <input type="hidden" name="gerechtId" value="@item.GerechtId"/>
-                                <input type="hidden" name="bestellingId" value="@ViewBag.data"/>
+                                @{
+                                    int aantal = 0;
+                                    try
+                                    {
+                                        aantal = bestellingGerechten.First(bg => (bg.GerechtId == item.GerechtId) && (bg.BestellingId == ViewBag.data)).Aantal;
+                                    }
+                                    catch(InvalidOperationException e)
+                                    {
+                                        aantal = 0;
+                                    }
+                                }
+                                <input type="number" name="aantal" value="@aantal" />
+                                <input type="hidden" name="gerechtId" value="@item.GerechtId" />
+                                <input type="hidden" name="bestellingId" value="@ViewBag.data" />
                                 <button type="submit" value="Gerechten">+</button>
+                                aantal: @aantal
                             </form>
                         </td>
                     </tr>
@@ -59,6 +70,8 @@
         }
     </table>
 }
+
+<a asp-action="index">Terug naar bestellingslijst</a>
 
 @section Scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

@@ -54,6 +54,8 @@ namespace Lekkerbek12Gip.Controllers
         public async Task<IActionResult> Gerechten(int? id)
         {
             ViewData["data"] = id;
+            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
+            ViewData["Aantal"] = bestellingGerechten;
             return View(await _context.Gerechten.ToListAsync());
         }
 
@@ -66,7 +68,7 @@ namespace Lekkerbek12Gip.Controllers
 
             var bestellinGerecht = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
 
-            if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) == null)
+            if (aantal > 0 && bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) == null)
             {
                 BestellingGerechten bg = new BestellingGerechten
                 {
@@ -83,6 +85,11 @@ namespace Lekkerbek12Gip.Controllers
             }
             else if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null)
             {
+                if(aantal == 0)
+                {
+                    var delete = await _context.BestellingGerechten.FirstAsync(x => (x.BestellingId == bestelling.BestellingId) && (x.GerechtId == gerecht.GerechtId));
+                    _context.BestellingGerechten.Remove(delete);
+                }
                 bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal = aantal;
             }
 
@@ -102,8 +109,7 @@ namespace Lekkerbek12Gip.Controllers
             //}
 
             await _context.SaveChangesAsync();
-            
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction();
         }
 
         // GET: Bestellings/Create
@@ -144,7 +150,7 @@ namespace Lekkerbek12Gip.Controllers
                 }
 
 
-                if (bestellingCount % 3 == 0)
+                if (bestellingCount!=0 && (bestellingCount+1) % 3 == 0)
                 {
                     bestelling.Korting = 10;
 

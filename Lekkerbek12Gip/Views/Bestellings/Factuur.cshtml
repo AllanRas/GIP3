@@ -37,25 +37,44 @@
                 <th>Subtotaal</th>
             </tr>
         </thead>
+                
         <tbody>
-            @foreach (var besteldGerecht in Model.BestellingGerechten)
-            {
+            @{decimal intPrijs = 0; }
+            @{ foreach (var besteldGerecht in Model.BestellingGerechten)
+                {
+                    intPrijs += besteldGerecht.Aantal * besteldGerecht.Gerecht.Prijs;
+
 <tr>
     <td>@besteldGerecht.Gerecht.Naam</td>
     <td>€ @besteldGerecht.Gerecht.Prijs</td>
     <td>@besteldGerecht.Aantal.ToString()</td>
     <td>@(besteldGerecht.Aantal * besteldGerecht.Gerecht.Prijs)</td>
-</tr>}
+</tr>} }
         </tbody>
     </table>
 </section>
-<section id="factuurtotaal">
-    <dl>
-        <dt>
-            Totaal:
-        </dt>
-        <dd>
-            € @ViewBag.Prijs
-        </dd>
-    </dl>
-</section>
+<div class="row">
+    <section class="col-6" id="factuurkorting">
+        <dl>
+            <dt>
+                Korting:
+            </dt>
+            <dd>
+
+                <div>€ @(Model.Korting * intPrijs/100)</div>
+
+            </dd>
+        </dl>
+    </section>
+    <section class="col-6" id="factuurtotaal">
+        <dl>
+            <dt>
+                Totaal:
+            </dt>
+            <dd>
+                € @ViewBag.Prijs
+            </dd>
+        </dl>
+    </section>
+</div>
+

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Bestellingen</h1>
 
 <p>
     <a asp-action="Create">Bestelling aanmaken</a>
@@ -51,7 +51,9 @@
                     @Html.DisplayFor(modelItem => item.SpecialeWensen)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Korting)
+                    @if(item.Korting!=0){
+                    <div>%@item.Korting </div>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Klant.Name)
@@ -64,7 +66,7 @@
                 </td>
                 <td>
                     <!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
-                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-1)) < 0)
+                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-1)) < 0 && item.Afgerekend == false)
                     {
                         <a asp-action="Edit" asp-route-id="@item.BestellingId">Edit</a>
                     }
@@ -74,7 +76,7 @@
                     }
                     |   <a asp-action="Details" asp-route-id="@item.BestellingId">Details</a> |
                     <!--Comparing time now with afhaaltijd minus 2 hours, if now is earlier than afhaaltijd - 2 hours : delete  else not editable-->
-                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0)
+                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0 && item.Afgerekend == false)
                     {
                         <a asp-action="Delete" asp-route-id="@item.BestellingId">Delete</a>
                     }
@@ -91,13 +93,9 @@
                     }
                     else
                     {
-                        <a asp-action="Afrekenen" asp-route-id="@item.BestellingId">Afrekenen</a>
+                        <a asp-action="Afrekenen" asp-route-id="@item.BestellingId">Afrekenen</a> @Html.Raw(" | ")
+                        <a asp-action = "Gerechten" asp-route-id="@item.BestellingId">Gerechten Toevoegen </a>
                     }
-
-                    |
-                    <a asp-action="Gerechten" asp-route-id="@item.BestellingId">Gerechten Toevoegen</a>
-
-
                 </td>
             </tr>
         }
