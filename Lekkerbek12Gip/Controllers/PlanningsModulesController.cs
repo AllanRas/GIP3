@@ -86,9 +86,9 @@ namespace Lekkerbek12Gip.Controllers
                                 ChefStatu = ChefPlanningsModule.ChefStatus.Werken,
                                 PlanningsModule=planningsModule
                             };
-                        planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);
-                                    
-                        }
+                        planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);                        
+
+                    }
                        else if(statu[i] == "Ziek") 
                             {
                             ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
@@ -98,6 +98,7 @@ namespace Lekkerbek12Gip.Controllers
                                 PlanningsModule = planningsModule
                             };
                         planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);
+                        
                     }
                        else if (statu[i] == "Toestemming")
                         {
@@ -193,26 +194,30 @@ namespace Lekkerbek12Gip.Controllers
         //Get Warning and
         public  List<DateTime> Warning()
         {
-            var indexlist = _context.PlanningsModules.Include(x => x.chefs).Include(x => x.Bestellings);
-
+            var indexlist = _context.PlanningsModules
+                .Include(x => x.chefs)
+                .Include(x => x.Bestellings)
+                .Include(x => x.ChefPlanningsModules);
+                           
             List<DateTime> days = new List<DateTime>();
             foreach (var item in indexlist)
             {
-                var chefs = item.chefs;
+              
+                var chefsCount =item.ChefPlanningsModules
+                    .Where(x=>x.ChefStatu==ChefPlanningsModule.ChefStatus.Werken)
+                    .Count();
+
                 if (item.Bestellings.Count > 0)
                 {
                     var MaxBestellingPerHour = item.Bestellings
                    .GroupBy(x => x.OrderDate.Hour)
                    .Max(x => x.Count());
-                    if (MaxBestellingPerHour > (chefs.Count * 4))
+                    if (MaxBestellingPerHour > (chefsCount * 4))
                     {
                         days.Add(item.OpeningsUren.Date);
                     }
                 }
-
             }          
-
-
             return days;
         }
 

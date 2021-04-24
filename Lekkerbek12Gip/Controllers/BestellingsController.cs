@@ -136,6 +136,13 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
+            var events = _context.Events.ToList();
+            foreach (var item in events)
+            {
+                if (bestelling.OrderDate > item.Start && bestelling.OrderDate < item.End)
+                    ModelState.AddModelError(nameof(bestelling.OrderDate), "Er kunnen niet in event datum worden bestellen");
+            }
+            
            
             if (ModelState.IsValid)
             {
@@ -161,10 +168,11 @@ namespace Lekkerbek12Gip.Controllers
                 if (User.IsInRole("Klant"))
                 {                   
                     return RedirectToAction("Gerechten", new {id=bestelling.BestellingId });
-                }                
+                }
+                ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId", bestelling.KlantId);
+            ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);
           
             return View(bestelling);

@@ -71,8 +71,14 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Klants/Edit/5
+        [AllowAnonymous]
         public async Task<IActionResult> Edit(int? id)
         {
+            if(id == null && User.IsInRole("Klant"))
+            {
+              var klantId=_context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name).KlantId;
+                id = klantId;
+            }
             if (id == null)
             {
                 return NotFound();
@@ -89,11 +95,13 @@ namespace Lekkerbek12Gip.Controllers
         // POST: Klants/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant)
         {
-            if (id != klant.KlantId)
+           
+            if (id != klant.KlantId && !User.IsInRole("Klant"))
             {
                 return NotFound();
             }
@@ -115,9 +123,14 @@ namespace Lekkerbek12Gip.Controllers
                     {
                         throw;
                     }
-                }
+                } 
+             if (User.IsInRole("Klant"))
+            {
+                return RedirectToAction("index", "Gerechten");
+            }
                 return RedirectToAction(nameof(Index));
             }
+           
             return View(klant);
         }
 
