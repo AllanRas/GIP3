@@ -25,12 +25,12 @@ namespace Lekkerbek12Gip.Controllers
         public async Task<IActionResult> Index()
         {
             // returns only the bestelling of the logged in User
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Where(x => x.Klant.emailadres == User.Identity.Name).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten);
+            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Where(x => x.Klant.emailadres == User.Identity.Name).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
             
             // returns all bestellingen
             if(User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
             {
-                lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten);
+                lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
             }
             return View(await lekkerbekContext.ToListAsync());
         }
@@ -142,8 +142,12 @@ namespace Lekkerbek12Gip.Controllers
             var events = _context.Events.ToList();
             foreach (var item in events)
             {
-                if (bestelling.OrderDate > item.Start && bestelling.OrderDate < item.End)
-                    ModelState.AddModelError(nameof(bestelling.OrderDate), "Er kunnen niet in event datum worden bestellen");
+                //We check if the order placed doesn't fall under an event, if the afhaaltijd of the order falls on an event
+                //it will not be able to confirm the order.
+                //We don't use orderdate because we should still be able to place an order when there is an event
+                //you shouldn't be able to PICK UP an order when there is an event taking place
+                if (bestelling.AfhaalTijd > item.Start && bestelling.AfhaalTijd < item.End)
+                    ModelState.AddModelError(nameof(bestelling.AfhaalTijd), "afhaaltijd is geplaatst tijdens een event, gelieve een andere tijd te nemen.");
             }
             
            

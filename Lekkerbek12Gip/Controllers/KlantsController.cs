@@ -57,12 +57,15 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant)
+        public async Task<IActionResult> Create([Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant,[Bind("FirmaNaam, BtwNummer")] Firma firma)
         {
 
             if (ModelState.IsValid)
             {
-               
+                klant.Firma = firma;
+                firma.Klant = klant;
+                firma.KlantId = klant.KlantId;
+                _context.Add(firma);
                 _context.Add(klant);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -101,10 +104,6 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant, [Bind("FirmaNaam, BtwNummer")] Firma firma)
         {
-           
-            // need to implement btw nummer and firmanaam update
-
-
             if (id != klant.KlantId && !User.IsInRole("Klant"))
             {
                 return NotFound();
@@ -114,6 +113,9 @@ namespace Lekkerbek12Gip.Controllers
             {
                 try
                 {
+                    var f = await _context.Firmas.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId);
+                    f.BtwNummer = firma.BtwNummer;
+                    f.FirmaNaam = firma.FirmaNaam;
                     _context.Update(klant);
                     await _context.SaveChangesAsync();
                 }
