@@ -68,7 +68,7 @@
 </div>
 <div>
     <!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
-    @if (DateTime.Compare(DateTime.Now, Model.AfhaalTijd.AddHours(-1)) < 0)
+    @if (DateTime.Compare(DateTime.Now, Model.AfhaalTijd.AddHours(-1)) < 0 && Model.Afgerekend != true)
     {
         <a asp-action="Edit" asp-route-id="@Model.BestellingId">Aanpassen</a>
     }

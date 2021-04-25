@@ -84,18 +84,23 @@
                     {
                         <a>Delete</a>
                     }
-
                     |
-
-                    @if (item.Afgerekend == true)
+                    @if (User.IsInRole("Kassamedewerkster") || User.IsInRole("Admin"))
                     {
-                        <a asp-action="Factuur" asp-route-id="@item.BestellingId">Factuur</a>
+                        @if (item.Afgerekend == true)
+                        {
+                            <a asp-action="Factuur" asp-route-id="@item.BestellingId">Factuur</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Afrekenen" asp-route-id="@item.BestellingId">Afrekenen</a> @Html.Raw(" | ")
+                        }
                     }
-                    else
+                    @if(item.Afgerekend != true)
                     {
-                        <a asp-action="Afrekenen" asp-route-id="@item.BestellingId">Afrekenen</a> @Html.Raw(" | ")
-                        <a asp-action = "Gerechten" asp-route-id="@item.BestellingId">Gerechten Toevoegen </a>
+                        <a asp-action="Gerechten" asp-route-id="@item.BestellingId">Gerechten Toevoegen </a>
                     }
+                    
                 </td>
             </tr>
         }

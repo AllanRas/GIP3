@@ -76,15 +76,16 @@ namespace Lekkerbek12Gip.Controllers
         {
             if(id == null && User.IsInRole("Klant"))
             {
-              var klantId=_context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name).KlantId;
+              var klantId =_context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name).KlantId;
                 id = klantId;
             }
             if (id == null)
             {
                 return NotFound();
             }
-
+            var firma = await _context.Firmas.FirstAsync(x => x.KlantId == id);
             var klant = await _context.Klants.FindAsync(id);
+            klant.Firma = firma;
             if (klant == null)
             {
                 return NotFound();
@@ -98,9 +99,12 @@ namespace Lekkerbek12Gip.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant)
+        public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant, [Bind("FirmaNaam, BtwNummer")] Firma firma)
         {
            
+            // need to implement btw nummer and firmanaam update
+
+
             if (id != klant.KlantId && !User.IsInRole("Klant"))
             {
                 return NotFound();

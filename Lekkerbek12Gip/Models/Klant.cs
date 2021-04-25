@@ -22,7 +22,6 @@ namespace Lekkerbek12Gip.Models
         [DataType(DataType.EmailAddress)]
         [Display(Name = "Email Adress")]
         public string emailadres { get; set; }
-        public int? FirmaId { get; set; }
         public virtual Firma Firma { get; set; }
         public virtual ICollection<Bestelling> Bestellings { get; set; }
 

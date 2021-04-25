@@ -16,17 +16,22 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                @if (ViewBag.Klant != null && ViewBag.Klant.KlantId!=null)
+                @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
                 {
-                <input type="text" asp-for="KlantId" value=@ViewBag.Klant.KlantId  readonly/>
-                <span asp-validation-for="KlantId" class="text-danger"></span>
+                    <label asp-for="KlantId" class="control-label">Klant </label>
+                    <select asp-for="KlantId" class="form-control" asp-items="ViewBag.KlantSelect"></select>
+                    <span asp-validation-for="KlantId" class="text-danger"></span>
                 }
-                else {
-                <label asp-for="KlantId" class="control-label">Klant </label>
-                <select asp-for="KlantId" class="form-control" asp-items="ViewBag.KlantSelect"></select>
-                <span asp-validation-for="KlantId" class="text-danger"></span>
+                else if(User.IsInRole("Klant"))
+                {
+                    @if (ViewBag.Klant != null && ViewBag.Klant.KlantId != null)
+                    {
+                        <input type="text" asp-for="KlantId" value=@ViewBag.Klant.KlantId readonly />
+                        <span asp-validation-for="KlantId" class="text-danger"></span>
+                    }
                 }
-            
+
+
             </div>
             <div class="form-group">
                 <label asp-for="SpecialeWensen" class="control-label"></label>

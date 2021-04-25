@@ -22,10 +22,16 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Bestellings
-        [Authorize(Roles ="Admin,Kassamedewerker")]
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten);
+            // returns only the bestelling of the logged in User
+            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Where(x => x.Klant.emailadres == User.Identity.Name).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten);
+            
+            // returns all bestellingen
+            if(User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            {
+                lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten);
+            }
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -118,13 +124,10 @@ namespace Lekkerbek12Gip.Controllers
         {
            
                 var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
-                if (klant != null)
-                    ViewData["Klant"] = klant;
-            else 
-            {
+                if (klant != null) ViewData["Klant"] = klant;
+                // accounts made by register page automatically makes you klant so else would not make appear klantselect list in dropdownlist
                 ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name"); 
-            }
-                        
+
             ViewData["GerechtData"] = _context.Gerechten.ToList();
             return View();
         }
