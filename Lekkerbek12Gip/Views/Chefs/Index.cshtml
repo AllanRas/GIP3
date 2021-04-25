@@ -8,7 +8,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Maak nieuwe chef aan</a>
 </p>
 
 @foreach(Bestelling.BestelStatus status in Enum.GetValues(typeof(Bestelling.BestelStatus)))
@@ -82,17 +82,17 @@
 
                     @if (item.AfhaalTijd == bestel.AfhaalTijd && item.Chef == null)
                     {
-                        <a class="btn btn-success " asp-action="addChef" asp-route-id="@item.BestellingId">Add Chef</a>
+                        <a class="btn btn-success " asp-action="addChef" asp-route-id="@item.BestellingId">Chef toevoegen</a>
 
                     }
                     else if (item.Chef != null)
                     {
-                        <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef Added</a>
+                <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toegevoegd</a>
 
                     }
                     else
                     {
-                        <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Add Chef </a>
+                <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toevoegen</a>
                     }
 
                 </td>

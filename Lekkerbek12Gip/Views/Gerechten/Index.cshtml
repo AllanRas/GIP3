@@ -48,9 +48,9 @@
                 @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
                 {
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.GerechtId">Edit</a> |
+                        <a asp-action="Edit" asp-route-id="@item.GerechtId">Bewerken</a> |
                         <a asp-action="Details" asp-route-id="@item.GerechtId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.GerechtId">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.GerechtId">Verwijderen</a>
                     </td>
                 }
             </tr>
