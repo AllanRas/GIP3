@@ -4,14 +4,17 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Bestellingen</h1>
+<h1>Open Bestellingen</h1>
 
 <p>
-    <a asp-action="Create">Bestelling aanmaken</a>
+    <a asp-action="Create">Bestelling aanmaken</a> | <a asp-action="AfgerekendeBestellingen">Afgerekende Bestellingen</a>
 </p>
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BestelingStatus)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.OrderDate)
             </th>
@@ -24,12 +27,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.Korting)
             </th>
+            @if (User.IsInRole("Admin") || User.IsInRole("Kassamederwerker"))
+            {
             <th>
                 @Html.DisplayNameFor(model => model.Klant)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Chef)
             </th>
+            }
             <th>
                 @Html.DisplayNameFor(model => model.TotalPrijs)
             </th>
@@ -39,70 +45,79 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AfhaalTijd)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SpecialeWensen)
-                </td>
-                <td>
-                    @if(item.Korting!=0){
+            if (!item.Afgerekend)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BestelingStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AfhaalTijd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SpecialeWensen)
+            </td>
+            <td>
+                @if (item.Korting != 0)
+                {
                     <div>%@item.Korting </div>
-                    }
-                </td>
+                }
+            </td>
+            @if (User.IsInRole("Admin") || User.IsInRole("Kassamederwerker"))
+            {
                 <td>
                     @Html.DisplayFor(modelItem => item.Klant.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Chef.ChefName)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPrijs)
-                </td>
-                <td>
-                    <!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
-                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-1)) < 0 && item.Afgerekend == false)
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrijs)
+            </td>
+            <td>
+                <!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
+                @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-1)) < 0 && item.Afgerekend == false)
+                {
+                    <a asp-action="Edit" asp-route-id="@item.BestellingId">Bewerken</a>
+                }
+                else
+                {
+                    <a>Bewerken</a>
+                }
+                |   <a asp-action="Details" asp-route-id="@item.BestellingId">Details</a> |
+                <!--Comparing time now with afhaaltijd minus 2 hours, if now is earlier than afhaaltijd - 2 hours : delete  else not editable-->
+                @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0 && item.Afgerekend == false)
+                {
+                    <a asp-action="Delete" asp-route-id="@item.BestellingId">Annuleren</a>
+                }
+                else
+                {
+                    <a>Annuleren</a>
+                }
+                |
+                @if (User.IsInRole("Kassamedewerkster") || User.IsInRole("Admin"))
+                {
+                    @if (item.Afgerekend == true)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.BestellingId">Edit</a>
+                        <a asp-action="Factuur" asp-route-id="@item.BestellingId">Factuur</a>
                     }
                     else
                     {
-                        <a>Edit</a>
+                        <a asp-action="Afrekenen" asp-route-id="@item.BestellingId">Afrekenen</a> @Html.Raw(" | ")
                     }
-                    |   <a asp-action="Details" asp-route-id="@item.BestellingId">Details</a> |
-                    <!--Comparing time now with afhaaltijd minus 2 hours, if now is earlier than afhaaltijd - 2 hours : delete  else not editable-->
-                    @if (DateTime.Compare(DateTime.Now, item.AfhaalTijd.AddHours(-2)) < 0 && item.Afgerekend == false)
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.BestellingId">Delete</a>
-                    }
-                    else
-                    {
-                        <a>Delete</a>
-                    }
-                    |
-                    @if (User.IsInRole("Kassamedewerkster") || User.IsInRole("Admin"))
-                    {
-                        @if (item.Afgerekend == true)
-                        {
-                            <a asp-action="Factuur" asp-route-id="@item.BestellingId">Factuur</a>
-                        }
-                        else
-                        {
-                            <a asp-action="Afrekenen" asp-route-id="@item.BestellingId">Afrekenen</a> @Html.Raw(" | ")
-                        }
-                    }
-                    @if(item.Afgerekend != true)
-                    {
-                        <a asp-action="Gerechten" asp-route-id="@item.BestellingId">Gerechten Toevoegen </a>
-                    }
-                    
-                </td>
-            </tr>
+                }
+                @if (item.Afgerekend != true)
+                {
+                    <a asp-action="Gerechten" asp-route-id="@item.BestellingId">Gerechten Toevoegen </a>
+                }
+
+            </td>
+        </tr>
+            }
         }
     </tbody>
 </table>

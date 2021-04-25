@@ -123,7 +123,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             var timeOneDay = DateTime.Today.AddDays(1).AddSeconds(-1);
 
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Gerechten).Include(x => x.Chef).OrderBy(x => x.OrderDate);
+            var lekkerbekContext = _context.Bestellings.Include(x => x.Gerechten).Include(x => x.Chef).OrderBy(x => x.AfhaalTijd);
             //var lekkerbekContext = _context.Bestellings.Include(x => x.Gerechten).Include(x => x.Chef).Where(x => x.OrderDate <= timeOneDay && x.OrderDate >= DateTime.Today).OrderBy(x => x.OrderDate);
 
             return View(await lekkerbekContext.ToListAsync());

@@ -2,12 +2,12 @@
 
 @{
     ViewData["Title"] = "Details";
+    IEnumerable<BestellingGerechten> bestellingGerechten = ViewData["Aantal"] as IEnumerable<BestellingGerechten>;
 }
 
 <h1>Details Bestelling</h1>
 
 <div>
-    <h4>Bestelling</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -21,12 +21,6 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Klant.Adress)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ChefId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ChefId)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.AfhaalTijd)
@@ -58,23 +52,74 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TotalPrijs)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Afgerekend)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Afgerekend)
-        </dd>
+        @if (User.IsInRole("Admin") || User.IsInRole("Kassamederwerker"))
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ChefId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ChefId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Afgerekend)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Afgerekend)
+            </dd>
+        }
     </dl>
 </div>
 <div>
-    <!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
-    @if (DateTime.Compare(DateTime.Now, Model.AfhaalTijd.AddHours(-1)) < 0 && Model.Afgerekend != true)
-    {
-        <a asp-action="Edit" asp-route-id="@Model.BestellingId">Aanpassen</a>
-    }
-    else
-    {
-        <a>Aanpassen</a>
-    }
-    <a asp-action="Index">Terug naar Bestellingslijst</a>
+<!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
+@if (DateTime.Compare(DateTime.Now, Model.AfhaalTijd.AddHours(-1)) < 0 && Model.Afgerekend != true)
+{
+    <a asp-action="Edit" asp-route-id="@Model.BestellingId">Aanpassen</a>
+}
+else
+{
+    <a>Aanpassen</a>
+}
+<a href="javascript:void(0);" onclick="history.go(-1);">Terug</a>
+
+<h3>Bestelling: </h3>
+
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.Raw("Naam")
+            </th>
+            <th>
+                @Html.Raw("Omschrijving")
+            </th>
+            <th>
+                @Html.Raw("Prijs")
+            </th>
+            <th>
+                @Html.Raw("Aantal")
+            </th>
+        </tr>
+    </thead>
+
+@foreach (var item in Model.BestellingGerechten)
+{
+    <tbody>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gerecht.Naam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gerecht.Omschrijving)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gerecht.Prijs) $
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Aantal)
+            </td>
+        </tr>
+    </tbody>
+}
+    </table>
 </div>

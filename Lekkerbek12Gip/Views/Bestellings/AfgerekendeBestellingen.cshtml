@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Lekkerbek12Gip.Models.Bestelling>
+
+@{
+    ViewData["Title"] = "AfgerekendeBestellingen";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Afgerekende Bestellingen</h1>
+<p>
+    <a asp-action="Index">Open Bestellingen</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AfhaalTijd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SpecialeWensen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Korting)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Klant)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Chef)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPrijs)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (item.Afgerekend)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AfhaalTijd)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SpecialeWensen)
+                    </td>
+                    <td>
+                        @if (item.Korting != 0)
+                        {
+                            <div>%@item.Korting </div>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Klant.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Chef.ChefName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalPrijs)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.BestellingId">Details</a> | 
+                        <a asp-action="Factuur" asp-route-id="@item.BestellingId">Factuur</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

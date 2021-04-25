@@ -4,9 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Klant</h4>
+<h1>Profiel bewerken</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -54,16 +52,17 @@
             <input asp-for="Firma.FirmaNaam" class="form-control"/>
             <span asp-validation-for="Firma.FirmaNaam" class="text-danger"></span>
         </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+            <br />
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
         </form>
     </div>
 </div>
 @if(User.IsInRole("Admin") || User.IsInRole("Kassamederwerker"))
 {
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar lijst</a>
 </div>
 }
 

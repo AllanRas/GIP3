@@ -13,14 +13,16 @@ namespace Lekkerbek12Gip.Models
         [Required(ErrorMessage = "Naam is verplicht")]
         [Display(Name = "Naam")]
         public string Name { get; set; }
+        [Display(Name = "Adres")]
         public string Adress { get; set; }
+        [Display(Name = "KlantenScore")]
         public int GetrouwheidsScore { get; set; }
         [AdultBirthdateAttribute]
         [DataType(DataType.Date)]
         public DateTime Geboortedatum { get; set; }
         [EmailAddress]
         [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email Adress")]
+        [Display(Name = "Emailadres")]
         public string emailadres { get; set; }
         public virtual Firma Firma { get; set; }
         public virtual ICollection<Bestelling> Bestellings { get; set; }

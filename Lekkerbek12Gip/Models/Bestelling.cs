@@ -30,20 +30,23 @@ namespace Lekkerbek12Gip.Models
             Extra_groenten = 3,
             Extra_saus = 2
         }
-
+        [Display(Name = "Status")]
         public BestelStatus BestelingStatus { get; set; } = BestelStatus.NotReady;
         [Key]
         public int BestellingId { get; set; }
         [Required(ErrorMessage = "Klant is verplicht")]
         public int? KlantId { get; set; }
         public int? ChefId { get; set; }
+        [Display(Name ="Speciale Wensen")]
         public SpecialWensen? SpecialeWensen { get; set; }
-        [BestelDateAttribute]
+        [Display(Name = "Order datum")]
         public DateTime OrderDate { get; set; }
         public bool Afgerekend { get; set; }
+        [Display(Name = "Afhaal tijd")]
         [BestelDateAttribute]
         public DateTime AfhaalTijd { get; set; }
         public decimal Korting { get; set; }
+        [Display(Name ="Totaalprijs")]
         public decimal TotalPrijs
         {
             get

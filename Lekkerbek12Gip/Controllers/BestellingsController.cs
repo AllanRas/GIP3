@@ -35,6 +35,20 @@ namespace Lekkerbek12Gip.Controllers
             return View(await lekkerbekContext.ToListAsync());
         }
 
+        // GET: Bestellings/AfgerekendeBestellingen
+        public async Task<IActionResult> AfgerekendeBestellingen()
+        {
+            // returns only the bestelling of the logged in User
+            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Where(x => x.Klant.emailadres == User.Identity.Name).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
+
+            // returns all bestellingen
+            if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            {
+                lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
+            }
+            return View(await lekkerbekContext.ToListAsync());
+        }
+
         // GET: Bestellings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,6 +56,9 @@ namespace Lekkerbek12Gip.Controllers
             {
                 return NotFound();
             }
+
+            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
+            ViewData["Aantal"] = bestellingGerechten;
 
             var bestelling = await _context.Bestellings
                 .Include(b => b.Klant)
@@ -122,12 +139,10 @@ namespace Lekkerbek12Gip.Controllers
         [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         public IActionResult Create()
         {
-           
-                var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
-                if (klant != null) ViewData["Klant"] = klant;
-                // accounts made by register page automatically makes you klant so else would not make appear klantselect list in dropdownlist
-                ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name"); 
-
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            if (klant != null) ViewData["Klant"] = klant;
+            // accounts made by register page automatically makes you klant so else would not make appear klantselect list in dropdownlist
+            ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name"); 
             ViewData["GerechtData"] = _context.Gerechten.ToList();
             return View();
         }
@@ -149,25 +164,19 @@ namespace Lekkerbek12Gip.Controllers
                 if (bestelling.AfhaalTijd > item.Start && bestelling.AfhaalTijd < item.End)
                     ModelState.AddModelError(nameof(bestelling.AfhaalTijd), "afhaaltijd is geplaatst tijdens een event, gelieve een andere tijd te nemen.");
             }
-            
-           
             if (ModelState.IsValid)
             {
-
-
                 var bestellingCount = _context.Bestellings.Where(x => x.KlantId == bestelling.KlantId).Count();
                 var klant = _context.Klants.FirstOrDefault(x => x.KlantId == bestelling.KlantId);
 
                 if (klant != null)
                 {
                     klant.GetrouwheidsScore += 1;
+                    bestelling.OrderDate = DateTime.Now;
                 }
-
-
                 if (bestellingCount!=0 && (bestellingCount+1) % 3 == 0)
                 {
                     bestelling.Korting = 10;
-
                 }
 
                 _context.Add(bestelling);
@@ -183,7 +192,6 @@ namespace Lekkerbek12Gip.Controllers
             ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);
           
             return View(bestelling);
-            
         }
 
         // GET: Bestellings/Edit/5
