@@ -82,6 +82,8 @@ namespace Lekkerbek12Gip.Controllers
 
             return View(bestelling);
         }
+
+
         //Gerech kies
         [HttpGet]
         public async Task<IActionResult> Gerechten(int? id)
@@ -91,6 +93,29 @@ namespace Lekkerbek12Gip.Controllers
             ViewData["Aantal"] = bestellingGerechten;
             return View(await _context.Gerechten.ToListAsync());
         }
+
+
+        //favorite Gerech kies
+        [HttpGet]
+        public async Task<IActionResult> FavGerechten(int? id)
+        {
+            ViewData["data"] = id;
+            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
+            ViewData["Aantal"] = bestellingGerechten;
+            if (User.IsInRole("Klant"))
+            {
+                var klant = _context.Klants.Include(x => x.Fav).FirstOrDefault(x => x.emailadres == User.Identity.Name);
+                if (klant.Fav.Count()>0)
+                {
+                       return View(klant.Fav.ToList());
+                }
+               
+            }
+            return View(await _context.Gerechten.ToListAsync());
+        }
+
+
+       
 
 
         [HttpPost]

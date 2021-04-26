@@ -5,7 +5,7 @@
     IEnumerable<BestellingGerechten> bestellingGerechten = ViewData["Aantal"] as IEnumerable<BestellingGerechten>;
 }
 <img id="logo" src="~/img/Lekkerbek.jpeg" />
-<h1>Menu</h1>
+<h1>Geïnteresseerde Menu</h1>
 <span>Ordernummer : </span><p style="display:inline" id="bestellingId">@ViewBag.data</p>
 
 @foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
@@ -63,7 +63,7 @@
                                 <button type="submit" value="Gerechten">+</button>
                                 aantal: @aantal
                             </form>
-                            
+
                         </td>
                     </tr>
                 </tbody>

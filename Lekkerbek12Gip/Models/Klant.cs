@@ -10,6 +10,14 @@ namespace Lekkerbek12Gip.Models
     public class Klant
     {
         public int KlantId { get; set; }
+        public Klant()
+        {
+            if (Fav==null)
+            {
+                Fav = new List<Gerecht>();
+            }
+           
+        }
         [Required(ErrorMessage = "Naam is verplicht")]
         [Display(Name = "Naam")]
         public string Name { get; set; }
@@ -26,6 +34,8 @@ namespace Lekkerbek12Gip.Models
         public string emailadres { get; set; }
         public virtual Firma Firma { get; set; }
         public virtual ICollection<Bestelling> Bestellings { get; set; }
+        public virtual ICollection<Gerecht> Fav { get; set; }
+
 
     }
 }

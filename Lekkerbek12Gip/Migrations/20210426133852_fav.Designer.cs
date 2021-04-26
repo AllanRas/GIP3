@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20210426001106_init")]
-    partial class init
+    [Migration("20210426133852_fav")]
+    partial class fav
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -192,6 +192,9 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<int>("Categorie")
                         .HasColumnType("int");
 
+                    b.Property<int?>("KlantId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Naam")
                         .HasColumnType("nvarchar(max)");
 
@@ -202,6 +205,8 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("GerechtId");
+
+                    b.HasIndex("KlantId");
 
                     b.ToTable("Gerechten");
                 });
@@ -538,6 +543,13 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Klant");
                 });
 
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
+                {
+                    b.HasOne("Lekkerbek12Gip.Models.Klant", null)
+                        .WithMany("Fav")
+                        .HasForeignKey("KlantId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -602,6 +614,8 @@ namespace Lekkerbek12Gip.Migrations
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>
                 {
                     b.Navigation("Bestellings");
+
+                    b.Navigation("Fav");
 
                     b.Navigation("Firma");
                 });

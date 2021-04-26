@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" data-auto-replace-svg="nest"></script>
 }
 
 <h1>Menu</h1>
@@ -35,25 +36,45 @@
             {
                 if (item.Categorie == categorie)
                 {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Naam)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Omschrijving)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Prijs)
-                </td>
-                @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
-                {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.GerechtId">Bewerken</a> |
-                        <a asp-action="Details" asp-route-id="@item.GerechtId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.GerechtId">Verwijderen</a>
-                    </td>
-                }
-            </tr>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Naam)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Omschrijving)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Prijs)
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+                            {
+
+                                <a asp-action="Edit" asp-route-id="@item.GerechtId">Bewerken</a> @Html.Raw(" | ")
+                                <a asp-action="Details" asp-route-id="@item.GerechtId"> Details </a>@Html.Raw(" | ")
+
+                                <a asp-action="Delete" asp-route-id="@item.GerechtId"> Verwijderen </a>@Html.Raw(" | ")
+
+
+                            }
+                            else
+                            {
+
+                                <form asp-action="AddFav">
+
+
+                                    <input type="hidden" name="Id" value="@item.GerechtId" />
+
+                                    <button type="submit" value="Gerechten"><span><i style="color:red" class="fas fa-heart"></i></span>(Voeg toe aan mijn favoriete menu)</button>
+
+                                </form>
+
+
+                            }
+                        </td>
+
+                       
+                    </tr>
                 }
             }
         </tbody>

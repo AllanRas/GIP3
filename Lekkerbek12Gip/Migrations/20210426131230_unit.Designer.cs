@@ -4,14 +4,16 @@ using Lekkerbek12Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20210426131230_unit")]
+    partial class unit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,9 +192,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<int>("Categorie")
                         .HasColumnType("int");
 
-                    b.Property<int?>("KlantId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Naam")
                         .HasColumnType("nvarchar(max)");
 
@@ -203,8 +202,6 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("GerechtId");
-
-                    b.HasIndex("KlantId");
 
                     b.ToTable("Gerechten");
                 });
@@ -541,13 +538,6 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Klant");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
-                {
-                    b.HasOne("Lekkerbek12Gip.Models.Klant", null)
-                        .WithMany("Fav")
-                        .HasForeignKey("KlantId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -612,8 +602,6 @@ namespace Lekkerbek12Gip.Migrations
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>
                 {
                     b.Navigation("Bestellings");
-
-                    b.Navigation("Fav");
 
                     b.Navigation("Firma");
                 });
