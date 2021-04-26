@@ -25,12 +25,22 @@ namespace Lekkerbek12Gip.Controllers
         public async Task<IActionResult> Index()
         {
             // returns only the bestelling of the logged in User
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Where(x => x.Klant.emailadres == User.Identity.Name).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
+            var lekkerbekContext = _context.Bestellings
+                .Include(x => x.Klant)
+                .Where(x => x.Klant.emailadres == User.Identity.Name)
+                .Include("Gerechten").Include("Chef")
+                .Include(x => x.BestellingGerechten)
+                .OrderBy(x => x.Afgerekend)
+                .ThenByDescending(x => x.AfhaalTijd);
             
             // returns all bestellingen
             if(User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
             {
-                lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
+                lekkerbekContext = _context.Bestellings
+                    .Include(x => x.Klant).Include("Gerechten")
+                    .Include("Chef").Include(x => x.BestellingGerechten)
+                    .OrderBy(x => x.Afgerekend)
+                    .ThenByDescending(x => x.AfhaalTijd);
             }
             return View(await lekkerbekContext.ToListAsync());
         }

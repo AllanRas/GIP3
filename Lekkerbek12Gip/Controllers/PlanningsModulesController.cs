@@ -67,7 +67,7 @@ namespace Lekkerbek12Gip.Controllers
             }            
 
             var list = _context.Bestellings
-                .Where(x => x.OrderDate.Date == planningsModule.OpeningsUren.Date);
+                .Where(x => x.AfhaalTijd.Date == planningsModule.OpeningsUren.Date);
             planningsModule.Bestellings = list.ToList();
 
             var chefs = _context.Chefs.ToList(); 
@@ -210,7 +210,7 @@ namespace Lekkerbek12Gip.Controllers
                 if (item.Bestellings.Count > 0)
                 {
                     var MaxBestellingPerHour = item.Bestellings
-                   .GroupBy(x => x.OrderDate.Hour)
+                   .GroupBy(x => x.AfhaalTijd.Hour)
                    .Max(x => x.Count());
                     if (MaxBestellingPerHour > (chefsCount * 4))
                     {

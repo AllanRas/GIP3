@@ -41,7 +41,9 @@
                 ],
                 "columnDefs": [{
                     targets: 4, render: function (data) {
-                        return moment(data).subtract(10, 'days').calendar();
+                        var format = "DD/ MM /YYYY";
+                        var date = moment(data);
+                        return date.format(format);
                     }}],
                 "serverSide": true,
                 "order": [0, "asc"],

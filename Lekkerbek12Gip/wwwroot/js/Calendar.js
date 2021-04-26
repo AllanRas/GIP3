@@ -42,10 +42,14 @@ function calender(events,datesarr) {
 
          let isParag = false;
          for (var i in dvs) {            
-             const id = dvs[i].id;
-              
+             const id = dvs[i].id;              
              if (id == info.dateStr){               
                  $('#' + id).css('display', 'block');
+                 for (var day in datesarr) {
+                     if (info.dateStr == datesarr[day]) {
+                         $('#Message').css('display','block')
+                     }                        
+                 }
                  isParag = true;               
              }
              else

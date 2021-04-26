@@ -55,7 +55,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            if (numberOfChef >= 1)
+            if (numberOfChef >= 4)
             {
                 ModelState.AddModelError(nameof(bestelling.ChefId), "Geen tijslod voor deze Chef! " +
                     "Gelieve kies andere Chef");

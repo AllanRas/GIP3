@@ -95,7 +95,7 @@ else
                 <a asp-controller="Bestellings" class="card-link">Ga naar bestellings</a>                
             </div>
         </div>
-        <p id="Message"></p>
+        <p id="Message" class="alert alert-danger" style="display:none">er werd niet genoeg kok toegewezen</p>
         <div class="EventButtons">
             <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> |
             <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> |

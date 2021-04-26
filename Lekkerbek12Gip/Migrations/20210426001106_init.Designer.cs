@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20210424220521_fix")]
-    partial class fix
+    [Migration("20210426001106_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -165,9 +165,6 @@ namespace Lekkerbek12Gip.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("BtwNummer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactPersoon")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirmaNaam")

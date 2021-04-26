@@ -86,7 +86,7 @@ namespace Lekkerbek12Gip.Controllers
             {
                 return NotFound();
             }
-            var firma = await _context.Firmas.FirstAsync(x => x.KlantId == id);
+            var firma = await _context.Firmas.FirstOrDefaultAsync(x => x.KlantId == id);
             var klant = await _context.Klants.FindAsync(id);
             klant.Firma = firma;
             if (klant == null)
@@ -114,8 +114,11 @@ namespace Lekkerbek12Gip.Controllers
                 try
                 {
                     var f = await _context.Firmas.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId);
+                    if (f != null) 
+                    { 
                     f.BtwNummer = firma.BtwNummer;
                     f.FirmaNaam = firma.FirmaNaam;
+                    }
                     _context.Update(klant);
                     await _context.SaveChangesAsync();
                 }
