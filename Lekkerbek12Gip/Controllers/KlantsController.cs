@@ -166,8 +166,11 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var klant = await _context.Klants.FindAsync(id);
-            _context.Klants.Remove(klant);
+            var klant = await _context.Klants.FirstOrDefaultAsync(x => x.KlantId == id);
+            if(klant != null)
+            {
+                _context.Klants.Remove(klant);
+            }
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
