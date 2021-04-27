@@ -96,7 +96,15 @@
                 }
                 else
                 {
-                    <a>Annuleren</a>
+                    if (item.IsConfirmed == false)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.BestellingId">Annuleren</a>
+                        }
+                        else
+                        {
+                            <a>Annuleren</a>
+                        }
+                    
                 }
                 |
                 @if (User.IsInRole("Kassamedewerkster") || User.IsInRole("Admin"))
