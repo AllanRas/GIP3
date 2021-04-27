@@ -52,14 +52,9 @@
 
                                 <a asp-action="Edit" asp-route-id="@item.GerechtId">Bewerken</a> @Html.Raw(" | ")
                                 <a asp-action="Details" asp-route-id="@item.GerechtId"> Details </a>@Html.Raw(" | ")
-
-                                <a asp-action="Delete" asp-route-id="@item.GerechtId"> Verwijderen </a>@Html.Raw(" | ")
-
-
+                                <a asp-action="Delete" asp-route-id="@item.GerechtId"> Verwijderen </a>
                             }
                         </td>
-
-                       
                     </tr>
                 }
             }

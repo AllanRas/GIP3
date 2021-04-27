@@ -37,6 +37,8 @@
         {
             @if (item.BestelingStatus == status)
             {
+                if(!(item.BestelingStatus == Bestelling.BestelStatus.NotReady && item.AfhaalTijd < DateTime.Now))
+                {
             <tr>
                 <td>
                     @foreach (var waarde in item.Gerechten)
@@ -73,7 +75,7 @@
 
                     }
                     @{
-                        var bestel = Model.OrderBy(m => m.AfhaalTijd).FirstOrDefault(x => x.BestelingStatus == Bestelling.BestelStatus.NotReady);
+                        var bestel = Model.OrderBy(m => m.AfhaalTijd).FirstOrDefault(x => x.BestelingStatus == Bestelling.BestelStatus.NotReady && x.AfhaalTijd > DateTime.Now);
                         if (bestel == null)
                         {
                             bestel = item;
@@ -87,17 +89,18 @@
                     }
                     else if (item.Chef != null)
                     {
-                <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toegevoegd</a>
+                    <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toegevoegd</a>
 
                     }
                     else
                     {
-                <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toevoegen</a>
+                        <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toevoegen</a>
                     }
 
                 </td>
 
             </tr>
+                            }
                         }
          }
     </tbody>

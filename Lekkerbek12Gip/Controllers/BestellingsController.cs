@@ -166,6 +166,10 @@ namespace Lekkerbek12Gip.Controllers
             }
             if (ModelState.IsValid)
             {
+                if (bestelling.AfhaalTijd < DateTime.Now)
+                {
+                    return NotFound();
+                }
                 var bestellingCount = _context.Bestellings.Where(x => x.KlantId == bestelling.KlantId).Count();
                 var klant = _context.Klants.FirstOrDefault(x => x.KlantId == bestelling.KlantId);
 
@@ -184,7 +188,7 @@ namespace Lekkerbek12Gip.Controllers
 
                 MailMessage mail = new MailMessage();
                 mail.To.Add(klant.emailadres);
-                mail.From = new MailAddress("meuzbel@gmail.com");
+                mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
                 mail.Subject = "Order";
                 mail.Body = "<h1 style = \"color:green\">Bestelling wordt aangemaakt. Je bestelling wordt binnenkort bevestigd!</h1>";
                 mail.IsBodyHtml = true;
@@ -192,7 +196,7 @@ namespace Lekkerbek12Gip.Controllers
                 smtp.Host = "smtp.gmail.com";
                 smtp.Port = 587;
                 smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new System.Net.NetworkCredential("meuzbel@gmail.com", "mustafa134295...");
+                smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
                 smtp.EnableSsl = true;
                 smtp.Send(mail);
                 await _context.SaveChangesAsync();
