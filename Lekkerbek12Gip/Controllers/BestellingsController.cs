@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
 using Microsoft.AspNetCore.Authorization;
-
+using System.Net.Mail;
 namespace Lekkerbek12Gip.Controllers
 {
 
@@ -32,9 +32,9 @@ namespace Lekkerbek12Gip.Controllers
                 .Include(x => x.BestellingGerechten)
                 .OrderBy(x => x.Afgerekend)
                 .ThenByDescending(x => x.AfhaalTijd);
-            
+
             // returns all bestellingen
-            if(User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
             {
                 lekkerbekContext = _context.Bestellings
                     .Include(x => x.Klant).Include("Gerechten")
@@ -143,7 +143,7 @@ namespace Lekkerbek12Gip.Controllers
             }
             else if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null)
             {
-                if(aantal == 0)
+                if (aantal == 0)
                 {
                     var delete = await _context.BestellingGerechten.FirstAsync(x => (x.BestellingId == bestelling.BestellingId) && (x.GerechtId == gerecht.GerechtId));
                     _context.BestellingGerechten.Remove(delete);
@@ -177,7 +177,7 @@ namespace Lekkerbek12Gip.Controllers
             var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
             if (klant != null) ViewData["Klant"] = klant;
             // accounts made by register page automatically makes you klant so else would not make appear klantselect list in dropdownlist
-            ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name"); 
+            ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["GerechtData"] = _context.Gerechten.ToList();
             return View();
         }
@@ -209,25 +209,42 @@ namespace Lekkerbek12Gip.Controllers
                     klant.GetrouwheidsScore += 1;
                     bestelling.OrderDate = DateTime.Now;
                 }
-                if (bestellingCount!=0 && (bestellingCount+1) % 3 == 0)
+                if (bestellingCount != 0 && (bestellingCount + 1) % 3 == 0)
                 {
                     bestelling.Korting = 10;
                 }
 
                 _context.Add(bestelling);
+
+
+                MailMessage mail = new MailMessage();
+                mail.To.Add(klant.emailadres);
+                mail.From = new MailAddress("meuzbel@gmail.com");
+                mail.Subject = "Order";
+                mail.Body = "<h1 style = \"color:green\">Bestelling wordt aangemaakt. Je bestelling wordt binnenkort bevestigd!</h1>";
+                mail.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential("meuzbel@gmail.com", "mustafa134295...");
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
                 await _context.SaveChangesAsync();
                 if (User.IsInRole("Klant"))
-                {                   
-                    return RedirectToAction("Gerechten", new {id=bestelling.BestellingId });
+                {
+                    return RedirectToAction("Gerechten", new { id = bestelling.BestellingId });
                 }
                 ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
                 return RedirectToAction(nameof(Index));
+
             }
             ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);
-          
             return View(bestelling);
         }
+
+
 
         // GET: Bestellings/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -256,7 +273,7 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
-           
+
             if (id != bestelling.BestellingId)
             {
                 return NotFound();
