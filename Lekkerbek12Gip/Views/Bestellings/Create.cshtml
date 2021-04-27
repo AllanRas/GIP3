@@ -26,14 +26,10 @@
                 {
                     @if (ViewBag.Klant != null && ViewBag.Klant.KlantId != null)
                     {
-                        <input type="text" asp-for="KlantId" value=@ViewBag.Klant.KlantId readonly />
+                        <input type="hidden" asp-for="KlantId" value=@ViewBag.Klant.KlantId readonly />
                         <span asp-validation-for="KlantId" class="text-danger"></span>
                     }
                 }
-            </div>
-            <div class="form-group">
-                <label asp-for="SpecialeWensen" class="control-label"></label>
-                <select asp-for="SpecialeWensen" asp-items="Html.GetEnumSelectList<Bestelling.SpecialWensen>()" class="form-control"></select>
             </div>
             <div class="form-group">
                 <label asp-for="AfhaalTijd" class="control-label"></label>
@@ -41,7 +37,7 @@
                 <span asp-validation-for="AfhaalTijd" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input id="button" type="submit" value="Create" class="btn btn-primary" />
+                <input id="button" type="submit" value="Aanmaken" class="btn btn-primary" />
             </div>
         </form>
     </div>

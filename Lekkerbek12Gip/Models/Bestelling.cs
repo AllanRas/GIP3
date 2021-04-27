@@ -24,12 +24,6 @@ namespace Lekkerbek12Gip.Models
             Done
         }
 
-        public enum SpecialWensen
-        {
-            Pikant = 1,
-            Extra_groenten = 3,
-            Extra_saus = 2
-        }
         [Display(Name = "Status")]
         public BestelStatus BestelingStatus { get; set; } = BestelStatus.NotReady;
         [Key]
@@ -38,7 +32,7 @@ namespace Lekkerbek12Gip.Models
         public int? KlantId { get; set; }
         public int? ChefId { get; set; }
         [Display(Name ="Speciale Wensen")]
-        public SpecialWensen? SpecialeWensen { get; set; }
+        public string SpecialeWensen { get; set; }
         [Display(Name = "Order datum")]
         public DateTime OrderDate { get; set; }
         public bool Afgerekend { get; set; }
@@ -65,10 +59,6 @@ namespace Lekkerbek12Gip.Models
                     {
                         totalPrijs = totalPrijs * 9 / 10;
                     }
-                }
-                if (SpecialeWensen != null)
-                {
-                    totalPrijs += Convert.ToDecimal(SpecialeWensen);
                 }
                 return totalPrijs;
             }

@@ -145,7 +145,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
             if (klant != null) ViewData["Klant"] = klant;
-            // accounts made by register page automatically makes you klant so else would not make appear klantselect list in dropdownlist
+            // accounts made by register page automatically makes you klant so if else would not make appear klantselect list in dropdownlist
             ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["GerechtData"] = _context.Gerechten.ToList();
             return View();
@@ -320,10 +320,11 @@ namespace Lekkerbek12Gip.Controllers
         {
             var bestelling = await _context.Bestellings.Include(x => x.Klant).FirstOrDefaultAsync(x => x.BestellingId == id);
             bestelling.Afgerekend = true;
-            if (bestelling.Klant.emailadres != null)
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            if (klant != null)
             {
                 MailMessage mail = new MailMessage();
-                mail.To.Add(bestelling.Klant.emailadres);
+                mail.To.Add(klant.emailadres);
                 mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
                 mail.Subject = "Order";
                 mail.Body = "<h1 style = \"color: green\">Uw bestelling is bevestigd!</h1>";
@@ -412,19 +413,9 @@ namespace Lekkerbek12Gip.Controllers
         [AllowAnonymous]
         [HttpPost, ActionName("ConfirmBestelling")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmBestelling(int bestellingId)
+        public async Task<IActionResult> ConfirmBestelling(int bestellingId, string specialeWensen)
         {
-            var klant = new Klant();
-            if (User.IsInRole("Klant"))
-            {
-                klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
-
-            }
-            else
-            {
-                klant = _context.Bestellings.Include("Klant").FirstOrDefault(x => x.BestellingId == bestellingId).Klant;
-            }
-            
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
             var bestelling = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId);
             var bg = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
             int totaalAantal = 0;
@@ -440,10 +431,14 @@ namespace Lekkerbek12Gip.Controllers
             }
             else
             {
-                bestelling.IsConfirmed = true;
-                SendMailBevestigings(klant);
-                SendMailBeforeAfhaaltijd(klant);
+                if(bestelling.IsConfirmed != true)
+                {
+                    SendMailBevestigings(klant);
+                    bestelling.IsConfirmed = true;
+                }
+                bestelling.SpecialeWensen = specialeWensen;
             }
+            _context.Update(bestelling);
             await _context.SaveChangesAsync();
             return Redirect("~/Bestellings/");
         }
