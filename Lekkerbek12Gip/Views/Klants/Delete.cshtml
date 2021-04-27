@@ -44,7 +44,7 @@
     </dl>
 
     <form asp-action="Delete">
-        <input type="hidden" asp-for="KlantId" />
+        <input type="hidden" name="id" asp-for="KlantId" />
         <input type="submit" value="Verwijderen" class="btn btn-danger" /> |
         <a asp-action="Index">Terug naar klantenlijst</a>
     </form>

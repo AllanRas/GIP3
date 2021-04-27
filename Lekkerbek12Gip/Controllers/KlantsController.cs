@@ -132,14 +132,17 @@ namespace Lekkerbek12Gip.Controllers
                     {
                         throw;
                     }
-                } 
-             if (User.IsInRole("Klant"))
-            {
-                return RedirectToAction("index", "Gerechten");
-            }
-                return RedirectToAction(nameof(Index));
-            }
-           
+                }
+                if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+                {
+                    return RedirectToAction("Index", "Klants");
+                }
+                if (User.IsInRole("Klant"))
+                {
+                    return RedirectToAction("index", "Gerechten");
+                }
+                    return RedirectToAction(nameof(Index));
+                }
             return View(klant);
         }
 
@@ -164,10 +167,10 @@ namespace Lekkerbek12Gip.Controllers
         // POST: Klants/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var klant = await _context.Klants.FirstOrDefaultAsync(x => x.KlantId == id);
-            if(klant != null)
+            var klant = await _context.Klants.Include(x => x.Firma).FirstOrDefaultAsync(x => x.KlantId == id);
+            if (klant != null)
             {
                 _context.Klants.Remove(klant);
             }
