@@ -22,6 +22,7 @@ namespace Lekkerbek12Gip.Models
         public DbSet<Event> Events { get; set; }
         public DbSet<ChefPlanningsModule> ChefPlanningsModules { get; set; }
         public DbSet<Firma> Firmas { get; set; }
+        public DbSet<GerechtKlantFavoriet> GerechtKlantFavorieten { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -49,9 +50,19 @@ namespace Lekkerbek12Gip.Models
                        bg.Property(prop => prop.ChefStatu);
                    });
 
+            modelBuilder.Entity<Gerecht>()
+                .HasMany<Klant>(b => b.Klanten)
+                .WithMany(g => g.Fav)
+                .UsingEntity<GerechtKlantFavoriet>(
+                    bg => bg.HasOne(prop => prop.Klant).WithMany().HasForeignKey(prop => prop.KlantId),
+                    bg => bg.HasOne(prop => prop.Gerecht).WithMany().HasForeignKey(prop => prop.GerechtId),
+                    bg =>
+                    {
+                        bg.HasKey(prop => new { prop.GerechtId, prop.KlantId });
+                    }
+              );
 
-
-           base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

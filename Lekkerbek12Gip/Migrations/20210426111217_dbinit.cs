@@ -3,11 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Lekkerbek12Gip.Migrations
 {
-<<<<<<< HEAD:Lekkerbek12Gip/Migrations/20210426111217_dbinit.cs
     public partial class dbinit : Migration
-=======
-    public partial class unit : Migration
->>>>>>> 2a5be9f279b76bbc794870b4101378018b268215:Lekkerbek12Gip/Migrations/20210426131230_unit.cs
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

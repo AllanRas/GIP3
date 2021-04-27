@@ -10,13 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-<<<<<<< HEAD:Lekkerbek12Gip/Migrations/20210426111217_dbinit.Designer.cs
     [Migration("20210426111217_dbinit")]
     partial class dbinit
-=======
-    [Migration("20210426131230_unit")]
-    partial class unit
->>>>>>> 2a5be9f279b76bbc794870b4101378018b268215:Lekkerbek12Gip/Migrations/20210426131230_unit.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

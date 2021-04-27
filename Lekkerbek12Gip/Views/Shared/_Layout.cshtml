@@ -33,19 +33,20 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="PlanningsModules" asp-action="Index">Planning</a>
                             </li>
+
                         }
                         else if (User.IsInRole("Klant"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Bestellings" asp-action="Index">Bestel</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Gerechten" asp-action="Index">Menu</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Klants" asp-action="Edit">Profil</a>
-                            </li>
                         }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Gerechten" asp-action="Index">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Klants" asp-action="Edit">Profiel</a>
+                        </li>
 
                     </ul>
                 </div>

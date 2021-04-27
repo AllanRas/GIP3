@@ -3,10 +3,89 @@
 @{
     ViewData["Title"] = "Gerechten";
     IEnumerable<BestellingGerechten> bestellingGerechten = ViewData["Aantal"] as IEnumerable<BestellingGerechten>;
+    IEnumerable<GerechtKlantFavoriet> favgerechten = ViewData["FavGerechten"] as IEnumerable<GerechtKlantFavoriet>;
+    List<Gerecht> favList = new List<Gerecht>();
+    if(favgerechten != null)
+    {
+        foreach (GerechtKlantFavoriet fav in favgerechten)
+        {
+            Gerecht gerecht = Model.Where(x => x.GerechtId == fav.GerechtId).FirstOrDefault();
+            if(gerecht != null)
+            {
+                favList.Add(gerecht);
+            }
+        }
+    }
+    IEnumerable<Gerecht> favorietePerKlantList = favList as IEnumerable<Gerecht>;
 }
 <img id="logo" src="~/img/Lekkerbek.jpeg" />
 <h1>Menu</h1>
 <span>Ordernummer : </span><p style="display:inline" id="bestellingId">@ViewBag.data</p>
+
+<h2>Favoriete gerechten</h2>
+
+@if (favgerechten != null)
+{ 
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Naam)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Omschrijving)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Prijs)
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        @foreach (Gerecht gerecht in favorietePerKlantList)
+        {
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => gerecht.Naam)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => gerecht.Omschrijving)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => gerecht.Prijs) $
+                    </td>
+                    <td>
+                        <form asp-action="Gerechten">
+                            @{
+                                int aantal = 0;
+                                try
+                                {
+                                    aantal = bestellingGerechten.First(bg => (bg.GerechtId == gerecht.GerechtId) && (bg.BestellingId == ViewBag.data)).Aantal;
+                                }
+                                catch (InvalidOperationException e)
+                                {
+                                    aantal = 0;
+                                }
+                            }
+                            <input type="number" name="aantal" value="@aantal" />
+                            <input type="hidden" name="gerechtId" value="@gerecht.GerechtId" />
+                            <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+                            <button type="submit" value="Gerechten">+</button>
+                            aantal: @aantal
+                        </form>
+                        <form asp-action="DelFav">
+                            <input type="hidden" name="gerechtId" value="@gerecht.GerechtId" />
+                            <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+                            <button type="submit" value="DelFav">verwijder favoriet</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        }
+    </table>
+}
+
 
 @foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
 {
@@ -47,14 +126,15 @@
                         <td>
                             <form asp-action="Gerechten">
                                 @{
-                                    int aantal = 0;
-                                    try
-                                    {
-                                        aantal = bestellingGerechten.First(bg => (bg.GerechtId == item.GerechtId) && (bg.BestellingId == ViewBag.data)).Aantal;
-                                    }
-                                    catch (InvalidOperationException e)
+                                    int? aantal;
+                                    var bg = bestellingGerechten.Where(bg => (bg.GerechtId == item.GerechtId) && (bg.BestellingId == ViewBag.data)).FirstOrDefault();
+                                    if(bg == null)
                                     {
                                         aantal = 0;
+                                    }
+                                    else
+                                    {
+                                        aantal = bg.Aantal;
                                     }
                                 }
                                 <input type="number" name="aantal" value="@aantal" />
@@ -63,7 +143,11 @@
                                 <button type="submit" value="Gerechten">+</button>
                                 aantal: @aantal
                             </form>
-                            
+                            <form asp-action="AddFav">
+                                <input type="hidden" name="gerechtId" value="@item.GerechtId"/>
+                                <input type="hidden" name="bestellingId" value="@ViewBag.data"/>
+                                <button type="submit" value="AddFav">Toevoegen aan favorieten</button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>

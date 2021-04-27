@@ -61,8 +61,34 @@
             </dt>
             <dd>
 
-                <div>€ @(Model.Korting * intPrijs/100)</div>
+                <div>€ @(Model.Korting * intPrijs / 100)</div>
 
+            </dd>
+        </dl>
+    </section>
+    <section class="col-6" id="prijsexclbtw">
+        <dl>
+            <dt>
+                Prijs excl. btw:
+            </dt>
+            <dd>
+                @{decimal prijsExclbtw = 0;}
+                @foreach (Gerecht g in Model.Gerechten)
+                {
+                    decimal prijsPerGerecht;
+                    if(g.Categorie == Gerecht.Categorieen.BierenFles || g.Categorie == Gerecht.Categorieen.BierenVat 
+                        || g.Categorie == Gerecht.Categorieen.Huiswijnen || g.Categorie == Gerecht.Categorieen.Trappist ||
+                        g.Categorie == Gerecht.Categorieen.WijnenSugRood || g.Categorie == Gerecht.Categorieen.WijnenSugWit)
+                    {
+                        prijsPerGerecht = g.Prijs * Model.BestellingGerechten.FirstOrDefault(x => x.GerechtId == g.GerechtId).Aantal / (decimal)1.21;
+                    }
+                    else
+                    {
+                        prijsPerGerecht = g.Prijs * Model.BestellingGerechten.FirstOrDefault(x => x.GerechtId == g.GerechtId).Aantal / (decimal)1.06;
+                    }
+                    prijsExclbtw += prijsPerGerecht;
+                }
+                € @Math.Round(prijsExclbtw,2);
             </dd>
         </dl>
     </section>
@@ -77,4 +103,3 @@
         </dl>
     </section>
 </div>
-

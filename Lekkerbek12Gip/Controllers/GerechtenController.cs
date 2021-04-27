@@ -158,24 +158,5 @@ namespace Lekkerbek12Gip.Controllers
         {
             return _context.Gerechten.Any(e => e.GerechtId == id);
         }
-
-
-        [AllowAnonymous]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddFav(int Id)
-        {
-            var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == Id);
-            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
-            if (klant.Fav.FirstOrDefault((x => x.GerechtId == Id))==null)
-            {
-                klant.Fav.Add(gerecht);
-            }
-           
-            await _context.SaveChangesAsync();
-            Console.WriteLine("aa");
-           
-            return RedirectToAction(nameof(Index));
-        }
     }
 }

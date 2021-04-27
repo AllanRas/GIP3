@@ -84,39 +84,19 @@ namespace Lekkerbek12Gip.Controllers
         }
 
 
-        //Gerech kies
+        
         [HttpGet]
         public async Task<IActionResult> Gerechten(int? id)
         {
-            ViewData["data"] = id;
             List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
+            Klant klant = await _context.Klants.FirstOrDefaultAsync(x => x.emailadres == User.Identity.Name);
+            List<GerechtKlantFavoriet> gerechten = await _context.GerechtKlantFavorieten.Where(x => x.KlantId == klant.KlantId).ToListAsync();
+            ViewData["FavGerechten"] = gerechten;
+            ViewData["data"] = id;
             ViewData["Aantal"] = bestellingGerechten;
+            
             return View(await _context.Gerechten.ToListAsync());
         }
-
-
-        //favorite Gerech kies
-        [HttpGet]
-        public async Task<IActionResult> FavGerechten(int? id)
-        {
-            ViewData["data"] = id;
-            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
-            ViewData["Aantal"] = bestellingGerechten;
-            if (User.IsInRole("Klant"))
-            {
-                var klant = _context.Klants.Include(x => x.Fav).FirstOrDefault(x => x.emailadres == User.Identity.Name);
-                if (klant.Fav.Count()>0)
-                {
-                       return View(klant.Fav.ToList());
-                }
-               
-            }
-            return View(await _context.Gerechten.ToListAsync());
-        }
-
-
-       
-
 
         [HttpPost]
         public async Task<IActionResult> Gerechten(int bestellingId, int gerechtId, int aantal)
@@ -150,21 +130,6 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal = aantal;
             }
-
-            //if (bestellinGerecht == null)
-            //{
-            //    BestellingGerechten bg = new BestellingGerechten
-            //    {
-            //        Aantal = aantal,
-            //        Bestelling = bestelling,
-            //        BestellingId = bestelling.BestellingId,
-            //        Gerecht = gerecht,
-            //        GerechtId = gerecht.GerechtId
-            //    };
-            //    bestelling.BestellingGerechten.Add(bg);
-            //    await _context.BestellingGerechten.AddAsync(bg);
-
-            //}
 
             await _context.SaveChangesAsync();
             return RedirectToAction();
@@ -384,6 +349,49 @@ namespace Lekkerbek12Gip.Controllers
             }
         }
 
+
+        [AllowAnonymous]
+        [HttpPost, ActionName("AddFav")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddFav(int gerechtId, int bestellingId)
+        {
+            var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == gerechtId);
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            var favGerecht = await _context.GerechtKlantFavorieten.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId && x.GerechtId == gerecht.GerechtId);
+            var bestId = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId).BestellingId;
+
+            if (favGerecht == null)
+            {
+                GerechtKlantFavoriet klantFavoriet = new GerechtKlantFavoriet
+                {
+                    GerechtId = gerecht.GerechtId,
+                    KlantId = klant.KlantId,
+                    Gerecht = gerecht,
+                    Klant = klant
+                };
+                _context.GerechtKlantFavorieten.Add(klantFavoriet);
+                
+            }
+            await _context.SaveChangesAsync();
+            return Redirect("~/Bestellings/Gerechten/" + bestId);
+        }
+
+        public async Task<IActionResult> DelFav(int gerechtId, int bestellingId)
+        {
+            var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == gerechtId);
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            var bestId = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId).BestellingId;
+
+            var favGerecht = await _context.GerechtKlantFavorieten.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId && x.GerechtId == gerecht.GerechtId);
+
+            if(favGerecht != null)
+            {
+                _context.GerechtKlantFavorieten.Remove(favGerecht);
+            }
+            await _context.SaveChangesAsync();
+            
+            return Redirect("~/Bestellings/Gerechten/" + bestId);
+        }
 
         private bool BestellingExists(int id)
         {
