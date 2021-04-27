@@ -90,8 +90,12 @@ namespace Lekkerbek12Gip.Controllers
         {
             List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
             Klant klant = await _context.Klants.FirstOrDefaultAsync(x => x.emailadres == User.Identity.Name);
-            List<GerechtKlantFavoriet> gerechten = await _context.GerechtKlantFavorieten.Where(x => x.KlantId == klant.KlantId).ToListAsync();
-            ViewData["FavGerechten"] = gerechten;
+            if (User.IsInRole("Klant"))
+            {
+                List<GerechtKlantFavoriet> gerechten = await _context.GerechtKlantFavorieten.Where(x => x.KlantId == klant.KlantId).ToListAsync();
+                ViewData["FavGerechten"] = gerechten;
+            }
+           
             ViewData["data"] = id;
             ViewData["Aantal"] = bestellingGerechten;
             
@@ -410,7 +414,17 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmBestelling(int bestellingId)
         {
-            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            var klant = new Klant();
+            if (User.IsInRole("Klant"))
+            {
+                klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+
+            }
+            else
+            {
+                klant = _context.Bestellings.Include("Klant").FirstOrDefault(x => x.BestellingId == bestellingId).Klant;
+            }
+            
             var bestelling = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId);
             var bg = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
             int totaalAantal = 0;
@@ -442,6 +456,7 @@ namespace Lekkerbek12Gip.Controllers
         public void SendMailBevestigings(Klant klant)
         {
             MailMessage mail = new MailMessage();
+            
             mail.To.Add(klant.emailadres);
             mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
             mail.Subject = "Order";
