@@ -1,8 +1,9 @@
 ﻿body {
 }
-#calendar{
-    width:60%;
-    margin-right:10px;
+#calendar {
+    width: 750px;
+    height: 500px;
+    margin-right: 10px;
 }
 .body-container{
     display: flex
@@ -22,9 +23,10 @@ textarea{
     resize:none;    
     height:200px;
 }
-.info{
-    display:flex;
-    justify-content:space-between;
+.info {
+    display: flex;
+    justify-content: space-between;
+    white-space: break-spaces;
 }
 .card {
     margin: 25px auto;
