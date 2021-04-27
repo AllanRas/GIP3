@@ -320,10 +320,11 @@ namespace Lekkerbek12Gip.Controllers
         {
             var bestelling = await _context.Bestellings.Include(x => x.Klant).FirstOrDefaultAsync(x => x.BestellingId == id);
             bestelling.Afgerekend = true;
-            if (bestelling.Klant.emailadres != null)
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            if (klant != null)
             {
                 MailMessage mail = new MailMessage();
-                mail.To.Add(bestelling.Klant.emailadres);
+                mail.To.Add(klant.emailadres);
                 mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
                 mail.Subject = "Order";
                 mail.Body = "<h1 style = \"color: green\">Uw bestelling is bevestigd!</h1>";
@@ -430,10 +431,12 @@ namespace Lekkerbek12Gip.Controllers
             }
             else
             {
+                if(bestelling.IsConfirmed != true)
+                {
+                    SendMailBevestigings(klant);
+                    bestelling.IsConfirmed = true;
+                }
                 bestelling.SpecialeWensen = specialeWensen;
-                bestelling.IsConfirmed = true;
-                SendMailBevestigings(klant);
-                SendMailBeforeAfhaaltijd(klant);
             }
             _context.Update(bestelling);
             await _context.SaveChangesAsync();
