@@ -314,8 +314,24 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Afrekenen(int id)
         {
-            var bestelling = await _context.Bestellings.FindAsync(id);
+            var bestelling = await _context.Bestellings.Include(x => x.Klant).FirstOrDefaultAsync(x => x.BestellingId == id);
             bestelling.Afgerekend = true;
+            if (bestelling.Klant.emailadres != null)
+            {
+                MailMessage mail = new MailMessage();
+                mail.To.Add(bestelling.Klant.emailadres);
+                mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
+                mail.Subject = "Order";
+                mail.Body = "<h1 style = \"color: green\">Uw bestelling is bevestigd!</h1>";
+                mail.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
+            }
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
