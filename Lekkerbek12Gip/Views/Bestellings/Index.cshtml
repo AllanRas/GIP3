@@ -112,8 +112,10 @@
                 }
                 @if (item.Afgerekend != true)
                 {
-                    <a asp-action="Gerechten" asp-route-id="@item.BestellingId">Gerechten Toevoegen </a>
+                    <a asp-action="Gerechten" asp-route-id="@item.BestellingId">Gerechten Toevoegen </a> @Html.Raw(" | ")
                 }
+
+                <a asp-action="FavGerechten" asp-route-id="@item.BestellingId">favorite Gerechten Toevoegen </a>
 
             </td>
         </tr>
