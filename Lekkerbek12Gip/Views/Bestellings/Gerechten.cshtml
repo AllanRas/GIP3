@@ -24,7 +24,10 @@
 <a asp-action="index">Terug naar bestellingslijst</a>
 
 <form asp-action="ConfirmBestelling">
-    <input type="hidden" name="bestellingId" value="@ViewBag.data"/>
+    <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+    <br />
+    <textarea style="resize: none" name="specialeWensen" placeholder="Speciale Wensen?" rows="4" cols="80" maxlength="1000"></textarea>
+    <br />
     <button value="ConfirmBestelling">Bestelling Confirmeren</button>
 </form>
 
@@ -69,7 +72,7 @@
                                 {
                                     aantal = bestellingGerechten.First(bg => (bg.GerechtId == gerecht.GerechtId) && (bg.BestellingId == ViewBag.data)).Aantal;
                                 }
-                                catch (InvalidOperationException e)
+                                catch (InvalidOperationException)
                                 {
                                     aantal = 0;
                                 }

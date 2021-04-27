@@ -141,7 +141,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
             if (klant != null) ViewData["Klant"] = klant;
-            // accounts made by register page automatically makes you klant so else would not make appear klantselect list in dropdownlist
+            // accounts made by register page automatically makes you klant so if else would not make appear klantselect list in dropdownlist
             ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["GerechtData"] = _context.Gerechten.ToList();
             return View();
@@ -408,8 +408,9 @@ namespace Lekkerbek12Gip.Controllers
         [AllowAnonymous]
         [HttpPost, ActionName("ConfirmBestelling")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmBestelling(int bestellingId)
+        public async Task<IActionResult> ConfirmBestelling(int bestellingId, string specialeWensen)
         {
+
             var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
             var bestelling = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId);
             var bg = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
@@ -426,10 +427,12 @@ namespace Lekkerbek12Gip.Controllers
             }
             else
             {
+                bestelling.SpecialeWensen = specialeWensen;
                 bestelling.IsConfirmed = true;
                 SendMailBevestigings(klant);
                 SendMailBeforeAfhaaltijd(klant);
             }
+            _context.Update(bestelling);
             await _context.SaveChangesAsync();
             return Redirect("~/Bestellings/");
         }
