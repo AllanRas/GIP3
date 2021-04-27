@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20210426111217_dbinit")]
-    partial class dbinit
+    [Migration("20210427150245_addedbestellingIsconfirmed")]
+    partial class addedbestellingIsconfirmed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,6 +39,9 @@ namespace Lekkerbek12Gip.Migrations
 
                     b.Property<int?>("ChefId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("KlantId")
                         .IsRequired()
@@ -204,6 +207,26 @@ namespace Lekkerbek12Gip.Migrations
                     b.HasKey("GerechtId");
 
                     b.ToTable("Gerechten");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.GerechtKlantFavoriet", b =>
+                {
+                    b.Property<int?>("GerechtId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("KlantId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GerechtId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("GerechtId", "KlantId");
+
+                    b.HasIndex("GerechtId1");
+
+                    b.HasIndex("KlantId");
+
+                    b.ToTable("GerechtKlantFavorieten");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>
@@ -538,6 +561,29 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Klant");
                 });
 
+            modelBuilder.Entity("Lekkerbek12Gip.Models.GerechtKlantFavoriet", b =>
+                {
+                    b.HasOne("Lekkerbek12Gip.Models.Gerecht", "Gerecht")
+                        .WithMany()
+                        .HasForeignKey("GerechtId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Lekkerbek12Gip.Models.Gerecht", null)
+                        .WithMany("FavKlanten")
+                        .HasForeignKey("GerechtId1");
+
+                    b.HasOne("Lekkerbek12Gip.Models.Klant", "Klant")
+                        .WithMany()
+                        .HasForeignKey("KlantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gerecht");
+
+                    b.Navigation("Klant");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -597,6 +643,11 @@ namespace Lekkerbek12Gip.Migrations
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
                 {
                     b.Navigation("Bestellings");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
+                {
+                    b.Navigation("FavKlanten");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>

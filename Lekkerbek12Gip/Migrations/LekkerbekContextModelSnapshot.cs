@@ -38,6 +38,9 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<int?>("ChefId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("KlantId")
                         .IsRequired()
                         .HasColumnType("int");

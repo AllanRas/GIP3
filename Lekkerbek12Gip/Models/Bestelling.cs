@@ -73,6 +73,7 @@ namespace Lekkerbek12Gip.Models
                 return totalPrijs;
             }
         }
+        public bool IsConfirmed { get; set; }
         public virtual ICollection<Gerecht> Gerechten { get; set; }
         public virtual ICollection<BestellingGerechten> BestellingGerechten { get; set; }
         public virtual Klant Klant { get; set; }

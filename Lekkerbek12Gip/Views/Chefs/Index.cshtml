@@ -35,7 +35,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            @if (item.BestelingStatus == status)
+            @if (item.BestelingStatus == status && item.IsConfirmed == true)
             {
                 if(!(item.BestelingStatus == Bestelling.BestelStatus.NotReady && item.AfhaalTijd < DateTime.Now))
                 {

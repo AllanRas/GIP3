@@ -177,6 +177,7 @@ namespace Lekkerbek12Gip.Controllers
                 {
                     klant.GetrouwheidsScore += 1;
                     bestelling.OrderDate = DateTime.Now;
+                    bestelling.IsConfirmed = false;
                 }
                 if (bestellingCount != 0 && (bestellingCount + 1) % 3 == 0)
                 {
@@ -185,20 +186,6 @@ namespace Lekkerbek12Gip.Controllers
 
                 _context.Add(bestelling);
 
-
-                MailMessage mail = new MailMessage();
-                mail.To.Add(klant.emailadres);
-                mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
-                mail.Subject = "Order";
-                mail.Body = "<h1 style = \"color:green\">Bestelling wordt aangemaakt. Je bestelling wordt binnenkort bevestigd!</h1>";
-                mail.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.Port = 587;
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
-                smtp.EnableSsl = true;
-                smtp.Send(mail);
                 await _context.SaveChangesAsync();
                 if (User.IsInRole("Klant"))
                 {
@@ -400,6 +387,57 @@ namespace Lekkerbek12Gip.Controllers
         private bool BestellingExists(int id)
         {
             return _context.Bestellings.Any(e => e.BestellingId == id);
+        }
+
+        [AllowAnonymous]
+        [HttpPost, ActionName("ConfirmBestelling")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmBestelling(int bestellingId)
+        {
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            var bestelling = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId);
+            var bg = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
+            int totaalAantal = 0;
+            foreach(BestellingGerechten b in bg)
+            {
+                totaalAantal += b.Aantal;
+            }
+
+            if(totaalAantal < 1)
+            {
+                bestelling.IsConfirmed = false;
+                return Redirect("~/Bestellings/Gerechten/" + bestelling.BestellingId);
+            }
+            else
+            {
+                bestelling.IsConfirmed = true;
+                SendMailBevestigings(klant);
+                SendMailBeforeAfhaaltijd(klant);
+            }
+            await _context.SaveChangesAsync();
+            return Redirect("~/Bestellings/");
+        }
+
+        public void SendMailBeforeAfhaaltijd(Klant klant)
+        {
+
+        }
+
+        public void SendMailBevestigings(Klant klant)
+        {
+            MailMessage mail = new MailMessage();
+            mail.To.Add(klant.emailadres);
+            mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
+            mail.Subject = "Order";
+            mail.Body = "<h1 style = \"color:green\">Bestelling wordt aangemaakt. Je bestelling wordt binnenkort bevestigd!</h1>";
+            mail.IsBodyHtml = true;
+            SmtpClient smtp = new SmtpClient();
+            smtp.Host = "smtp.gmail.com";
+            smtp.Port = 587;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
+            smtp.EnableSsl = true;
+            smtp.Send(mail);
         }
 
     }

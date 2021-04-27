@@ -21,6 +21,12 @@
 <img id="logo" src="~/img/Lekkerbek.jpeg" />
 <h1>Menu</h1>
 <span>Ordernummer : </span><p style="display:inline" id="bestellingId">@ViewBag.data</p>
+<a asp-action="index">Terug naar bestellingslijst</a>
+
+<form asp-action="ConfirmBestelling">
+    <input type="hidden" name="bestellingId" value="@ViewBag.data"/>
+    <button value="ConfirmBestelling">Bestelling Confirmeren</button>
+</form>
 
 <h2>Favoriete gerechten</h2>
 
