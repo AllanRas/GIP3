@@ -197,7 +197,7 @@ namespace Lekkerbek12Gip.Controllers
             var indexlist = _context.PlanningsModules
                 .Include(x => x.chefs)
                 .Include(x => x.Bestellings)
-                .Include(x => x.ChefPlanningsModules);
+                .Include(x => x.ChefPlanningsModules).ToList();
                            
             List<DateTime> days = new List<DateTime>();
             foreach (var item in indexlist)

@@ -10,18 +10,20 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net.Mail;
 namespace Lekkerbek12Gip.Controllers
 {
-
+    [Authorize(Roles = "Admin")]
     public class BestellingsController : Controller
     {
 
         private readonly LekkerbekContext _context;
 
+        
         public BestellingsController(LekkerbekContext context)
         {
             _context = context;
         }
 
         // GET: Bestellings
+
         public async Task<IActionResult> Index()
         {
             // returns only the bestelling of the logged in User
@@ -447,8 +449,9 @@ namespace Lekkerbek12Gip.Controllers
                     SendMailBevestigings(klant);
                     bestelling.IsConfirmed = true;
                 }
-                bestelling.SpecialeWensen = specialeWensen;
-            }
+               
+            } 
+            bestelling.SpecialeWensen = specialeWensen;
             _context.Update(bestelling);
             await _context.SaveChangesAsync();
             return Redirect("~/Bestellings/");

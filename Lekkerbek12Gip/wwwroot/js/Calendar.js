@@ -46,8 +46,9 @@ function calender(events,datesarr) {
              if (id == info.dateStr){               
                  $('#' + id).css('display', 'block');
                  for (var day in datesarr) {
-                     if (info.dateStr == datesarr[day]) {
-                         $('#Message').css('display','block')
+                     if (info.dateStr == datesarr[day]) {  
+                         $('#' + id + '>p').css('display', 'block');
+                        
                      }                        
                  }
                  isParag = true;               

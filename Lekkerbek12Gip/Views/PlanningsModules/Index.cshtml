@@ -47,7 +47,7 @@
 
 <div  id=@item.OpeningsUren.ToString("yyyy-MM-dd") style="display:none">
     <div class="info">
-        <div class="col" style="white-space:unset">
+        <div class="col" >
             @Html.DisplayName(item.OpeningsUren.DayOfWeek.ToString() + "\n" + Html.DisplayName(item.OpeningsUren.ToShortDateString()))
         </div>
         <div>
@@ -57,7 +57,7 @@
         @foreach (var ob in item.Events)
         {
             <div>@ob.Title</div>}
-        <div>
+        <div class="col">
             @if (item.ChefPlanningsModules.Where(x => x.ChefStatu == ChefPlanningsModule.ChefStatus.Werken).Count() != 0)
             {
                 @foreach (var ob in item.ChefPlanningsModules)
@@ -73,7 +73,7 @@
             }
 
         </div>
-        <div>
+        <div class="col">
             @if (item.ChefPlanningsModules.Where(x => x.ChefStatu == ChefPlanningsModule.ChefStatus.Ziek).Count() != 0)
             {
                 @foreach (var ob in item.ChefPlanningsModules)
@@ -91,7 +91,7 @@
         @foreach (var ob in item.Events)
         {
             <div>@ob.Title</div>}
-        <div>
+        <div class="col">
             @if (item.ChefPlanningsModules.Where(x => x.ChefStatu == ChefPlanningsModule.ChefStatus.Toestemming).Count() != 0)
             {
                 @foreach (var ob in item.ChefPlanningsModules)
@@ -116,10 +116,10 @@
                 <a asp-controller="Bestellings" class="card-link">Ga naar bestellings</a>                
             </div>
         </div>
-        <p id="Message" class="alert alert-danger" style="display:none">er werd niet genoeg kok toegewezen</p>
+        <p id="@item.OpeningsUren.ToString("dd-MM-yyyy")" class="alert alert-danger" style="display:none">er werd niet genoeg kok toegewezen</p>
         <div class="EventButtons">
-            <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> |
-            <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> |
+            <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> 
+            <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> 
             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PlanningsModuleId">Delete</a>
         </div>
 
