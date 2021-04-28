@@ -75,7 +75,7 @@
 
                     }
                     @{
-                        var bestel = Model.OrderBy(m => m.AfhaalTijd).FirstOrDefault(x => x.BestelingStatus == Bestelling.BestelStatus.NotReady && x.AfhaalTijd > DateTime.Now);
+                        var bestel = Model.OrderBy(m => m.AfhaalTijd).FirstOrDefault(x => x.BestelingStatus == Bestelling.BestelStatus.NotReady && x.AfhaalTijd > DateTime.Now&&x.IsConfirmed==true);
                         if (bestel == null)
                         {
                             bestel = item;

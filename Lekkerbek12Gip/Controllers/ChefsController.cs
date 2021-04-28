@@ -31,7 +31,7 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var bestelling = await _context.Bestellings.FindAsync(id);
-
+            
             if (bestelling == null)
             {
                 return NotFound();
@@ -46,8 +46,9 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddChef(int id, [Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
+        public async Task<IActionResult> AddChef(int id, [Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting,IsConfirmed")] Bestelling bestelling)
         {
+            
             var numberOfChef = _context.Bestellings.Where(x => x.ChefId == bestelling.ChefId &&
             x.OrderDate >= DateTime.Now.AddDays(-1) && x.OrderDate < DateTime.Now && x.BestelingStatus == Bestelling.BestelStatus.GettingReady).Count();
             if (id != bestelling.BestellingId)
@@ -65,6 +66,7 @@ namespace Lekkerbek12Gip.Controllers
             {
                 try
                 {
+                    bestelling.IsConfirmed = true;
                     bestelling.BestelingStatus = Bestelling.BestelStatus.GettingReady;
                     _context.Update(bestelling);
                     await _context.SaveChangesAsync();
