@@ -51,20 +51,21 @@
             });
         });
 
-
+       
        $('#custtable tbody').on('click', 'tr', function (e) {
  e.preventDefault();
  var id = $("td:first", this).text();
+
  if ($(e.target).is("a.del")) {
-    $.get('@Url.Action("Delete","Klants")', { id: id }, function (data) {
-    $("body").html(data);
+    $.get('@Url.Action("Delete","Klants")', { id: id } , function (data) {
+        $("body").html(data);
     });
- return;
+        return;
     }
     $.get('@Url.Action("Edit","Klants")', { id: id }, function (data) {
-    $("body").html(data);
+        $("body").html(data);
         });
-        });
+    });
 
     </script>
 }

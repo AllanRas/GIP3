@@ -415,9 +415,20 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmBestelling(int bestellingId, string specialeWensen)
         {
-            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            var klant = new Klant();
+            if (User.IsInRole("Klant"))
+            {
+                klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+
+            }
+            else
+            {
+                klant = _context.Bestellings.Include("Klant").FirstOrDefault(x => x.BestellingId == bestellingId).Klant;
+            }
             var bestelling = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId);
             var bg = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
+
+
             int totaalAantal = 0;
             foreach(BestellingGerechten b in bg)
             {
