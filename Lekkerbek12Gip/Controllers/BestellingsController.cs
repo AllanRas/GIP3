@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net.Mail;
 namespace Lekkerbek12Gip.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
     public class BestellingsController : Controller
     {
 
@@ -24,6 +24,7 @@ namespace Lekkerbek12Gip.Controllers
 
         // GET: Bestellings
 
+        [Authorize(Roles ="Klant")]
         public async Task<IActionResult> Index()
         {
             // returns only the bestelling of the logged in User
@@ -142,7 +143,6 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Bestellings/Create
-        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         public IActionResult Create()
         {
             var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
