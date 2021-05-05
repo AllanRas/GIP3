@@ -6,22 +6,59 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
-
+using Microsoft.AspNetCore.Authorization;
+using System.Net.Mail;
 namespace Lekkerbek12Gip.Controllers
 {
+    [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
     public class BestellingsController : Controller
     {
+
         private readonly LekkerbekContext _context;
 
+        
         public BestellingsController(LekkerbekContext context)
         {
             _context = context;
         }
 
         // GET: Bestellings
+
+        [Authorize(Roles ="Klant")]
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef");
+            // returns only the bestelling of the logged in User
+            var lekkerbekContext = _context.Bestellings
+                .Include(x => x.Klant)
+                .Where(x => x.Klant.emailadres == User.Identity.Name)
+                .Include("Gerechten").Include("Chef")
+                .Include(x => x.BestellingGerechten)
+                .OrderBy(x => x.Afgerekend)
+                .ThenByDescending(x => x.AfhaalTijd);
+
+            // returns all bestellingen
+            if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            {
+                lekkerbekContext = _context.Bestellings
+                    .Include(x => x.Klant).Include("Gerechten")
+                    .Include("Chef").Include(x => x.BestellingGerechten)
+                    .OrderBy(x => x.Afgerekend)
+                    .ThenByDescending(x => x.AfhaalTijd);
+            }
+            return View(await lekkerbekContext.ToListAsync());
+        }
+
+        // GET: Bestellings/AfgerekendeBestellingen
+        public async Task<IActionResult> AfgerekendeBestellingen()
+        {
+            // returns only the bestelling of the logged in User
+            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Where(x => x.Klant.emailadres == User.Identity.Name).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
+
+            // returns all bestellingen
+            if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            {
+                lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
+            }
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -32,6 +69,9 @@ namespace Lekkerbek12Gip.Controllers
             {
                 return NotFound();
             }
+
+            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
+            ViewData["Aantal"] = bestellingGerechten;
 
             var bestelling = await _context.Bestellings
                 .Include(b => b.Klant)
@@ -45,14 +85,25 @@ namespace Lekkerbek12Gip.Controllers
 
             return View(bestelling);
         }
-        //Gerech kies
+
+
+        
         [HttpGet]
         public async Task<IActionResult> Gerechten(int? id)
         {
+            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
+            Klant klant = await _context.Klants.FirstOrDefaultAsync(x => x.emailadres == User.Identity.Name);
+            if (User.IsInRole("Klant"))
+            {
+                List<GerechtKlantFavoriet> gerechten = await _context.GerechtKlantFavorieten.Where(x => x.KlantId == klant.KlantId).ToListAsync();
+                ViewData["FavGerechten"] = gerechten;
+            }
+           
             ViewData["data"] = id;
+            ViewData["Aantal"] = bestellingGerechten;
+            
             return View(await _context.Gerechten.ToListAsync());
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Gerechten(int bestellingId, int gerechtId, int aantal)
@@ -60,11 +111,9 @@ namespace Lekkerbek12Gip.Controllers
             var bestelling = await _context.Bestellings.FindAsync(bestellingId);
             var gerecht = await _context.Gerechten.FindAsync(gerechtId);
 
-            var bestellinGerecht = _context.BestellingGerechten.FirstOrDefault(x => x.BestellingId == bestellingId);
+            var bestellinGerecht = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
 
-            bestelling.Gerechten.Add(gerecht);
-            gerecht.Bestellingen.Add(bestelling);
-            if (bestellinGerecht == null)
+            if (aantal > 0 && bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) == null)
             {
                 BestellingGerechten bg = new BestellingGerechten
                 {
@@ -74,33 +123,32 @@ namespace Lekkerbek12Gip.Controllers
                     Gerecht = gerecht,
                     GerechtId = gerecht.GerechtId
                 };
+                bestelling.Gerechten.Add(gerecht);
+                bestelling.BestellingGerechten.Add(bg);
                 await _context.BestellingGerechten.AddAsync(bg);
+
             }
-            else
+            else if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null)
             {
-                bestellinGerecht.Aantal = aantal;
+                if (aantal == 0)
+                {
+                    var delete = await _context.BestellingGerechten.FirstAsync(x => (x.BestellingId == bestelling.BestellingId) && (x.GerechtId == gerecht.GerechtId));
+                    _context.BestellingGerechten.Remove(delete);
+                }
+                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal = aantal;
             }
-
-
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction();
         }
 
         // GET: Bestellings/Create
         public IActionResult Create()
         {
-            ViewData["Name"] = new SelectList(_context.Klants, "KlantId", "Name");
-            ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
-            var date = DateTime.Now;
-            var dateOneHourBefore = DateTime.Now.AddMinutes(-60);
-            var lastHourChef2 = _context.Bestellings
-                 .Where(p => (p.OrderDate < date && p.OrderDate > dateOneHourBefore) && p.ChefId == 2).Count();
-            ViewBag.lastHourChef2 = 4 - lastHourChef2;
-            var lastHourChef1 = _context.Bestellings
-                 .Where(p => (p.OrderDate < date && p.OrderDate > dateOneHourBefore) && p.ChefId == 1).Count();
-            ViewBag.lastHourChef1 = 4 - lastHourChef1;
-
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            if (klant != null) ViewData["Klant"] = klant;
+            // accounts made by register page automatically makes you klant so if else would not make appear klantselect list in dropdownlist
+            ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
             ViewData["GerechtData"] = _context.Gerechten.ToList();
             return View();
         }
@@ -112,35 +160,53 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
-
+            var events = _context.Events.ToList();
+            foreach (var item in events)
+            {
+                //We check if the order placed doesn't fall under an event, if the afhaaltijd of the order falls on an event
+                //it will not be able to confirm the order.
+                //We don't use orderdate because we should still be able to place an order when there is an event
+                //you shouldn't be able to PICK UP an order when there is an event taking place
+                if (bestelling.AfhaalTijd > item.Start && bestelling.AfhaalTijd < item.End)
+                    ModelState.AddModelError(nameof(bestelling.AfhaalTijd), "afhaaltijd is geplaatst tijdens een event, gelieve een andere tijd te nemen.");
+            }
             if (ModelState.IsValid)
             {
-
-
+                if (bestelling.AfhaalTijd < DateTime.Now)
+                {
+                    return NotFound();
+                }
                 var bestellingCount = _context.Bestellings.Where(x => x.KlantId == bestelling.KlantId).Count();
                 var klant = _context.Klants.FirstOrDefault(x => x.KlantId == bestelling.KlantId);
 
                 if (klant != null)
                 {
                     klant.GetrouwheidsScore += 1;
+                    bestelling.OrderDate = DateTime.Now;
+                    bestelling.IsConfirmed = false;
                 }
-
-
-                if (bestellingCount % 3 == 0)
+                if (bestellingCount != 0 && (bestellingCount + 1) % 3 == 0)
                 {
                     bestelling.Korting = 10;
-
                 }
 
                 _context.Add(bestelling);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "KlantId", bestelling.KlantId);
-            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);
 
+                await _context.SaveChangesAsync();
+                if (User.IsInRole("Klant"))
+                {
+                    return RedirectToAction("Gerechten", new { id = bestelling.BestellingId });
+                }
+                ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
+                return RedirectToAction(nameof(Index));
+
+            }
+            ViewData["KlantSelect"] = new SelectList(_context.Klants, "KlantId", "Name");
+            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", bestelling.ChefId);
             return View(bestelling);
         }
+
+
 
         // GET: Bestellings/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -169,6 +235,7 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
         {
+
             if (id != bestelling.BestellingId)
             {
                 return NotFound();
@@ -228,7 +295,7 @@ namespace Lekkerbek12Gip.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        // GET: Bestellingen/Afrekenen/5
         public async Task<IActionResult> Afrekenen(int? id)
         {
             if (id == null)
@@ -253,16 +320,164 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Afrekenen(int id)
         {
-            var bestelling = await _context.Bestellings.FindAsync(id);
+            var bestelling = await _context.Bestellings.Include(x => x.Klant).FirstOrDefaultAsync(x => x.BestellingId == id);
             bestelling.Afgerekend = true;
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            if (klant != null)
+            {
+                MailMessage mail = new MailMessage();
+                mail.To.Add(klant.emailadres);
+                mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
+                mail.Subject = "Order";
+                mail.Body = "<h1 style = \"color: green\">Uw bestelling is bevestigd!</h1>";
+                mail.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
+            }
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Factuur(int id)
+        {
+            Bestelling bestelling = await (from b in _context.Bestellings
+                                    .Include(b => b.Klant)
+                                    .Include(b => b.BestellingGerechten)
+                                    .ThenInclude(bg => bg.Gerecht)
+                                           where b.BestellingId == id
+                                           select b).FirstOrDefaultAsync();
+            if (bestelling == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                ViewData["Prijs"] = bestelling.TotalPrijs;
+                return View(bestelling);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost, ActionName("AddFav")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddFav(int gerechtId, int bestellingId)
+        {
+            var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == gerechtId);
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            var favGerecht = await _context.GerechtKlantFavorieten.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId && x.GerechtId == gerecht.GerechtId);
+            var bestId = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId).BestellingId;
+
+            if (favGerecht == null)
+            {
+                GerechtKlantFavoriet klantFavoriet = new GerechtKlantFavoriet
+                {
+                    GerechtId = gerecht.GerechtId,
+                    KlantId = klant.KlantId,
+                    Gerecht = gerecht,
+                    Klant = klant
+                };
+                _context.GerechtKlantFavorieten.Add(klantFavoriet);
+                
+            }
+            await _context.SaveChangesAsync();
+            return Redirect("~/Bestellings/Gerechten/" + bestId);
+        }
+
+        public async Task<IActionResult> DelFav(int gerechtId, int bestellingId)
+        {
+            var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == gerechtId);
+            var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            var bestId = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId).BestellingId;
+
+            var favGerecht = await _context.GerechtKlantFavorieten.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId && x.GerechtId == gerecht.GerechtId);
+
+            if(favGerecht != null)
+            {
+                _context.GerechtKlantFavorieten.Remove(favGerecht);
+            }
+            await _context.SaveChangesAsync();
+            
+            return Redirect("~/Bestellings/Gerechten/" + bestId);
+        }
 
         private bool BestellingExists(int id)
         {
             return _context.Bestellings.Any(e => e.BestellingId == id);
+        }
+
+        [AllowAnonymous]
+        [HttpPost, ActionName("ConfirmBestelling")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmBestelling(int bestellingId, string specialeWensen)
+        {
+            var klant = new Klant();
+            if (User.IsInRole("Klant"))
+            {
+                klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+
+            }
+            else
+            {
+                klant = _context.Bestellings.Include("Klant").FirstOrDefault(x => x.BestellingId == bestellingId).Klant;
+            }
+            var bestelling = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId);
+            var bg = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
+
+
+            int totaalAantal = 0;
+            foreach(BestellingGerechten b in bg)
+            {
+                totaalAantal += b.Aantal;
+            }
+
+            if(totaalAantal < 1)
+            {
+                bestelling.IsConfirmed = false;
+                return Redirect("~/Bestellings/Gerechten/" + bestelling.BestellingId);
+            }
+            else
+            {
+                if(bestelling.IsConfirmed != true)
+                {
+                    SendMailBevestigings(klant);
+                    bestelling.IsConfirmed = true;
+                }
+               
+            } 
+            bestelling.SpecialeWensen = specialeWensen;
+            _context.Update(bestelling);
+            await _context.SaveChangesAsync();
+            return Redirect("~/Bestellings/");
+        }
+
+        public void SendMailBeforeAfhaaltijd(Klant klant)
+        {
+
+        }
+
+        public void SendMailBevestigings(Klant klant)
+        {
+            MailMessage mail = new MailMessage();
+            
+            mail.To.Add(klant.emailadres);
+            mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
+            mail.Subject = "Order";
+            mail.Body = "<h1 style = \"color:green\">Bestelling wordt aangemaakt. Je bestelling wordt binnenkort bevestigd!</h1>";
+            mail.IsBodyHtml = true;
+            SmtpClient smtp = new SmtpClient();
+            smtp.Host = "smtp.gmail.com";
+            smtp.Port = 587;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
+            smtp.EnableSsl = true;
+            smtp.Send(mail);
         }
 
     }

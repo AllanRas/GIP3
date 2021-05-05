@@ -1,0 +1,36 @@
+﻿body {
+}
+#calendar {
+    width: 750px;
+    height: 500px;
+    margin-right: 10px;
+}
+.body-container{
+    display: flex
+}
+.fc .fc-daygrid-day:hover{
+    background-color:aqua;    
+    cursor:pointer;
+}
+.EventButtons a {
+    margin: 25px;
+}
+.textarea{
+    margin:25px;
+}
+textarea{
+    width:75%;
+    resize:none;    
+    height:200px;
+}
+.info {
+    display: flex;
+    justify-content: space-between;
+}
+.EventButtons {
+    display: flex;
+    justify-content: space-between;
+}
+.card {
+    margin: 25px auto;
+}

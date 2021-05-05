@@ -1,0 +1,63 @@
+﻿@model Lekkerbek12Gip.Models.PlanningsModule
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";   
+}
+<script src="https://kit.fontawesome.com/4bc2a17f71.js" crossorigin="anonymous"></script>
+<h1>Aanmaken</h1>
+
+<h4>PlanningsModule</h4>
+<hr />
+@{var chefs = (List<Chef>)ViewData["Chefs"];}
+  
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div class="form-group">
+                <label asp-for="OpeningsUren" class="control-label"></label>
+                <input asp-for="OpeningsUren" class="form-control" />
+                <span asp-validation-for="OpeningsUren" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>          
+            <div>
+                <h2>Chefs</h2>
+                @{ foreach (var item in chefs)
+                    {
+                                <div class="justify-content-xl-between">
+                                                                       
+                                    <div class="form-group">
+                                        <label name="deger" class="control-label">                                       
+                                                 <span class="far fa-user"></span>@item.ChefName                                           
+                                        </label>
+                                        <select id="chefList" name="statu"  class="form-control">                                               
+                                            <option value="Werken">Werken</option>
+                                            <option value="Ziek">Ziek</option>
+                                            <option value="Toestemming">Toestemming</option>
+                                        </select>
+
+
+                    </div>
+
+
+                </div>
+                    }
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" style="resize:none"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

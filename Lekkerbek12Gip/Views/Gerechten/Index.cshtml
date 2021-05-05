@@ -6,10 +6,12 @@
 
 <h1>Menu</h1>
 
-<p>
-    <a asp-action="Create">Nieuw gerecht aanmaken</a>
-</p>
-
+@if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+{
+    <p>
+        <a asp-action="Create">Nieuw gerecht aanmaken</a>
+    </p>
+}
 @foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
 {
     <h3>@categorie</h3>
@@ -44,9 +46,13 @@
                             @Html.DisplayFor(modelItem => item.Prijs)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.GerechtId">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.GerechtId">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.GerechtId">Delete</a>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+                            {
+
+                                <a asp-action="Edit" asp-route-id="@item.GerechtId">Bewerken</a> @Html.Raw(" | ")
+                                <a asp-action="Details" asp-route-id="@item.GerechtId"> Details </a>@Html.Raw(" | ")
+                                <a asp-action="Delete" asp-route-id="@item.GerechtId"> Verwijderen </a>
+                            }
                         </td>
                     </tr>
                 }

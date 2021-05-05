@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Lekkerbek12Gip.Controllers
 {
 
-
+    [Authorize(Roles = "Admin,Kassamedewerker")]
     public class GerechtenController : Controller
     {
         private readonly LekkerbekContext _context;
@@ -22,12 +22,14 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Gerechten
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Gerechten.ToListAsync());
         }
 
         // GET: Gerechten/Details/5
+       
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +48,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Gerechten/Create
+       
         public IActionResult Create()
         {
            
@@ -55,6 +58,7 @@ namespace Lekkerbek12Gip.Controllers
         // POST: Gerechten/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GerechtId,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
@@ -69,6 +73,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Gerechten/Edit/5
+        
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -87,6 +92,7 @@ namespace Lekkerbek12Gip.Controllers
         // POST: Gerechten/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GerechtId,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)

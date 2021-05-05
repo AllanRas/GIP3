@@ -1,0 +1,51 @@
+﻿@model Lekkerbek12Gip.Models.Bestelling
+
+@{
+    ViewData["Title"] = "AddChef";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>AddChef</h1>
+
+<h4>Bestelling</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddChef">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BestellingId" />
+
+            <div class="form-group">
+                <label asp-for="ChefId" class="control-label">Chef Naam</label>
+                <select asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefName"></select>
+                <span asp-validation-for="ChefId" class="text-danger"></span>
+            </div>
+            <div class="form-group">              
+                <input asp-for="KlantId" class="form-control" value=@Model.KlantId hidden/>           
+            </div>
+
+                <div class="form-group">
+                    <label asp-for="OrderDate" class="control-label"></label>
+                    <input asp-for="OrderDate" class="form-control" readonly />
+                    <span asp-validation-for="OrderDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AfhaalTijd" class="control-label"></label>
+                    <input asp-for="AfhaalTijd" class="form-control" readonly />
+                    <span asp-validation-for="AfhaalTijd" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input id="addChef" type="submit" value="Save" class="btn btn-primary" />
+                </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Terug naar Cheflijst</a>
+</div>
+
+@section Scripts {
+    <script src="~/js/assign.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

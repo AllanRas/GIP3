@@ -10,9 +10,12 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        @if (Model.Afgerekend != true) {
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BestellingId" />
+            @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            {
             <div class="form-group">
                 <label asp-for="KlantId" class="control-label"></label>
                 <select asp-for="KlantId" class="form-control" asp-items="ViewBag.KlantId"></select>
@@ -23,35 +26,37 @@
                 <select asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefId"></select>
                 <span asp-validation-for="ChefId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SpecialeWensen" class="control-label"></label>
-                <input asp-for="SpecialeWensen" class="form-control" />
-                <span asp-validation-for="SpecialeWensen" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrderDate" class="control-label"></label>
-                <input asp-for="OrderDate" class="form-control" />
-                <span asp-validation-for="OrderDate" class="text-danger"></span>
-            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Afgerekend" /> @Html.DisplayNameFor(model => model.Afgerekend)
                 </label>
             </div>
             <div class="form-group">
+                <label asp-for="Korting" class="control-label"></label>
+                <input asp-for="Korting" class="form-control" />
+                <span asp-validation-for="Korting" class="text-danger"></span>
+            </div>
+            }
+            <div class="form-group">
                 <label asp-for="AfhaalTijd" class="control-label"></label>
                 <input asp-for="AfhaalTijd" class="form-control" />
                 <span asp-validation-for="AfhaalTijd" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Korting" class="control-label"></label>
-                <input asp-for="Korting" class="form-control" />
-                <span asp-validation-for="Korting" class="text-danger"></span>
+                <label asp-for="OrderDate" class="control-label"></label>
+                <input asp-for="OrderDate" class="form-control" />
+                <span asp-validation-for="OrderDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label asp-for="SpecialeWensen" class="control-label"></label>
+                <input asp-for="SpecialeWensen" class="form-control" />
+                <span asp-validation-for="SpecialeWensen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Opslaan" class="btn btn-primary" />
             </div>
         </form>
+        }
     </div>
 </div>
 

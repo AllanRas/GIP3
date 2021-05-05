@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lekkerbek12Gip
-{
+{   
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -34,22 +35,19 @@ namespace Lekkerbek12Gip
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Lekkerbek"));
             });
-            services.AddAuthentication(
-                CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(x =>
-                {
-                    x.LoginPath = "/Login/Index";
-                });
-            services.AddMvc(config =>
-            {
 
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-            });
+            services.AddDefaultIdentity<IdentityUser>(options =>
+            options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<LekkerbekContext>();
+
+            services.AddControllersWithViews();
+            services.AddRazorPages();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -64,17 +62,75 @@ namespace Lekkerbek12Gip
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseDefaultFiles();
-            app.UseAuthentication();
+                       
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            CreateRoles(serviceProvider).Wait();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
+
+
+        readonly string[] ROLES = new string[] { "Admin", "Klant", "Kassamedewerker" };
+        // Gebaseerd op https://dotnetdetail.net/role-based-authorization-in-asp-net-core-3-0/
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+            IdentityResult roleResult;
+            //here in this line we are adding the Roles
+            foreach (string role in ROLES)
+            {
+                var roleCheck = await RoleManager.RoleExistsAsync(role);
+                if (!roleCheck)
+                {
+                    //here in this line we are creating admin role and seed it to the database
+                    roleResult = await RoleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+
+            //here we are assigning the Admin role to the User that we have registered above 
+            //Now, we are assinging admin role to this user("El@hotmail.com"). When will we run this project then it will
+            //be assigned to that user.
+            IdentityUser user = await UserManager.FindByEmailAsync("El@hotmail.com");
+            IdentityUser kassamedewerker = await UserManager.FindByEmailAsync("Kassamedewerker@hotmail.com");           
+            var identityUser = await UserManager.Users.ToListAsync();
+
+            foreach (var userx in identityUser)
+            {
+                if (userx.Email == "Admin@hotmail.com") 
+                    await UserManager.AddToRoleAsync(userx, "Admin");
+                else if (userx.Email == "Kassamedewerker@hotmail.com")
+                    await UserManager.AddToRoleAsync(userx, "Kassamedewerker");
+                else                
+                    await UserManager.AddToRoleAsync(userx, "Klant");                
+            }
+
+            //if (user != null)
+            //{
+            //    foreach (string role in ROLES)
+            //    {
+            //        await UserManager.AddToRoleAsync(user, role);
+            //    }
+            //}
+            //if (kassamedewerker != null)
+            //{
+            //    await UserManager.AddToRoleAsync(kassamedewerker, "Kassamedewerker");
+            //}
+        }
+
+
+
     }
 }
+
