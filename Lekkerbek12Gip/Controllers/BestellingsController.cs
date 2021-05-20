@@ -23,8 +23,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Bestellings
-
-        [Authorize(Roles ="Klant")]
+     
         public async Task<IActionResult> Index()
         {
             // returns only the bestelling of the logged in User

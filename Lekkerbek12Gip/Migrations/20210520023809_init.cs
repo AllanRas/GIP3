@@ -274,7 +274,7 @@ namespace Lekkerbek12Gip.Migrations
                     BestelingStatus = table.Column<int>(type: "int", nullable: false),
                     KlantId = table.Column<int>(type: "int", nullable: false),
                     ChefId = table.Column<int>(type: "int", nullable: true),
-                    SpecialeWensen = table.Column<int>(type: "int", nullable: true),
+                    SpecialeWensen = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Afgerekend = table.Column<bool>(type: "bit", nullable: false),
                     AfhaalTijd = table.Column<DateTime>(type: "datetime2", nullable: false),

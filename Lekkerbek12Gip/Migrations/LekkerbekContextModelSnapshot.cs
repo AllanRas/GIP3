@@ -54,8 +54,8 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<int?>("PlanningsModuleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SpecialeWensen")
-                        .HasColumnType("int");
+                    b.Property<string>("SpecialeWensen")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BestellingId");
 

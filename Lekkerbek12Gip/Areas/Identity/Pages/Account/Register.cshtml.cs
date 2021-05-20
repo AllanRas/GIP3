@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Lekkerbek12Gip.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,20 +22,22 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly Microsoft.AspNetCore.Identity.UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly LekkerbekContext _context;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
+            Microsoft.AspNetCore.Identity.UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,LekkerbekContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [BindProperty]
@@ -93,6 +97,22 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
+                        if (user.Email == "Admin@hotmail.com")
+                            await _userManager.AddToRoleAsync(user, "Admin");
+                        else if (user.Email == "Kassamedewerker@hotmail.com")
+                            await _userManager.AddToRoleAsync(user, "Kassamedewerker");
+                        else
+                        {
+
+                            if (_context.Klants.FirstOrDefault(x => x.emailadres == user.Email) == null)
+                            {
+                                int index = user.Email.IndexOf('@');
+                                var name = user.Email.Remove(index);
+                                _context.Klants.Add(new Klant { Name = name, emailadres = user.Email });
+                                await _userManager.AddToRoleAsync(user, "Klant");
+                                await _context.SaveChangesAsync();
+                            }
+                        }
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
