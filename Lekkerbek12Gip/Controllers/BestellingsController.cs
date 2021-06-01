@@ -304,6 +304,7 @@ namespace Lekkerbek12Gip.Controllers
 
             var bestelling = await _context.Bestellings
                 .Include(b => b.Klant)
+                .Include(b=>b.Gerechten)
                 .FirstOrDefaultAsync(m => m.BestellingId == id);
             if (bestelling == null)
             {
