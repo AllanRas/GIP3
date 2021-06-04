@@ -90,16 +90,16 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
                    var User= await _userManager.FindByEmailAsync(Input.Email);
-                    var isKlant = await _userManager.IsInRoleAsync(User, "Klant");
+                   var isKlant = await _userManager.IsInRoleAsync(User, "Klant");
                     if (isKlant) 
                     {
-                        if (_context.Klants.FirstOrDefault(x => x.emailadres == User.Email) == null)
-                        {                  
-                            int index = User.Email.IndexOf('@');
-                            var name = User.Email.Remove(index);
-                            _context.Klants.Add(new Klant { Name = name, emailadres = User.Email});
-                            await _context.SaveChangesAsync();
-                        }
+                        //if (_context.Klants.FirstOrDefault(x => x.emailadres == User.Email) == null)
+                        //{                  
+                        //    int index = User.Email.IndexOf('@');
+                        //    var name = User.Email.Remove(index);
+                        //    _context.Klants.Add(new Klant { Name = name, emailadres = User.Email});
+                        //    await _context.SaveChangesAsync();
+                        //}
                         return LocalRedirect("/Gerechten");
                     }
                     return LocalRedirect("/Bestellings");
