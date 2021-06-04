@@ -78,7 +78,7 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new IdentityUser { UserName = Input.Email.ToLower(), Email = Input.Email.ToLower() };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -105,7 +105,7 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        if (user.Email == "Admin@hotmail.com")
+                        if (user.Email == "Admin@hotmail.com".ToLower())
                             await _userManager.AddToRoleAsync(user, "Admin");
                         else if (user.Email == "Kassamedewerker@hotmail.com")
                             await _userManager.AddToRoleAsync(user, "Kassamedewerker");
