@@ -1,4 +1,6 @@
 using Lekkerbek12Gip.Models;
+using Lekkerbek12Gip.Services.Concrete;
+using Lekkerbek12Gip.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -40,7 +42,7 @@ namespace Lekkerbek12Gip
             options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<LekkerbekContext>();
-
+            services.AddTransient<IBestellingsService, BestellingsService>();
             services.AddControllersWithViews();
             services.AddRazorPages();
 

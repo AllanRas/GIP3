@@ -8,57 +8,51 @@ using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Mail;
+using Lekkerbek12Gip.Services.Interfaces;
+
 namespace Lekkerbek12Gip.Controllers
 {
     [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
     public class BestellingsController : Controller
     {
 
+        private readonly IBestellingsService _service;
         private readonly LekkerbekContext _context;
 
         
-        public BestellingsController(LekkerbekContext context)
+        public BestellingsController(IBestellingsService service, LekkerbekContext context)
         {
-            _context = context;
+            _service = service;
+            _context=context;
         }
 
         // GET: Bestellings
      
         public async Task<IActionResult> Index()
         {
-            // returns only the bestelling of the logged in User
-            var lekkerbekContext = _context.Bestellings
-                .Include(x => x.Klant)
-                .Where(x => x.Klant.emailadres == User.Identity.Name)
-                .Include("Gerechten").Include("Chef")
-                .Include(x => x.BestellingGerechten)
-                .OrderBy(x => x.Afgerekend)
-                .ThenByDescending(x => x.AfhaalTijd);
-
-            // returns all bestellingen
-            if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
-            {
-                lekkerbekContext = _context.Bestellings
-                    .Include(x => x.Klant).Include("Gerechten")
-                    .Include("Chef").Include(x => x.BestellingGerechten)
-                    .OrderBy(x => x.Afgerekend)
-                    .ThenByDescending(x => x.AfhaalTijd);
-            }
-            return View(await lekkerbekContext.ToListAsync());
+            //returns only the bestelling of the logged in User
+            //var bestellingsList = await _service.GetAllBestellingwithInclude(User);
+            //// returns all bestellingen
+            //if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            //{
+            //    bestellingsList = await _service.GetAllBestellingwithInclude();
+            //}
+            return View(await _service.GetAllBestellingwithInclude(User));
         }
 
         // GET: Bestellings/AfgerekendeBestellingen
         public async Task<IActionResult> AfgerekendeBestellingen()
         {
             // returns only the bestelling of the logged in User
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Where(x => x.Klant.emailadres == User.Identity.Name).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
+            //var lekkerbekContext = _service.GetAllBestellingwithInclude(User);
+                
 
-            // returns all bestellingen
-            if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
-            {
-                lekkerbekContext = _context.Bestellings.Include(x => x.Klant).Include("Gerechten").Include("Chef").Include(x => x.BestellingGerechten).OrderBy(x => x.Afgerekend).ThenByDescending(x => x.AfhaalTijd);
-            }
-            return View(await lekkerbekContext.ToListAsync());
+            //// returns all bestellingen
+            //if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            //{
+            //    lekkerbekContext = _service.GetAllBestellingwithInclude();
+            //}
+            return View(await _service.GetAllBestellingwithInclude(User));
         }
 
         // GET: Bestellings/Details/5
