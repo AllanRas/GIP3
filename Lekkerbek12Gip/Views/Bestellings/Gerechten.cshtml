@@ -5,12 +5,12 @@
     IEnumerable<BestellingGerechten> bestellingGerechten = ViewData["Aantal"] as IEnumerable<BestellingGerechten>;
     IEnumerable<GerechtKlantFavoriet> favgerechten = ViewData["FavGerechten"] as IEnumerable<GerechtKlantFavoriet>;
     List<Gerecht> favList = new List<Gerecht>();
-    if(favgerechten != null)
+    if (favgerechten != null)
     {
         foreach (GerechtKlantFavoriet fav in favgerechten)
         {
             Gerecht gerecht = Model.Where(x => x.GerechtId == fav.GerechtId).FirstOrDefault();
-            if(gerecht != null)
+            if (gerecht != null)
             {
                 favList.Add(gerecht);
             }
@@ -23,150 +23,252 @@
 <span>Ordernummer : </span><p style="display:inline" id="bestellingId">@ViewBag.data</p>
 <a asp-action="index">Terug naar bestellingslijst</a>
 
-<form asp-action="ConfirmBestelling">
-    <input type="hidden" name="bestellingId" value="@ViewBag.data" />
-    <br />
-    <textarea style="resize: none" name="specialeWensen" placeholder="Speciale Wensen?" rows="4" cols="80" maxlength="1000"></textarea>
-    <br />
-    <button value="ConfirmBestelling">Bestelling Confirmeren</button>
-</form>
+<div style="display:flex; justify-content:space-between">
+    <h2>Favoriete gerechten</h2>
+    <div>
+        @{
+            if (ViewData["Toegevoegd"] != null)
+            {
 
-<h2>Favoriete gerechten</h2>
+                <div class="card" style="width: 28rem;">
+                    <div class="card-header">
+                        Winkelwagen
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @{
+                            decimal total = 0;
+                        }
+                        @foreach (var item in (List<BestellingGerechten>)ViewData["Toegevoegd"])
+                        {
+                            var sum = item.Aantal * item.Gerecht.Prijs;
+                            total += sum;
+                            <li class="list-group-item">(@item.Aantal) @item.Gerecht.Naam @sum </li>
+                        }
 
-@if (favgerechten != null)
-{ 
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Naam)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Omschrijving)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Prijs)
-                </th>
+                    </ul>
+                    <div>
+                        Total Prijs: @total
+                    </div>
+                </div>
 
-                <th></th>
-            </tr>
-        </thead>
-        @foreach (Gerecht gerecht in favorietePerKlantList)
-        {
-            <tbody>
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => gerecht.Naam)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => gerecht.Omschrijving)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => gerecht.Prijs) $
-                    </td>
-                    <td>
-                        <form asp-action="Gerechten">
-                            @{
-                                int aantal = 0;
-                                try
-                                {
-                                    aantal = bestellingGerechten.First(bg => (bg.GerechtId == gerecht.GerechtId) && (bg.BestellingId == ViewBag.data)).Aantal;
-                                }
-                                catch (InvalidOperationException)
-                                {
-                                    aantal = 0;
-                                }
-                            }
-                            <input type="number" name="aantal" value="@aantal" />
-                            <input type="hidden" name="gerechtId" value="@gerecht.GerechtId" />
-                            <input type="hidden" name="bestellingId" value="@ViewBag.data" />
-                            <button type="submit" value="Gerechten">+</button>
-                            aantal: @aantal
-                        </form>
-                        <form asp-action="DelFav">
-                            <input type="hidden" name="gerechtId" value="@gerecht.GerechtId" />
-                            <input type="hidden" name="bestellingId" value="@ViewBag.data" />
-                            <button type="submit" value="DelFav">verwijder favoriet</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
+
+            }
+
         }
-    </table>
-}
+    </div>
+</div>
 
 
-@foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
-{
-    <h2>@categorie</h2>
+@*@if (favgerechten != null)
+    {
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Naam)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Omschrijving)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Prijs)
+                    </th>
 
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Naam)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Omschrijving)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Prijs)
-                </th>
-
-                <th></th>
-            </tr>
-        </thead>
-
-        @foreach (var item in Model)
-        {
-            if (item.Categorie == categorie)
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach (Gerecht gerecht in favorietePerKlantList)
             {
                 <tbody>
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Naam)
+                            @Html.DisplayFor(modelItem => gerecht.Naam)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Omschrijving)
+                            @Html.DisplayFor(modelItem => gerecht.Omschrijving)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Prijs) $
+                            @Html.DisplayFor(modelItem => gerecht.Prijs) $
                         </td>
                         <td>
                             <form asp-action="Gerechten">
                                 @{
-                                    int? aantal;
-                                    var bg = bestellingGerechten.Where(bg => (bg.GerechtId == item.GerechtId) && (bg.BestellingId == ViewBag.data)).FirstOrDefault();
-                                    if(bg == null)
+                                    int aantal = 0;
+                                    try
+                                    {
+                                        aantal = bestellingGerechten.First(bg => (bg.GerechtId == gerecht.GerechtId) && (bg.BestellingId == ViewBag.data)).Aantal;
+                                    }
+                                    catch (InvalidOperationException)
                                     {
                                         aantal = 0;
                                     }
-                                    else
-                                    {
-                                        aantal = bg.Aantal;
-                                    }
                                 }
                                 <input type="number" name="aantal" value="@aantal" />
-                                <input type="hidden" name="gerechtId" value="@item.GerechtId" />
+                                <input type="hidden" name="gerechtId" value="@gerecht.GerechtId" />
                                 <input type="hidden" name="bestellingId" value="@ViewBag.data" />
                                 <button type="submit" value="Gerechten">+</button>
                                 aantal: @aantal
                             </form>
-                            <form asp-action="AddFav">
-                                <input type="hidden" name="gerechtId" value="@item.GerechtId"/>
-                                <input type="hidden" name="bestellingId" value="@ViewBag.data"/>
-                                <button type="submit" value="AddFav">Toevoegen aan favorieten</button>
+                            <form asp-action="DelFav">
+                                <input type="hidden" name="gerechtId" value="@gerecht.GerechtId" />
+                                <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+                                <button type="submit" value="DelFav">verwijder favoriet</button>
                             </form>
                         </td>
                     </tr>
                 </tbody>
             }
-        }
-    </table>
-}
+        </table>
+    }*@
+
+<select id="categories">
+
+    <option selected=@Gerecht.Categorieen.Salades>Salades</option>
+    @foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
+    {
+        <option value=@categorie>@categorie</option>
+
+
+        @*<table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Naam)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Omschrijving)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Prijs)
+                        </th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+
+                @foreach (var item in Model)
+                {
+                    if (item.Categorie == categorie)
+                    {
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Naam)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Omschrijving)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Prijs) $
+                                </td>
+                                <td>
+                                    <form asp-action="Gerechten">
+                                        @{
+                                            int? aantal;
+                                            var bg = bestellingGerechten.Where(bg => (bg.GerechtId == item.GerechtId) && (bg.BestellingId == ViewBag.data)).FirstOrDefault();
+                                            if (bg == null)
+                                            {
+                                                aantal = 0;
+                                            }
+                                            else
+                                            {
+                                                aantal = bg.Aantal;
+                                            }
+                                        }
+                                        <input type="number" name="aantal" value="@aantal" />
+                                        <input type="hidden" name="gerechtId" value="@item.GerechtId" />
+                                        <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+                                        <button type="submit" value="Gerechten">+</button>
+                                        aantal: @aantal
+                                    </form>
+                                    <form asp-action="AddFav">
+                                        <input type="hidden" name="gerechtId" value="@item.GerechtId" />
+                                        <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+                                        <button type="submit" value="AddFav">Toevoegen aan favorieten</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    }
+                }
+            </table>*@
+    }
+</select>
+<div id="menuBody">
+    @foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
+    {
+        <div id=@categorie style="display:none">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Naam)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Omschrijving)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Prijs)
+                        </th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+
+                @foreach (var item in Model)
+                {
+                    if (item.Categorie == categorie)
+                    {
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Naam)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Omschrijving)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Prijs) $
+                                </td>
+                                <td>
+                                    <form asp-action="Gerechten">
+                                        @{
+                                            int? aantal;
+                                            var bg = bestellingGerechten.Where(bg => (bg.GerechtId == item.GerechtId) && (bg.BestellingId == ViewBag.data)).FirstOrDefault();
+                                            if (bg == null)
+                                            {
+                                                aantal = 0;
+                                            }
+                                            else
+                                            {
+                                                aantal = bg.Aantal;
+                                            }
+                                        }
+                                        <input type="number" name="aantal" value="@aantal" />
+                                        <input type="hidden" name="gerechtId" value="@item.GerechtId" />
+                                        <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+                                        <button type="submit" value="Gerechten">+</button>
+                                        aantal: @aantal
+                                    </form>
+                                    <form asp-action="AddFav">
+                                        <input type="hidden" name="gerechtId" value="@item.GerechtId" />
+                                        <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+                                        <button type="submit" value="AddFav">Toevoegen aan favorieten</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    }
+                }
+            </table>
+        </div>
+
+    }
+</div>
 
 <a asp-action="index">Terug naar bestellingslijst</a>
 
 @section Scripts{
+    <script src="~/js/menu.js"></script>
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

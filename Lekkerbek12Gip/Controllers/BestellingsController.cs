@@ -19,39 +19,23 @@ namespace Lekkerbek12Gip.Controllers
         private readonly IBestellingsService _service;
         private readonly LekkerbekContext _context;
 
-        
+
         public BestellingsController(IBestellingsService service, LekkerbekContext context)
         {
             _service = service;
-            _context=context;
+            _context = context;
         }
 
         // GET: Bestellings
-     
+
         public async Task<IActionResult> Index()
         {
-            //returns only the bestelling of the logged in User
-            //var bestellingsList = await _service.GetAllBestellingwithInclude(User);
-            //// returns all bestellingen
-            //if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
-            //{
-            //    bestellingsList = await _service.GetAllBestellingwithInclude();
-            //}
             return View(await _service.GetAllBestellingwithInclude(User));
         }
 
         // GET: Bestellings/AfgerekendeBestellingen
         public async Task<IActionResult> AfgerekendeBestellingen()
         {
-            // returns only the bestelling of the logged in User
-            //var lekkerbekContext = _service.GetAllBestellingwithInclude(User);
-                
-
-            //// returns all bestellingen
-            //if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
-            //{
-            //    lekkerbekContext = _service.GetAllBestellingwithInclude();
-            //}
             return View(await _service.GetAllBestellingwithInclude(User));
         }
 
@@ -66,35 +50,35 @@ namespace Lekkerbek12Gip.Controllers
             List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
             ViewData["Aantal"] = bestellingGerechten;
 
-            var bestelling = await _context.Bestellings
-                .Include(b => b.Klant)
-                .Include("Gerechten")
-                .Include("Chef")
-                .FirstOrDefaultAsync(m => m.BestellingId == id);
-            if (bestelling == null)
+            var bestel = await _service.GetBestellingwithFilter(x => x.BestellingId == id);
+
+            if (bestel == null)
             {
                 return NotFound();
             }
 
-            return View(bestelling);
+            return View(bestel);
         }
 
 
-        
+
         [HttpGet]
         public async Task<IActionResult> Gerechten(int? id)
         {
-            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
+            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.Include(b => b.Bestelling).Include(g => g.Gerecht).ToListAsync();
             Klant klant = await _context.Klants.FirstOrDefaultAsync(x => x.emailadres == User.Identity.Name);
             if (User.IsInRole("Klant"))
             {
                 List<GerechtKlantFavoriet> gerechten = await _context.GerechtKlantFavorieten.Where(x => x.KlantId == klant.KlantId).ToListAsync();
                 ViewData["FavGerechten"] = gerechten;
             }
-           
+
+            var bestellingGerecht = await _context.BestellingGerechten.Include(b => b.Bestelling).Include(g => g.Gerecht).Where(x => x.BestellingId == id).ToListAsync();
+            ViewData["Toegevoegd"] = bestellingGerecht;
+
             ViewData["data"] = id;
             ViewData["Aantal"] = bestellingGerechten;
-            
+
             return View(await _context.Gerechten.ToListAsync());
         }
 
@@ -298,7 +282,7 @@ namespace Lekkerbek12Gip.Controllers
 
             var bestelling = await _context.Bestellings
                 .Include(b => b.Klant)
-                .Include(b=>b.Gerechten)
+                .Include(b => b.Gerechten)
                 .FirstOrDefaultAsync(m => m.BestellingId == id);
             if (bestelling == null)
             {
@@ -378,7 +362,7 @@ namespace Lekkerbek12Gip.Controllers
                     Klant = klant
                 };
                 _context.GerechtKlantFavorieten.Add(klantFavoriet);
-                
+
             }
             await _context.SaveChangesAsync();
             return Redirect("~/Bestellings/Gerechten/" + bestId);
@@ -392,12 +376,12 @@ namespace Lekkerbek12Gip.Controllers
 
             var favGerecht = await _context.GerechtKlantFavorieten.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId && x.GerechtId == gerecht.GerechtId);
 
-            if(favGerecht != null)
+            if (favGerecht != null)
             {
                 _context.GerechtKlantFavorieten.Remove(favGerecht);
             }
             await _context.SaveChangesAsync();
-            
+
             return Redirect("~/Bestellings/Gerechten/" + bestId);
         }
 
@@ -426,25 +410,25 @@ namespace Lekkerbek12Gip.Controllers
 
 
             int totaalAantal = 0;
-            foreach(BestellingGerechten b in bg)
+            foreach (BestellingGerechten b in bg)
             {
                 totaalAantal += b.Aantal;
             }
 
-            if(totaalAantal < 1)
+            if (totaalAantal < 1)
             {
                 bestelling.IsConfirmed = false;
                 return Redirect("~/Bestellings/Gerechten/" + bestelling.BestellingId);
             }
             else
             {
-                if(bestelling.IsConfirmed != true)
+                if (bestelling.IsConfirmed != true)
                 {
                     SendMailBevestigings(klant);
                     bestelling.IsConfirmed = true;
                 }
-               
-            } 
+
+            }
             bestelling.SpecialeWensen = specialeWensen;
             _context.Update(bestelling);
             await _context.SaveChangesAsync();
@@ -459,7 +443,7 @@ namespace Lekkerbek12Gip.Controllers
         public void SendMailBevestigings(Klant klant)
         {
             MailMessage mail = new MailMessage();
-            
+
             mail.To.Add(klant.emailadres);
             mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
             mail.Subject = "Order";
