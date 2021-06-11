@@ -9,6 +9,7 @@ using Lekkerbek12Gip.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Mail;
 using Lekkerbek12Gip.Services.Interfaces;
+using Lekkerbek12Gip.Models.Mails;
 
 namespace Lekkerbek12Gip.Controllers
 {
@@ -18,12 +19,14 @@ namespace Lekkerbek12Gip.Controllers
 
         private readonly IBestellingsService _service;
         private readonly LekkerbekContext _context;
+        private readonly IEmailService _emailService;
 
         
-        public BestellingsController(IBestellingsService service, LekkerbekContext context)
+        public BestellingsController(IBestellingsService service, LekkerbekContext context, IEmailService emailService)
         {
             _service = service;
             _context=context;
+            _emailService = emailService;
         }
 
         // GET: Bestellings
@@ -66,11 +69,7 @@ namespace Lekkerbek12Gip.Controllers
             List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
             ViewData["Aantal"] = bestellingGerechten;
 
-            var bestelling = await _context.Bestellings
-                .Include(b => b.Klant)
-                .Include("Gerechten")
-                .Include("Chef")
-                .FirstOrDefaultAsync(m => m.BestellingId == id);
+            var bestelling = await _service.GetBestellingwithIncludeFilter(x=>x.BestellingId==id);
             if (bestelling == null)
             {
                 return NotFound();
@@ -101,7 +100,8 @@ namespace Lekkerbek12Gip.Controllers
         [HttpPost]
         public async Task<IActionResult> Gerechten(int bestellingId, int gerechtId, int aantal)
         {
-            var bestelling = await _context.Bestellings.FindAsync(bestellingId);
+            //var bestelling = await _context.Bestellings.FindAsync(bestellingId);
+            var bestelling = await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == bestellingId);
             var gerecht = await _context.Gerechten.FindAsync(gerechtId);
 
             var bestellinGerecht = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
@@ -186,6 +186,7 @@ namespace Lekkerbek12Gip.Controllers
                 _context.Add(bestelling);
 
                 await _context.SaveChangesAsync();
+             
                 if (User.IsInRole("Klant"))
                 {
                     return RedirectToAction("Gerechten", new { id = bestelling.BestellingId });
@@ -314,24 +315,30 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Afrekenen(int id)
         {
-            var bestelling = await _context.Bestellings.Include(x => x.Klant).FirstOrDefaultAsync(x => x.BestellingId == id);
+            var bestelling = await _context.Bestellings.Include(x => x.Klant).Include(x => x.Gerechten).FirstOrDefaultAsync(x => x.BestellingId == id);
+            var bestellingGerechten = await _context.BestellingGerechten.Include(x => x.Bestelling).Include(x => x.Gerecht).Where(x => x.BestellingId == id).ToListAsync();
             bestelling.Afgerekend = true;
             var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
+            var kalnt= _context.Users.FirstOrDefault(x => x.Email == bestelling.Klant.emailadres);
+           
             if (klant != null)
             {
-                MailMessage mail = new MailMessage();
-                mail.To.Add(klant.emailadres);
-                mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
-                mail.Subject = "Order";
-                mail.Body = "<h1 style = \"color: green\">Uw bestelling is bevestigd!</h1>";
-                mail.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.Port = 587;
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
-                smtp.EnableSsl = true;
-                smtp.Send(mail);
+                var klantUser = _context.Users.FirstOrDefault(x => x.Email == bestelling.Klant.emailadres);
+                _emailService.Send(new BevestigMail { Bestellings = bestellingGerechten }, klantUser);
+
+                //MailMessage mail = new MailMessage();
+                //mail.To.Add(klant.emailadres);
+                //mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
+                //mail.Subject = "Order";
+                //mail.Body = "<h1 style = \"color: green\">Uw bestelling is bevestigd!</h1>";
+                //mail.IsBodyHtml = true;
+                //SmtpClient smtp = new SmtpClient();
+                //smtp.Host = "smtp.gmail.com";
+                //smtp.Port = 587;
+                //smtp.UseDefaultCredentials = false;
+                //smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
+                //smtp.EnableSsl = true;
+                //smtp.Send(mail);
             }
             await _context.SaveChangesAsync();
 
@@ -421,9 +428,9 @@ namespace Lekkerbek12Gip.Controllers
             {
                 klant = _context.Bestellings.Include("Klant").FirstOrDefault(x => x.BestellingId == bestellingId).Klant;
             }
-            var bestelling = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId);
+            var bestelling = _context.Bestellings.Include("Gerechten").Include(x=>x.Klant).FirstOrDefault(x => x.BestellingId == bestellingId);
             var bg = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
-
+            
 
             int totaalAantal = 0;
             foreach(BestellingGerechten b in bg)
@@ -440,7 +447,9 @@ namespace Lekkerbek12Gip.Controllers
             {
                 if(bestelling.IsConfirmed != true)
                 {
-                    SendMailBevestigings(klant);
+                    var bestellingGerechten = await _context.BestellingGerechten.Include(x => x.Bestelling).Include(x => x.Gerecht).Where(x => x.BestellingId == bestellingId).ToListAsync();
+                    var klantUser = _context.Users.FirstOrDefault(x => x.Email == bestelling.Klant.emailadres);
+                    _emailService.Send(new GemakteOrderMail { Bestellings = bestellingGerechten }, klantUser);
                     bestelling.IsConfirmed = true;
                 }
                
@@ -458,20 +467,21 @@ namespace Lekkerbek12Gip.Controllers
 
         public void SendMailBevestigings(Klant klant)
         {
-            MailMessage mail = new MailMessage();
             
-            mail.To.Add(klant.emailadres);
-            mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
-            mail.Subject = "Order";
-            mail.Body = "<h1 style = \"color:green\">Bestelling wordt aangemaakt. Je bestelling wordt binnenkort bevestigd!</h1>";
-            mail.IsBodyHtml = true;
-            SmtpClient smtp = new SmtpClient();
-            smtp.Host = "smtp.gmail.com";
-            smtp.Port = 587;
-            smtp.UseDefaultCredentials = false;
-            smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
-            smtp.EnableSsl = true;
-            smtp.Send(mail);
+            //MailMessage mail = new MailMessage();
+            
+            //mail.To.Add(klant.emailadres);
+            //mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
+            //mail.Subject = "Order";
+            //mail.Body = "<h1 style = \"color:green\">Bestelling wordt aangemaakt. Je bestelling wordt binnenkort bevestigd!</h1>";
+            //mail.IsBodyHtml = true;
+            //SmtpClient smtp = new SmtpClient();
+            //smtp.Host = "smtp.gmail.com";
+            //smtp.Port = 587;
+            //smtp.UseDefaultCredentials = false;
+            //smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
+            //smtp.EnableSsl = true;
+            //smtp.Send(mail);
         }
 
     }

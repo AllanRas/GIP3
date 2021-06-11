@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,8 +44,10 @@ namespace Lekkerbek12Gip
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<LekkerbekContext>();
             services.AddTransient<IBestellingsService, BestellingsService>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
         }
 
