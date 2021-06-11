@@ -59,7 +59,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            return View(bestel);
+            return View(bestelling);
         }
 
 
