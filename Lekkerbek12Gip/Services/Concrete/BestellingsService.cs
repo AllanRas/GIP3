@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace Lekkerbek12Gip.Services.Concrete
 {
-    public class BestellingsService:RepositoryBase<Bestelling>,IBestellingsService   
+    public class BestellingsService : RepositoryBase<Bestelling>, IBestellingsService
     {
         private readonly LekkerbekContext _context;
-        public BestellingsService(LekkerbekContext context) :base(context)
+        public BestellingsService(LekkerbekContext context) : base(context)
         {
             _context = context;
           

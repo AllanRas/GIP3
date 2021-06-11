@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace Lekkerbek12Gip.Services.Interfaces
 {
-    public interface IBestellingsService :IEntityRepositoryBase<Bestelling>
+    public interface IBestellingsService : IEntityRepositoryBase<Bestelling>
     {
-       Task<IEnumerable<Bestelling>> GetAllBestellingwithInclude(ClaimsPrincipal user=null);
-
-        Task<Bestelling> GetBestellingwithIncludeFilter(Expression<Func<Bestelling, bool>> filter = null);
+        Task<IEnumerable<Bestelling>> GetAllBestellingwithInclude(ClaimsPrincipal user = null);
+        Task<Bestelling> GetBestellingwithFilter(Expression<Func<Bestelling, bool>> filter);
     }
 }
