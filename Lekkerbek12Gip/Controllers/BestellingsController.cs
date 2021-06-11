@@ -21,11 +21,11 @@ namespace Lekkerbek12Gip.Controllers
         private readonly LekkerbekContext _context;
         private readonly IEmailService _emailService;
 
-        
+
         public BestellingsController(IBestellingsService service, LekkerbekContext context, IEmailService emailService)
         {
             _service = service;
-            _context=context;
+            _context = context;
             _emailService = emailService;
         }
 
@@ -50,10 +50,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.ToListAsync();
-            ViewData["Aantal"] = bestellingGerechten;
-
-            var bestelling = await _service.GetBestellingwithIncludeFilter(x=>x.BestellingId==id);
+            var bestelling = await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
             if (bestelling == null)
             {
                 return NotFound();
@@ -64,63 +61,63 @@ namespace Lekkerbek12Gip.Controllers
 
 
 
-        [HttpGet]
-        public async Task<IActionResult> Gerechten(int? id)
-        {
-            List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.Include(b => b.Bestelling).Include(g => g.Gerecht).ToListAsync();
-            Klant klant = await _context.Klants.FirstOrDefaultAsync(x => x.emailadres == User.Identity.Name);
-            if (User.IsInRole("Klant"))
-            {
-                List<GerechtKlantFavoriet> gerechten = await _context.GerechtKlantFavorieten.Where(x => x.KlantId == klant.KlantId).ToListAsync();
-                ViewData["FavGerechten"] = gerechten;
-            }
+        //[HttpGet]
+        //public async Task<IActionResult> Gerechten(int? id)
+        //{
+        //    List<BestellingGerechten> bestellingGerechten = await _context.BestellingGerechten.Include(b => b.Bestelling).Include(g => g.Gerecht).ToListAsync();
+        //    Klant klant = await _context.Klants.FirstOrDefaultAsync(x => x.emailadres == User.Identity.Name);
+        //    if (User.IsInRole("Klant"))
+        //    {
+        //        List<GerechtKlantFavoriet> gerechten = await _context.GerechtKlantFavorieten.Where(x => x.KlantId == klant.KlantId).ToListAsync();
+        //        ViewData["FavGerechten"] = gerechten;
+        //    }
 
-            var bestellingGerecht = await _context.BestellingGerechten.Include(b => b.Bestelling).Include(g => g.Gerecht).Where(x => x.BestellingId == id).ToListAsync();
-            ViewData["Toegevoegd"] = bestellingGerecht;
+        //    var bestellingGerecht = await _context.BestellingGerechten.Include(b => b.Bestelling).Include(g => g.Gerecht).Where(x => x.BestellingId == id).ToListAsync();
+        //    ViewData["Toegevoegd"] = bestellingGerecht;
 
-            ViewData["data"] = id;
-            ViewData["Aantal"] = bestellingGerechten;
+        //    ViewData["data"] = id;
+        //    ViewData["Aantal"] = bestellingGerechten;
 
-            return View(await _context.Gerechten.ToListAsync());
-        }
+        //    return View(await _context.Gerechten.ToListAsync());
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> Gerechten(int bestellingId, int gerechtId, int aantal)
-        {
-            //var bestelling = await _context.Bestellings.FindAsync(bestellingId);
-            var bestelling = await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == bestellingId);
-            var gerecht = await _context.Gerechten.FindAsync(gerechtId);
+        //[HttpPost]
+        //public async Task<IActionResult> Gerechten(int bestellingId, int gerechtId, int aantal)
+        //{
+        //    //var bestelling = await _context.Bestellings.FindAsync(bestellingId);
+        //    var bestelling = await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == bestellingId);
+        //    var gerecht = await _context.Gerechten.FindAsync(gerechtId);
 
-            var bestellinGerecht = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
+        //    var bestellinGerecht = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
 
-            if (aantal > 0 && bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) == null)
-            {
-                BestellingGerechten bg = new BestellingGerechten
-                {
-                    Aantal = aantal,
-                    Bestelling = bestelling,
-                    BestellingId = bestelling.BestellingId,
-                    Gerecht = gerecht,
-                    GerechtId = gerecht.GerechtId
-                };
-                bestelling.Gerechten.Add(gerecht);
-                bestelling.BestellingGerechten.Add(bg);
-                await _context.BestellingGerechten.AddAsync(bg);
+        //    if (aantal > 0 && bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) == null)
+        //    {
+        //        BestellingGerechten bg = new BestellingGerechten
+        //        {
+        //            Aantal = aantal,
+        //            Bestelling = bestelling,
+        //            BestellingId = bestelling.BestellingId,
+        //            Gerecht = gerecht,
+        //            GerechtId = gerecht.GerechtId
+        //        };
+        //        bestelling.Gerechten.Add(gerecht);
+        //        bestelling.BestellingGerechten.Add(bg);
+        //        await _context.BestellingGerechten.AddAsync(bg);
 
-            }
-            else if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null)
-            {
-                if (aantal == 0)
-                {
-                    var delete = await _context.BestellingGerechten.FirstAsync(x => (x.BestellingId == bestelling.BestellingId) && (x.GerechtId == gerecht.GerechtId));
-                    _context.BestellingGerechten.Remove(delete);
-                }
-                bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal = aantal;
-            }
+        //    }
+        //    else if (bestellinGerecht != null && bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId) != null)
+        //    {
+        //        if (aantal == 0)
+        //        {
+        //            var delete = await _context.BestellingGerechten.FirstAsync(x => (x.BestellingId == bestelling.BestellingId) && (x.GerechtId == gerecht.GerechtId));
+        //            _context.BestellingGerechten.Remove(delete);
+        //        }
+        //        bestellinGerecht.FirstOrDefault(x => x.GerechtId == gerecht.GerechtId).Aantal = aantal;
+        //    }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction();
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction();
+        //}
 
         // GET: Bestellings/Create
         public IActionResult Create()
@@ -173,7 +170,7 @@ namespace Lekkerbek12Gip.Controllers
                 _context.Add(bestelling);
 
                 await _context.SaveChangesAsync();
-             
+
                 if (User.IsInRole("Klant"))
                 {
                     return RedirectToAction("Gerechten", new { id = bestelling.BestellingId });
@@ -306,11 +303,11 @@ namespace Lekkerbek12Gip.Controllers
             var bestellingGerechten = await _context.BestellingGerechten.Include(x => x.Bestelling).Include(x => x.Gerecht).Where(x => x.BestellingId == id).ToListAsync();
             bestelling.Afgerekend = true;
             var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
-            var kalnt= _context.Users.FirstOrDefault(x => x.Email == bestelling.Klant.emailadres);
-           
+            var kalnt = _context.Users.FirstOrDefault(x => x.Email == bestelling.Klant.emailadres);
+
             if (klant != null)
             {
-                var klantUser = _context.Users.FirstOrDefault(x => x.Email == bestelling.Klant.emailadres);
+                var klantUser = _context.Klants.FirstOrDefault(x => x.emailadres == bestelling.Klant.emailadres);
                 _emailService.Send(new BevestigMail { Bestellings = bestellingGerechten }, klantUser);
 
                 //MailMessage mail = new MailMessage();
@@ -415,9 +412,9 @@ namespace Lekkerbek12Gip.Controllers
             {
                 klant = _context.Bestellings.Include("Klant").FirstOrDefault(x => x.BestellingId == bestellingId).Klant;
             }
-            var bestelling = _context.Bestellings.Include("Gerechten").Include(x=>x.Klant).FirstOrDefault(x => x.BestellingId == bestellingId);
+            var bestelling = _context.Bestellings.Include("Gerechten").Include(x => x.Klant).FirstOrDefault(x => x.BestellingId == bestellingId);
             var bg = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
-            
+
 
             int totaalAantal = 0;
             foreach (BestellingGerechten b in bg)
@@ -435,7 +432,8 @@ namespace Lekkerbek12Gip.Controllers
                 if (bestelling.IsConfirmed != true)
                 {
                     var bestellingGerechten = await _context.BestellingGerechten.Include(x => x.Bestelling).Include(x => x.Gerecht).Where(x => x.BestellingId == bestellingId).ToListAsync();
-                    var klantUser = _context.Users.FirstOrDefault(x => x.Email == bestelling.Klant.emailadres);
+                    var klantUser = _context.Klants.FirstOrDefault(x => x.emailadres == bestelling.Klant.emailadres);
+
                     _emailService.Send(new GemakteOrderMail { Bestellings = bestellingGerechten }, klantUser);
                     bestelling.IsConfirmed = true;
                 }
@@ -454,9 +452,9 @@ namespace Lekkerbek12Gip.Controllers
 
         public void SendMailBevestigings(Klant klant)
         {
-            
+
             //MailMessage mail = new MailMessage();
-            
+
             //mail.To.Add(klant.emailadres);
             //mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
             //mail.Subject = "Order";

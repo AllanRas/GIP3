@@ -19,7 +19,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lekkerbek12Gip
-{   
+{
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -44,16 +44,18 @@ namespace Lekkerbek12Gip
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<LekkerbekContext>();
             services.AddTransient<IBestellingsService, BestellingsService>();
+            services.AddTransient<IGerechtenService, GerechtenService>();
+            services.AddTransient<IBesteldeGerectenService, BesteldeGerechtenService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddControllersWithViews();
             services.AddRazorPages();
             //services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
-           
+
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -68,7 +70,7 @@ namespace Lekkerbek12Gip
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseDefaultFiles();
-                       
+
             app.UseRouting();
 
             app.UseAuthentication();

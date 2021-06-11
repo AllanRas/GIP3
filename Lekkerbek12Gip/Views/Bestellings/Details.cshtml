@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Details";
-    IEnumerable<BestellingGerechten> bestellingGerechten = ViewData["Aantal"] as IEnumerable<BestellingGerechten>;
 }
 
 <h1>Details Bestelling</h1>
@@ -70,56 +69,56 @@
     </dl>
 </div>
 <div>
-<!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
-@if (DateTime.Compare(DateTime.Now, Model.AfhaalTijd.AddHours(-1)) < 0 && Model.Afgerekend != true)
-{
-    <a asp-action="Edit" asp-route-id="@Model.BestellingId">Aanpassen</a>
-}
-else
-{
-    <a>Aanpassen</a>
-}
-<a href="javascript:void(0);" onclick="history.go(-1);">Terug</a>
+    <!--Comparing time now with afhaaltijd minus 1 hour, if now is earlier than afhaaltijd - 1 hour : editable else not editable-->
+    @if (DateTime.Compare(DateTime.Now, Model.AfhaalTijd.AddHours(-1)) < 0 && Model.Afgerekend != true)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.BestellingId">Aanpassen</a>
+    }
+    else
+    {
+        <a>Aanpassen</a>
+    }
+    <a href="javascript:void(0);" onclick="history.go(-1);">Terug</a>
 
-<h3>Bestelling: </h3>
+    <h3>Bestelling: </h3>
 
 
-<table class="table">
-    <thead class="thead-dark">
-        <tr>
-            <th>
-                @Html.Raw("Naam")
-            </th>
-            <th>
-                @Html.Raw("Omschrijving")
-            </th>
-            <th>
-                @Html.Raw("Prijs")
-            </th>
-            <th>
-                @Html.Raw("Aantal")
-            </th>
-        </tr>
-    </thead>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    @Html.Raw("Naam")
+                </th>
+                <th>
+                    @Html.Raw("Omschrijving")
+                </th>
+                <th>
+                    @Html.Raw("Prijs")
+                </th>
+                <th>
+                    @Html.Raw("Aantal")
+                </th>
+            </tr>
+        </thead>
 
-@foreach (var item in Model.BestellingGerechten)
-{
-    <tbody>
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gerecht.Naam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gerecht.Omschrijving)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gerecht.Prijs) $
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Aantal)
-            </td>
-        </tr>
-    </tbody>
-}
+        @foreach (var item in Model.BestellingGerechten)
+        {
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gerecht.Naam)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gerecht.Omschrijving)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gerecht.Prijs) $
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Aantal)
+                    </td>
+                </tr>
+            </tbody>
+        }
     </table>
 </div>
