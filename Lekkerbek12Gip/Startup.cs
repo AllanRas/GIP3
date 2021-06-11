@@ -47,7 +47,8 @@ namespace Lekkerbek12Gip
             services.AddScoped<IEmailService, EmailService>();
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+            //services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+           
 
         }
 
