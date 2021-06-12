@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var klant = (Klant)ViewData["klantNaam"];
 }
 
 <h1>Bestelling</h1>
@@ -14,28 +15,32 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BestellingId" />
-            @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
-            {
-            <div class="form-group">
-                <label asp-for="KlantId" class="control-label"></label>
-                <select asp-for="KlantId" class="form-control" asp-items="ViewBag.KlantId"></select>
-                <span asp-validation-for="KlantId" class="text-danger"></span>
+            <div class="form-group" hidden>
+                <label asp-for="KlantId" class="control-label">Klant Id</label>
+                <input asp-for="KlantId" class="form-control" value=@klant.KlantId readonly />
             </div>
             <div class="form-group">
+                <label class="control-label">Klant Naam</label>
+                <input class="form-control" value=@klant.Name readonly />
+            </div>
+            @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            {
+
+                @*<div class="form-group">
                 <label asp-for="ChefId" class="control-label"></label>
                 <select asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefId"></select>
                 <span asp-validation-for="ChefId" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Afgerekend" /> @Html.DisplayNameFor(model => model.Afgerekend)
-                </label>
-            </div>
-            <div class="form-group">
+            </div>*@
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Afgerekend" /> @Html.DisplayNameFor(model => model.Afgerekend)
+                    </label>
+                </div>
+                @*<div class="form-group">
                 <label asp-for="Korting" class="control-label"></label>
                 <input asp-for="Korting" class="form-control" />
                 <span asp-validation-for="Korting" class="text-danger"></span>
-            </div>
+            </div>*@
             }
             <div class="form-group">
                 <label asp-for="AfhaalTijd" class="control-label"></label>

@@ -11,6 +11,6 @@ namespace Lekkerbek12Gip.Services.Interfaces
 {
     public interface IEmailService
     {
-        void Send(IEmail mail, Klant user = null);
+        Task Send(IEmail mail,int bestellingId);
     }
 }

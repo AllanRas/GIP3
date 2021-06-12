@@ -16,12 +16,10 @@ namespace Lekkerbek12Gip.Services.Concrete
     public class BesteldeGerechtenService : RepositoryBase<BestellingGerechten>, IBesteldeGerectenService
     {
         private readonly LekkerbekContext _context;
-        private readonly IEmailService _emailService;
-        public BesteldeGerechtenService(LekkerbekContext context, IEmailService emailService) : base(context)
+      
+        public BesteldeGerechtenService(LekkerbekContext context) : base(context)
         {
             _context = context;
-            _emailService = emailService;
-
         }
 
         public async Task<BesteldeGerechtenIndexModel> besteldeGerechtenIndexModel(int Bestelid)
@@ -40,9 +38,9 @@ namespace Lekkerbek12Gip.Services.Concrete
            return  bestelde;
         }
 
-        async public Task<string> ConfirmBestelling(int bestellingId, string specialeWensen)
+        async public Task<bool> ConfirmBestelling(int bestellingId, string specialeWensen)
         {
-
+            var isSuccesfull = false;  
             var klant = _context.Bestellings.Include(x => x.Klant).FirstOrDefault(x => x.BestellingId == bestellingId).Klant;
             var bestelling = _context.Bestellings.Include("Gerechten").Include(x => x.Klant).FirstOrDefault(x => x.BestellingId == bestellingId);
             //var bg = _context.BestellingGerechten.Where(x => x.BestellingId == bestellingId);
@@ -58,21 +56,22 @@ namespace Lekkerbek12Gip.Services.Concrete
             if (totaalAantal < 1)
             {
                 bestelling.IsConfirmed = false;
-                return "~/BesteldeGerechten/Gerechten/" + bestelling.BestellingId;
+                return isSuccesfull;
             }
             else
             {
                 if (bestelling.IsConfirmed != true)
                 {                  
-                    _emailService.Send(new GemakteOrderMail { Bestellings = bg.ToList() }, klant);
+                   
                     bestelling.IsConfirmed = true;
+                    isSuccesfull = true;
                 }
 
             }
             bestelling.SpecialeWensen = specialeWensen;
             _context.Update(bestelling);
             await _context.SaveChangesAsync();
-            return "~/Bestellings/";
+            return isSuccesfull;
         }
 
         public async Task Gerechten(int bestellingId, int gerechtId, int aantal)

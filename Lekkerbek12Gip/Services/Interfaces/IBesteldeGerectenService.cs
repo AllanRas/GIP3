@@ -16,6 +16,6 @@ namespace Lekkerbek12Gip.Services.Interfaces
         Task<IEnumerable<BestellingGerechten>> GetBestellingGerechtenwithIncludeFilter(Expression<Func<BestellingGerechten, bool>> filter);
         Task<BesteldeGerechtenIndexModel> besteldeGerechtenIndexModel(int Bestelid);
         Task Gerechten(int bestellingId, int gerechtId, int aantal);
-        Task<string> ConfirmBestelling(int bestellingId, string specialeWensen);
+        Task<bool> ConfirmBestelling(int bestellingId, string specialeWensen);
     }
 }

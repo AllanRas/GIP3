@@ -25,7 +25,7 @@ namespace Lekkerbek12Gip.Services.Concrete
             return entity;
         }
 
-        public async void Delete(Entity entity)
+        public async Task Delete(Entity entity)
         {
             _context.Remove(entity);
             await _context.SaveChangesAsync();

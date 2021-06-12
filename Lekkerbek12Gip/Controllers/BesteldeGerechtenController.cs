@@ -135,9 +135,14 @@ namespace Lekkerbek12Gip.Controllers
             //bestelling.SpecialeWensen = specialeWensen;
             //_context.Update(bestelling);
             //await _context.SaveChangesAsync();
-  
+            if(await _besteldeGerectenService.ConfirmBestelling(bestellingId, specialeWensen)) 
+            {
 
-            return Redirect(await _besteldeGerectenService.ConfirmBestelling(bestellingId, specialeWensen));
+                await _emailService.Send(new GemakteOrderMail(), bestellingId);
+                return Redirect("~/BesteldeGerechten/Gerechten/" + bestellingId);
+                
+            }
+            return Redirect("~/Bestellings/");
         }
     }
 }

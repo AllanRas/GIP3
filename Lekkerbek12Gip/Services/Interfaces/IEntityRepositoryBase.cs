@@ -12,6 +12,6 @@ namespace Lekkerbek12Gip.Services.Interfaces
         Task<T> Get(Expression<Func<T, bool>> filter = null);
         Task<T> Add(T entity);
         Task<T> Update(T entity);
-        void Delete(T entity);         
+        Task Delete(T entity);         
     }
 }
