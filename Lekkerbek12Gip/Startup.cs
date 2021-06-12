@@ -45,6 +45,9 @@ namespace Lekkerbek12Gip
                 .AddEntityFrameworkStores<LekkerbekContext>();
             services.AddTransient<IBestellingsService, BestellingsService>();
             services.AddTransient<IGerechtenService, GerechtenService>();
+            services.AddTransient<IKlantsService, KlantService>();
+            services.AddTransient<IEventsService, EventService>();
+            services.AddTransient<IChefsService, ChefService>();
             services.AddTransient<IBesteldeGerectenService, BesteldeGerechtenService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddControllersWithViews();

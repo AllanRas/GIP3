@@ -10,7 +10,8 @@ namespace Lekkerbek12Gip.Services.Interfaces
 {
     public interface IBestellingsService : IEntityRepositoryBase<Bestelling>
     {
-        Task<IEnumerable<Bestelling>> GetAllBestellingwithInclude(ClaimsPrincipal user = null);
+        Task<IEnumerable<Bestelling>> GetAllBestellingwithInclude(ClaimsPrincipal user = null,Klant klant=null);
         Task<Bestelling> GetBestellingwithIncludeFilter(Expression<Func<Bestelling, bool>> filter);
+        Task<Bestelling> bestellingCreate(Bestelling bestelling);
     }
 }

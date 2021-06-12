@@ -13,14 +13,37 @@ namespace Lekkerbek12Gip.Services.Concrete
     public class BestellingsService : RepositoryBase<Bestelling>, IBestellingsService
     {
         private readonly LekkerbekContext _context;
-        public BestellingsService(LekkerbekContext context) : base(context)
+        private readonly IKlantsService _klantsService;
+        public BestellingsService(LekkerbekContext context, IKlantsService klantsService) : base(context)
         {
             _context = context;
+            _klantsService = klantsService;
           
         }
 
+        public async Task<Bestelling> bestellingCreate(Bestelling bestelling)
+        {
+            var klant = await _klantsService.Get(x => x.KlantId == bestelling.KlantId);
 
-        public async Task<IEnumerable<Bestelling>> GetAllBestellingwithInclude(ClaimsPrincipal user=null)
+            var bestellingCount =GetAllBestellingwithInclude(klant:klant).Result.Count();
+
+            if (klant != null)
+            {
+                klant.GetrouwheidsScore += 1;
+                bestelling.OrderDate = DateTime.Now;
+                bestelling.IsConfirmed = false;
+            }
+            if (bestellingCount != 0 && (bestellingCount + 1) % 3 == 0)
+            {
+                bestelling.Korting = 10;
+            }
+
+            await Add(bestelling);
+            return bestelling;
+          
+        }
+
+        public async Task<IEnumerable<Bestelling>> GetAllBestellingwithInclude(ClaimsPrincipal user=null,Klant klant=null)
         {
             var bestellingList =  _context.Bestellings
                    .Include(x => x.Klant)
@@ -33,7 +56,11 @@ namespace Lekkerbek12Gip.Services.Concrete
             {
                 return await bestellingList.ToListAsync();   
             }
-            return await bestellingList.Where(x => x.Klant.emailadres == user.Identity.Name).ToListAsync();
+            else if(user != null && user.IsInRole("Klant"))
+            {
+                return  await bestellingList.Where(x => x.Klant.emailadres == user.Identity.Name).ToListAsync();
+            }
+            return await bestellingList.Where(x => x.Klant.emailadres == klant.emailadres).ToListAsync();
                    
         }
 
