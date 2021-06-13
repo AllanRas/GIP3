@@ -327,12 +327,13 @@ namespace Lekkerbek12Gip.Controllers
 
         public async Task<IActionResult> Factuur(int id)
         {
-            Bestelling bestelling = await (from b in _context.Bestellings
-                                    .Include(b => b.Klant)
-                                    .Include(b => b.BestellingGerechten)
-                                    .ThenInclude(bg => bg.Gerecht)
-                                           where b.BestellingId == id
-                                           select b).FirstOrDefaultAsync();
+            //Bestelling bestelling = await (from b in _context.Bestellings
+            //                        .Include(b => b.Klant)
+            //                        .Include(b => b.BestellingGerechten)
+            //                        .ThenInclude(bg => bg.Gerecht)
+            //                               where b.BestellingId == id
+            //                               select b).FirstOrDefaultAsync();
+            var bestelling = await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
             if (bestelling == null)
             {
                 return NotFound();
