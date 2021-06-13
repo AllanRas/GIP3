@@ -130,7 +130,7 @@ namespace Lekkerbek12Gip.Controllers
         public async Task<IActionResult> Create()
         {
             var klant = await _klantsService.Get(x => x.emailadres == User.Identity.Name);
-                
+
             if (klant != null) ViewData["Klant"] = klant;
             // accounts made by register page automatically makes you klant so if else would not make appear klantselect list in dropdownlist
             ViewData["KlantSelect"] = new SelectList(await _klantsService.GetList(), "KlantId", "Name");
@@ -162,7 +162,7 @@ namespace Lekkerbek12Gip.Controllers
                     return NotFound();
                 }
                 await _service.bestellingCreate(bestelling);
-                                
+
                 //var klant =await _klantsService.Get(x => x.KlantId == bestelling.KlantId);
 
                 //var bestellingCount =_service.GetAllBestellingwithInclude(User).Result.Count();
@@ -184,7 +184,7 @@ namespace Lekkerbek12Gip.Controllers
 
                 if (User.IsInRole("Klant"))
                 {
-                    return RedirectToAction("Gerechten","BesteldeGerechten", new { id = bestelling.BestellingId });
+                    return RedirectToAction("Gerechten", "BesteldeGerechten", new { id = bestelling.BestellingId });
                 }
                 ViewData["KlantSelect"] = new SelectList(await _klantsService.GetList(), "KlantId", "Name");
                 return RedirectToAction(nameof(Index));
@@ -205,7 +205,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var bestelling = await _service.GetBestellingwithIncludeFilter(x=>x.BestellingId==id);
+            var bestelling = await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
 
             if (bestelling == null)
             {
@@ -229,10 +229,10 @@ namespace Lekkerbek12Gip.Controllers
             if (id != bestelling.BestellingId)
             {
                 return NotFound();
-            }           
+            }
             if (ModelState.IsValid)
-            {           
-                await _service.Update(bestelling);                
+            {
+                await _service.Update(bestelling);
                 return RedirectToAction(nameof(Index));
             }
             //ViewData["KlantId"] = new SelectList(await _klantsService.GetList(), "KlantId", "KlantId", bestelling.KlantId);          
@@ -250,7 +250,7 @@ namespace Lekkerbek12Gip.Controllers
             //var bestelling = await _context.Bestellings
             //    .Include(b => b.Klant)
             //    .FirstOrDefaultAsync(m => m.BestellingId == id);
-           var bestelling =await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
+            var bestelling = await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
             if (bestelling == null)
             {
                 return NotFound();
@@ -267,7 +267,7 @@ namespace Lekkerbek12Gip.Controllers
             //var bestelling = await _context.Bestellings.FindAsync(id);
             //_context.Bestellings.Remove(bestelling);
             var bestelling = await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
-             await _service.Delete(bestelling);
+            await _service.Delete(bestelling);
             //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -296,30 +296,30 @@ namespace Lekkerbek12Gip.Controllers
         {
             var bestelling = await _service.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
             //var bestellingGerechten = await _context.BestellingGerechten.Include(x => x.Bestelling).Include(x => x.Gerecht).Where(x => x.BestellingId == id).ToListAsync();
-            
+
             bestelling.Afgerekend = true;
             //var klant = _context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name);
             //var kalnt = _context.Users.FirstOrDefault(x => x.Email == bestelling.Klant.emailadres);
-            
-            //var klantUser = _context.Klants.FirstOrDefault(x => x.emailadres == bestelling.Klant.emailadres);
-           
-                
-                await _emailService.Send(new BevestigMail(),id);
 
-                //MailMessage mail = new MailMessage();
-                //mail.To.Add(klant.emailadres);
-                //mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
-                //mail.Subject = "Order";
-                //mail.Body = "<h1 style = \"color: green\">Uw bestelling is bevestigd!</h1>";
-                //mail.IsBodyHtml = true;
-                //SmtpClient smtp = new SmtpClient();
-                //smtp.Host = "smtp.gmail.com";
-                //smtp.Port = 587;
-                //smtp.UseDefaultCredentials = false;
-                //smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
-                //smtp.EnableSsl = true;
-                //smtp.Send(mail);
-            
+            //var klantUser = _context.Klants.FirstOrDefault(x => x.emailadres == bestelling.Klant.emailadres);
+
+
+            await _emailService.Send(new BevestigMail(), id);
+
+            //MailMessage mail = new MailMessage();
+            //mail.To.Add(klant.emailadres);
+            //mail.From = new MailAddress("lekkerbek12gip2@gmail.com");
+            //mail.Subject = "Order";
+            //mail.Body = "<h1 style = \"color: green\">Uw bestelling is bevestigd!</h1>";
+            //mail.IsBodyHtml = true;
+            //SmtpClient smtp = new SmtpClient();
+            //smtp.Host = "smtp.gmail.com";
+            //smtp.Port = 587;
+            //smtp.UseDefaultCredentials = false;
+            //smtp.Credentials = new System.Net.NetworkCredential("lekkerbek12gip2@gmail.com", "LekkerbekGip2");
+            //smtp.EnableSsl = true;
+            //smtp.Send(mail);
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -389,9 +389,11 @@ namespace Lekkerbek12Gip.Controllers
         //    return Redirect("~/Bestellings/Gerechten/" + bestId);
         //}
 
-        private bool BestellingExists(int id)
+        private async Task<bool> BestellingExists(int id)
         {
-            return _context.Bestellings.Any(e => e.BestellingId == id);
+            var result = await _service.Get(x => x.BestellingId == id);
+            return result == null ? false : true;
+
         }
 
         //[AllowAnonymous]

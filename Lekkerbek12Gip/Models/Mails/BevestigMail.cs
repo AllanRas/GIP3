@@ -8,21 +8,24 @@ namespace Lekkerbek12Gip.Models.Mails
 {
     public class BevestigMail : IEmail
     {
-        public string Message { get {
-               
-                                   
-                                  
-                string message=string.Empty;
-                decimal totalprijs=0;
+        public string Message
+        {
+            get
+            {
+
+
+
+                string message = string.Empty;
+                decimal totalprijs = 0;
                 var korting = "";
                 foreach (var item in Bestellings)
                 {
-                     message += $"<li>{item.Gerecht.Naam} \t {item.Gerecht.Prijs}€ - {item.Aantal} stuk</li>";
-                    
-                     totalprijs += item.Gerecht.Prijs*item.Aantal;
-                    
+                    message += $"<li>{item.Gerecht.Naam} \t {item.Gerecht.Prijs}€ - {item.Aantal} stuk</li>";
+
+                    totalprijs += item.Gerecht.Prijs * item.Aantal;
+
                 }
-                if (Bestellings.First().Bestelling.Korting == 10)
+                if (Bestellings.Count > 0 && Bestellings.First().Bestelling.Korting == 10)
                 {
                     korting = (totalprijs * 1 / 10).ToString();
                     totalprijs = totalprijs * 9 / 10;
@@ -45,10 +48,10 @@ namespace Lekkerbek12Gip.Models.Mails
                         </div>
                         </body>
                         </html>";
-                return template;                 
-                }
-               }
-      
+                return template;
+            }
+        }
+
         public List<BestellingGerechten> Bestellings { get; set; }
     }
 }
