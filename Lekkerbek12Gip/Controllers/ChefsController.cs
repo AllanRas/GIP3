@@ -6,16 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
+using Lekkerbek12Gip.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
     public class ChefsController : Controller
     {
         private readonly LekkerbekContext _context;
-
-        public ChefsController(LekkerbekContext context)
+        private readonly IBestellingsService _bestellingsService;
+        private readonly IChefsService _chefsService;
+        public ChefsController(LekkerbekContext context, IBestellingsService bestellingsService, IChefsService chefsService)
         {
             _context = context;
+            _bestellingsService = bestellingsService;
+            _chefsService = chefsService;
         }
 
 
@@ -30,14 +35,22 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var bestelling = await _context.Bestellings.FindAsync(id);
-            
+            var bestelling = await _bestellingsService.Get(x => x.BestellingId == id);
+
             if (bestelling == null)
             {
                 return NotFound();
             }
-           
-            ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
+
+
+
+            if (User.IsInRole("Chef"))
+            {
+
+                ViewData["ChefId"] = User.Identity.Name;
+            }
+
+
             return View(bestelling);
         }
 
@@ -48,9 +61,14 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddChef(int id, [Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting,IsConfirmed")] Bestelling bestelling)
         {
-            
-            var numberOfChef = _context.Bestellings.Where(x => x.ChefId == bestelling.ChefId &&
-            x.OrderDate >= DateTime.Now.AddDays(-1) && x.OrderDate < DateTime.Now && x.BestelingStatus == Bestelling.BestelStatus.GettingReady).Count();
+            if (true)
+            {
+
+            }
+
+            var numberOfChef = _chefsService.GetNumberOfChefs(x => x.ChefId == bestelling.ChefId &&
+           x.OrderDate >= DateTime.Now.AddDays(-1) && x.OrderDate < DateTime.Now && x.BestelingStatus == Bestelling.BestelStatus.GettingReady);
+
             if (id != bestelling.BestellingId)
             {
                 return NotFound();
@@ -68,8 +86,7 @@ namespace Lekkerbek12Gip.Controllers
                 {
                     bestelling.IsConfirmed = true;
                     bestelling.BestelingStatus = Bestelling.BestelStatus.GettingReady;
-                    _context.Update(bestelling);
-                    await _context.SaveChangesAsync();
+                    await _bestellingsService.Update(bestelling);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -84,51 +101,53 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ChefName"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
+            ViewData["ChefName"] = new SelectList(await _chefsService.GetList(), "ChefId", "ChefName");
             return View(bestelling);
         }
 
 
-        public async Task<IActionResult> Leveren(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Leveren(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var bestelling = await _context.Bestellings
-                .Include(x => x.Chef)
-                .FirstOrDefaultAsync(m => m.BestellingId == id);
-            if (bestelling == null)
-            {
-                return NotFound();
-            }
+        //    var bestelling = await _bestellingsService.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
 
-            return View(bestelling);
-        }
+        //    if (bestelling == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(bestelling);
+        //}
 
 
-        // POST: Bestellingen/Leveren/5
-        [HttpPost, ActionName("Leveren")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Leveren(int id)
-        {
-            var bestelling = await _context.Bestellings.FindAsync(id);
-            bestelling.BestelingStatus = Bestelling.BestelStatus.Done;
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //// POST: Bestellingen/Leveren/5
+        //[HttpPost, ActionName("Leveren")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Leveren(int id)
+        //{
+        //    var bestelling = await _bestellingsService.Get(x => x.BestellingId == id);
+
+        //    bestelling.BestelingStatus = Bestelling.BestelStatus.Done;
+        //   await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
 
         // GET: Chefs
+
         public async Task<IActionResult> Index()
         {
-            var timeOneDay = DateTime.Today.AddDays(1).AddSeconds(-1);
 
-            var lekkerbekContext = _context.Bestellings.Include(x => x.Gerechten).Include(x => x.Chef).OrderBy(x => x.AfhaalTijd);
-            //var lekkerbekContext = _context.Bestellings.Include(x => x.Gerechten).Include(x => x.Chef).Where(x => x.OrderDate <= timeOneDay && x.OrderDate >= DateTime.Today).OrderBy(x => x.OrderDate);
+            //var timeOneDay = DateTime.Today.AddDays(1).AddSeconds(-1);
 
-            return View(await lekkerbekContext.ToListAsync());
+            //var lekkerbekContext = _context.Bestellings.Include(x => x.Gerechten).Include(x => x.Chef).OrderBy(x => x.AfhaalTijd);
+            ////var lekkerbekContext = _context.Bestellings.Include(x => x.Gerechten).Include(x => x.Chef).Where(x => x.OrderDate <= timeOneDay && x.OrderDate >= DateTime.Today).OrderBy(x => x.OrderDate);
+
+            return View(await _chefsService.GetChefIndexViewModel());
         }
 
         private bool BestellingExists(int id)

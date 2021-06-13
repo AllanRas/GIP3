@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Lekkerbek12Gip.Models.Bestelling>
+﻿@model Lekkerbek12Gip.ViewModel.Chefs.ChefIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -8,101 +8,165 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Maak nieuwe chef aan</a>
+    <a asp-action="Create">Create New</a>
 </p>
-
-@foreach(Bestelling.BestelStatus status in Enum.GetValues(typeof(Bestelling.BestelStatus)))
+@foreach (Bestelling.BestelStatus status in Enum.GetValues(typeof(Bestelling.BestelStatus)))
 {
-<h2>@status</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Gerechten)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SpecialeWensen)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AfhaalTijd)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Chef.ChefName)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            @if (item.BestelingStatus == status && item.IsConfirmed == true)
-            {
-                if(!(item.BestelingStatus == Bestelling.BestelStatus.NotReady && item.AfhaalTijd < DateTime.Now))
-                {
+    <h2>@status</h2>
+    <table class="table">
+
+        <thead>
+
             <tr>
-                <td>
-                    @foreach (var waarde in item.Gerechten)
-                    {
-                        <div>
-                            @waarde.Naam
-                        </div>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SpecialeWensen)
-                </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.AfhaalTijd)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Chef.ChefName)
-                </td>
-                <td>
-                    @if (item.BestelingStatus == Bestelling.BestelStatus.Done && item.Chef != null)
-                    {
-                        <a class="btn btn-success disabled" asp-action="Leveren" asp-route-id="@item.BestellingId">Geleverd</a>
-
-                    }
-                    else if (item.Chef == null)
-                    {
-                        <a class="btn btn-success disabled" asp-action="Leveren" asp-route-id="@item.BestellingId">Leveren</a>
-
-                    }
-                    else
-                    {
-                        <a class="btn btn-success" asp-action="Leveren" asp-route-id="@item.BestellingId">Leveren</a>
-
-                    }
-                    @{
-                        var bestel = Model.OrderBy(m => m.AfhaalTijd).FirstOrDefault(x => x.BestelingStatus == Bestelling.BestelStatus.NotReady && x.AfhaalTijd > DateTime.Now&&x.IsConfirmed==true);
-                        if (bestel == null)
-                        {
-                            bestel = item;
-                        }
-                    }
-
-                    @if (item.AfhaalTijd == bestel.AfhaalTijd && item.Chef == null)
-                    {
-                        <a class="btn btn-success " asp-action="addChef" asp-route-id="@item.BestellingId">Chef toevoegen</a>
-
-                    }
-                    else if (item.Chef != null)
-                    {
-                    <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toegevoegd</a>
-
-                    }
-                    else
-                    {
-                        <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toevoegen</a>
-                    }
-
-                </td>
-
+                <th>
+                    @Html.DisplayNameFor(model => model.BestellingsReadyList[0].Gerechten)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BestellingsReadyList[0].SpecialeWensen)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BestellingsReadyList[0].AfhaalTijd)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BestellingsReadyList[0].Chef.ChefName)
+                </th>
+                <th></th>
             </tr>
-                            }
+        </thead>
+
+
+        @foreach (var bestelling in Model.ReturnStatusList(status))
+        {
+
+            <tbody>
+                <tr>
+                    <td>
+                        @foreach (var waarde in bestelling.Gerechten)
+                        {
+                            <div>
+                                @waarde.Naam
+                            </div>
                         }
-         }
-    </tbody>
-</table>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.SpecialeWensen)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.AfhaalTijd)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.Chef.ChefName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.BestelingStatus)
+                    </td>
+                    <td>
+                        <a class="btn btn-success" asp-controller="Bestellings" asp-action="Leveren" asp-route-id="@bestelling.BestellingId">Leveren</a>
+                        <a class="btn btn-success " asp-action="addChef" asp-route-id="@bestelling.BestellingId">Chef toevoegen</a>
+                    </td>
+                </tr>
+            </tbody>
+
+        }
+        @*<tbody>
+                @foreach (var bestelling in Model.BestellingsNotReadyList)
+                {
+
+                }
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BestellingsNotReadyList[0].Gerechten)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BestellingsReadyList[0].SpecialeWensen)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BestellingsDoneList[0].AfhaalTijd)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BestellingsDoneList[0].Chef.ChefName)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach (var bestelling in Model.BestellingsReadyList)
+            {
+                <tr>
+                    <td>
+                        @foreach (var waarde in bestelling.Gerechten)
+                        {
+                            <div>
+                                @waarde.Naam
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.SpecialeWensen)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.AfhaalTijd)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.Chef.ChefName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.BestelingStatus)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>
+                </tr>
+            }
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BestellingsNotReadyList[0].Gerechten)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BestellingsReadyList[0].SpecialeWensen)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BestellingsDoneList[0].AfhaalTijd)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BestellingsDoneList[0].Chef.ChefName)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach (var bestelling in Model.BestellingsDoneList)
+            {
+                <tr>
+                    <td>
+                        @foreach (var waarde in bestelling.Gerechten)
+                        {
+                            <div>
+                                @waarde.Naam
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.SpecialeWensen)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.AfhaalTijd)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.Chef.ChefName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bestelling.BestelingStatus)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>
+                </tr>
+            }*@
+
+    </table>
 }

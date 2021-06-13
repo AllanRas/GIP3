@@ -17,26 +17,26 @@
 
             <div class="form-group">
                 <label asp-for="ChefId" class="control-label">Chef Naam</label>
-                <select asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefName"></select>
+                <input asp-for="ChefId" class="form-control" />
                 <span asp-validation-for="ChefId" class="text-danger"></span>
             </div>
-            <div class="form-group">              
-                <input asp-for="KlantId" class="form-control" value=@Model.KlantId hidden/>           
+            <div class="form-group">
+                <input asp-for="KlantId" class="form-control" value=@Model.KlantId hidden />
             </div>
 
-                <div class="form-group">
-                    <label asp-for="OrderDate" class="control-label"></label>
-                    <input asp-for="OrderDate" class="form-control" readonly />
-                    <span asp-validation-for="OrderDate" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="AfhaalTijd" class="control-label"></label>
-                    <input asp-for="AfhaalTijd" class="form-control" readonly />
-                    <span asp-validation-for="AfhaalTijd" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input id="addChef" type="submit" value="Save" class="btn btn-primary" />
-                </div>
+            <div class="form-group">
+                <label asp-for="OrderDate" class="control-label"></label>
+                <input asp-for="OrderDate" class="form-control" readonly />
+                <span asp-validation-for="OrderDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AfhaalTijd" class="control-label"></label>
+                <input asp-for="AfhaalTijd" class="form-control" readonly />
+                <span asp-validation-for="AfhaalTijd" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input id="addChef" type="submit" value="Save" class="btn btn-primary" />
+            </div>
         </form>
     </div>
 </div>

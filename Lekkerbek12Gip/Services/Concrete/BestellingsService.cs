@@ -1,5 +1,6 @@
 ﻿using Lekkerbek12Gip.Models;
 using Lekkerbek12Gip.Services.Interfaces;
+using Lekkerbek12Gip.ViewModel.Chefs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,14 +19,14 @@ namespace Lekkerbek12Gip.Services.Concrete
         {
             _context = context;
             _klantsService = klantsService;
-          
+
         }
 
         public async Task<Bestelling> bestellingCreate(Bestelling bestelling)
         {
             var klant = await _klantsService.Get(x => x.KlantId == bestelling.KlantId);
 
-            var bestellingCount =GetAllBestellingwithInclude(klant:klant).Result.Count();
+            var bestellingCount = GetAllBestellingwithInclude(klant: klant).Result.Count();
 
             if (klant != null)
             {
@@ -40,33 +41,33 @@ namespace Lekkerbek12Gip.Services.Concrete
 
             await Add(bestelling);
             return bestelling;
-          
+
         }
 
-        public async Task<IEnumerable<Bestelling>> GetAllBestellingwithInclude(ClaimsPrincipal user=null,Klant klant=null)
+        public async Task<IEnumerable<Bestelling>> GetAllBestellingwithInclude(ClaimsPrincipal user = null, Klant klant = null)
         {
-            var bestellingList =  _context.Bestellings
+            var bestellingList = _context.Bestellings
                    .Include(x => x.Klant)
                    .Include(x => x.Gerechten)
                    .Include(x => x.Chef)
                    .Include(x => x.BestellingGerechten)
                    .OrderBy(x => x.Afgerekend)
                    .ThenByDescending(x => x.AfhaalTijd);
-            if (user!=null &&user.IsInRole("Admin")) 
+            if (user != null && user.IsInRole("Admin"))
             {
-                return await bestellingList.ToListAsync();   
+                return await bestellingList.ToListAsync();
             }
-            else if(user != null && user.IsInRole("Klant"))
+            else if (user != null && user.IsInRole("Klant"))
             {
-                return  await bestellingList.Where(x => x.Klant.emailadres == user.Identity.Name).ToListAsync();
+                return await bestellingList.Where(x => x.Klant.emailadres == user.Identity.Name).ToListAsync();
             }
             return await bestellingList.Where(x => x.Klant.emailadres == klant.emailadres).ToListAsync();
-                   
+
         }
 
         public async Task<Bestelling> GetBestellingwithIncludeFilter(Expression<Func<Bestelling, bool>> filter)
         {
-            var bestelling =await _context.Bestellings
+            var bestelling = await _context.Bestellings
                    .Include(x => x.Klant)
                    .Include(x => x.Gerechten)
                    .Include(x => x.Chef)
@@ -75,5 +76,12 @@ namespace Lekkerbek12Gip.Services.Concrete
                    .ThenByDescending(x => x.AfhaalTijd).FirstOrDefaultAsync(filter);
             return bestelling;
         }
+        public async Task Afrekenen(Bestelling bestelling)
+        {
+            bestelling.Afgerekend = true;
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }
