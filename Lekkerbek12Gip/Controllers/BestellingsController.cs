@@ -35,6 +35,7 @@ namespace Lekkerbek12Gip.Controllers
 
         public async Task<IActionResult> Index()
         {
+           
             return View(await _bestellingsService.GetAllBestellingwithInclude(User));
         }
 
@@ -105,6 +106,8 @@ namespace Lekkerbek12Gip.Controllers
                 return RedirectToAction(nameof(Index));
 
             }
+            var klant = await _klantsService.Get(x => x.emailadres == User.Identity.Name);
+            if (klant != null) ViewData["Klant"] = klant;
             ViewData["KlantSelect"] = new SelectList(await _klantsService.GetList(), "KlantId", "Name");
             return View(bestelling);
         }

@@ -84,14 +84,6 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (user.Email.ToLower().Equals("Admin@hotmail.com".ToLower()))
-                        await _userManager.AddToRoleAsync(user, "Admin");
-                    else if (user.Email.ToLower().Equals("Kassamedewerker@hotmail.com".ToLower()))
-                        await _userManager.AddToRoleAsync(user, "Kassamedewerker");
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, "Klant");
-                    }
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
@@ -107,8 +99,10 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
                     {
                         if (user.Email == "Admin@hotmail.com".ToLower())
                             await _userManager.AddToRoleAsync(user, "Admin");
-                        else if (user.Email == "Kassamedewerker@hotmail.com")
-                            await _userManager.AddToRoleAsync(user, "Kassamedewerker");
+                        else if (user.Email == "Kassamedewerker@hotmail.com".ToLower())
+                        { 
+                            await _userManager.AddToRoleAsync(user, "Kassamedewerker"); 
+                        }
                         else
                         {
 
