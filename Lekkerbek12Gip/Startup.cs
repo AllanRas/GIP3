@@ -49,6 +49,7 @@ namespace Lekkerbek12Gip
             services.AddTransient<IEventsService, EventService>();
             services.AddTransient<IChefsService, ChefService>();
             services.AddTransient<IBesteldeGerectenService, BesteldeGerechtenService>();
+            services.AddTransient<IReviewService, ReviewService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddControllersWithViews();
             services.AddRazorPages();

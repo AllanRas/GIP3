@@ -14,5 +14,10 @@ namespace Lekkerbek12Gip.Services.Concrete
         {
             _context = context;
         }
+
+        public IEnumerable<Klant> GetKlantenIE()
+        {
+            return _context.Klants.AsEnumerable();
+        }
     }
 }

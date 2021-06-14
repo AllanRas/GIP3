@@ -6,48 +6,41 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
+using Lekkerbek12Gip.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
+    [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
     public class ReviewsController : Controller
     {
-        private readonly LekkerbekContext _context;
+        private readonly IReviewService _reviewService;
+        private readonly IKlantsService _klantsService;
 
-        public ReviewsController(LekkerbekContext context)
+        public ReviewsController(LekkerbekContext context, IReviewService reviewService, IKlantsService klantsService)
         {
-            _context = context;
+            _klantsService = klantsService;
+            _reviewService = reviewService;
         }
 
         // GET: Reviews
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Reviews.Include(r => r.Klant);
-            return View(await lekkerbekContext.ToListAsync());
-        }
-
-        // GET: Reviews/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var review = await _context.Reviews
-                .Include(r => r.Klant)
-                .FirstOrDefaultAsync(m => m.ReviewId == id);
-            if (review == null)
-            {
-                return NotFound();
-            }
-
-            return View(review);
+            return View(await _reviewService.GetAllReviews());
         }
 
         // GET: Reviews/Create
         public IActionResult Create()
         {
-            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "Name");
+            var klant = _klantsService.Get(x => x.emailadres == User.Identity.Name);
+            if (klant != null)
+            {
+                ViewData["Klant"] = new SelectList(_klantsService.GetKlantenIE(), "KlantId", "Name");
+                if (User.IsInRole("Klant"))
+                {
+                    ViewData["KlantId"] = klant.Result.KlantId;
+                }
+            }
             return View();
         }
 
@@ -56,15 +49,15 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReviewId,KlantId,ReviewMessage,Score,TimeOfReview")] Review review)
+        public async Task<IActionResult> Create([Bind("ReviewId,KlantId,ReviewMessage,Score,TimeOfReview")] Review review, string message)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(review);
-                await _context.SaveChangesAsync();
+                review.ReviewMessage = message;
+                await _reviewService.AddReview(review);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "Name", review.KlantId);
+            ViewData["KlantId"] = new SelectList(_klantsService.GetKlantenIE(), "KlantId", "Name", review.KlantId);
             return View(review);
         }
 
@@ -76,12 +69,17 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var review = await _context.Reviews.FindAsync(id);
+            var review = await _reviewService.GetReviewById(id);
             if (review == null)
             {
                 return NotFound();
             }
-            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "Name", review.KlantId);
+            // Check if user is allowed to edit this review
+            if (review.Klant.emailadres != User.Identity.Name && User.IsInRole("Klant"))
+            {
+                return NotFound();
+            }
+            ViewData["KlantId"] = new SelectList(_klantsService.GetKlantenIE(), "KlantId", "Name", review.KlantId);
             return View(review);
         }
 
@@ -90,7 +88,7 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ReviewId,KlantId,ReviewMessage,Score,TimeOfReview")] Review review)
+        public async Task<IActionResult> Edit(int id, [Bind("ReviewId,KlantId,ReviewMessage,Score,TimeOfReview")] Review review, string message)
         {
             if (id != review.ReviewId)
             {
@@ -101,8 +99,8 @@ namespace Lekkerbek12Gip.Controllers
             {
                 try
                 {
-                    _context.Update(review);
-                    await _context.SaveChangesAsync();
+                    review.ReviewMessage = message;
+                    await _reviewService.UpdateReview(review);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,7 +115,7 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "Name", review.KlantId);
+            ViewData["KlantId"] = new SelectList(_klantsService.GetKlantenIE(), "KlantId", "Name", review.KlantId);
             return View(review);
         }
 
@@ -129,10 +127,13 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var review = await _context.Reviews
-                .Include(r => r.Klant)
-                .FirstOrDefaultAsync(m => m.ReviewId == id);
+            var review = await _reviewService.GetReviewById(id);
             if (review == null)
+            {
+                return NotFound();
+            }
+            // Check if user is allowed to delete this review
+            if (review.Klant.emailadres != User.Identity.Name && User.IsInRole("Klant"))
             {
                 return NotFound();
             }
@@ -145,15 +146,13 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
-            _context.Reviews.Remove(review);
-            await _context.SaveChangesAsync();
+            await _reviewService.DeleteReview(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool ReviewExists(int id)
         {
-            return _context.Reviews.Any(e => e.ReviewId == id);
+            return _reviewService.ReviewExists(id);
         }
     }
 }

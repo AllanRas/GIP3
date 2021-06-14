@@ -8,5 +8,7 @@ namespace Lekkerbek12Gip.Services.Interfaces
 {
     public interface IKlantsService:IEntityRepositoryBase<Klant>
     {
+        // Viewbag get _context.Klants
+        IEnumerable<Klant> GetKlantenIE();
     }
 }
