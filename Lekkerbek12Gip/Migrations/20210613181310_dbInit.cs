@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Lekkerbek12Gip.Migrations
 {
-    public partial class init : Migration
+    public partial class dbInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,32 +47,30 @@ namespace Lekkerbek12Gip.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Chefs",
                 columns: table => new
                 {
                     ChefId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ChefName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ChefName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Chefs", x => x.ChefId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Gerechten",
-                columns: table => new
-                {
-                    GerechtId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Naam = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Omschrijving = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Prijs = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Categorie = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Gerechten", x => x.GerechtId);
                 });
 
             migrationBuilder.CreateTable(
@@ -214,6 +212,28 @@ namespace Lekkerbek12Gip.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Gerechten",
+                columns: table => new
+                {
+                    GerechtId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Naam = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Omschrijving = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Prijs = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Gerechten", x => x.GerechtId);
+                    table.ForeignKey(
+                        name: "FK_Gerechten_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Firmas",
                 columns: table => new
                 {
@@ -232,37 +252,6 @@ namespace Lekkerbek12Gip.Migrations
                         principalTable: "Klants",
                         principalColumn: "KlantId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GerechtKlantFavorieten",
-                columns: table => new
-                {
-                    KlantId = table.Column<int>(type: "int", nullable: false),
-                    GerechtId = table.Column<int>(type: "int", nullable: false),
-                    GerechtId1 = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GerechtKlantFavorieten", x => new { x.GerechtId, x.KlantId });
-                    table.ForeignKey(
-                        name: "FK_GerechtKlantFavorieten_Gerechten_GerechtId",
-                        column: x => x.GerechtId,
-                        principalTable: "Gerechten",
-                        principalColumn: "GerechtId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GerechtKlantFavorieten_Gerechten_GerechtId1",
-                        column: x => x.GerechtId1,
-                        principalTable: "Gerechten",
-                        principalColumn: "GerechtId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GerechtKlantFavorieten_Klants_KlantId",
-                        column: x => x.KlantId,
-                        principalTable: "Klants",
-                        principalColumn: "KlantId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -360,6 +349,37 @@ namespace Lekkerbek12Gip.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GerechtKlantFavorieten",
+                columns: table => new
+                {
+                    KlantId = table.Column<int>(type: "int", nullable: false),
+                    GerechtId = table.Column<int>(type: "int", nullable: false),
+                    GerechtId1 = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GerechtKlantFavorieten", x => new { x.GerechtId, x.KlantId });
+                    table.ForeignKey(
+                        name: "FK_GerechtKlantFavorieten_Gerechten_GerechtId",
+                        column: x => x.GerechtId,
+                        principalTable: "Gerechten",
+                        principalColumn: "GerechtId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GerechtKlantFavorieten_Gerechten_GerechtId1",
+                        column: x => x.GerechtId1,
+                        principalTable: "Gerechten",
+                        principalColumn: "GerechtId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GerechtKlantFavorieten_Klants_KlantId",
+                        column: x => x.KlantId,
+                        principalTable: "Klants",
+                        principalColumn: "KlantId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BestellingGerechten",
                 columns: table => new
                 {
@@ -389,6 +409,33 @@ namespace Lekkerbek12Gip.Migrations
                         principalTable: "Gerechten",
                         principalColumn: "GerechtId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dranken",
+                columns: table => new
+                {
+                    DrankId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    BestellingId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dranken", x => x.DrankId);
+                    table.ForeignKey(
+                        name: "FK_Dranken_Bestellings_BestellingId",
+                        column: x => x.BestellingId,
+                        principalTable: "Bestellings",
+                        principalColumn: "BestellingId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Dranken_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -466,6 +513,16 @@ namespace Lekkerbek12Gip.Migrations
                 column: "PlanningsModuleId1");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Dranken_BestellingId",
+                table: "Dranken",
+                column: "BestellingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dranken_CategoryId",
+                table: "Dranken",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Events_PlanningsModuleId",
                 table: "Events",
                 column: "PlanningsModuleId");
@@ -476,6 +533,11 @@ namespace Lekkerbek12Gip.Migrations
                 column: "KlantId",
                 unique: true,
                 filter: "[KlantId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Gerechten_CategoryId",
+                table: "Gerechten",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GerechtKlantFavorieten_GerechtId1",
@@ -512,6 +574,9 @@ namespace Lekkerbek12Gip.Migrations
                 name: "ChefPlanningsModules");
 
             migrationBuilder.DropTable(
+                name: "Dranken");
+
+            migrationBuilder.DropTable(
                 name: "Events");
 
             migrationBuilder.DropTable(
@@ -540,6 +605,9 @@ namespace Lekkerbek12Gip.Migrations
 
             migrationBuilder.DropTable(
                 name: "PlanningsModules");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

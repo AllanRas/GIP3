@@ -53,6 +53,7 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var bestelling = await _bestellingsService.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
+            var pro = bestelling.Products;
             if (bestelling == null)
             {
                 return NotFound();

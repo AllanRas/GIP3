@@ -21,7 +21,7 @@
 <img id="logo" src="~/img/Lekkerbek.jpeg" />
 <h1>Menu</h1>
 <span>Ordernummer : </span><p style="display:inline" id="bestellingId">@ViewBag.data</p>
-<a asp-action="index" asp-controller="Bestellings" >Terug naar bestellingslijst</a>
+<a asp-action="index" asp-controller="Bestellings">Terug naar bestellingslijst</a>
 
 <div style="display:flex; justify-content:space-between">
     <div>
@@ -61,7 +61,7 @@
                             <td>
                                 <form asp-action="Gerechten">
                                     @{
-                                        int aantal = aantal = Model.Aantalmatcher(gerecht.GerechtId, ViewBag.data);
+                                        int aantal = aantal = Model.AantalmatcherGerecht(gerecht.GerechtId, ViewBag.data);
                                     }
                                     <input type="number" name="aantal" value="@aantal" />
                                     <input type="hidden" name="gerechtId" value="@gerecht.GerechtId" />
@@ -100,6 +100,15 @@
                             total += sum;
                             <li class="list-group-item">(@item.Aantal) @item.Gerecht.Naam @sum </li>
                         }
+                        @if (Model.ToegevoegdDranken != null) { 
+                            foreach (var item in Model.ToegevoegdDranken)
+                            {
+                                var sum = item.Aantal * item.Drank.Prijs;
+                                total += sum;
+                                <li class="list-group-item">(@item.Aantal) @item.Drank.Name @sum </li>
+                            }
+
+                        }
 
                     </ul>
                     <div>
@@ -120,19 +129,20 @@
 
 <select id="categories">
 
-    <option selected=@Gerecht.Categorieen.Salades>Salades</option>
-    @foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
+    <option selected=@Model.Categories[0]>Salades</option>
+
+    @foreach (var categorie in Model.Categories)
     {
-        <option value=@categorie>@categorie</option>
+        <option value=@categorie.CategoryId>@categorie.Name</option>
 
 
     }
 </select>
 
 <div id="menuBody">
-    @foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
+    @foreach (var categorie in Model.Categories)
     {
-        <div id=@categorie style="display:none">
+        <div id=@categorie.CategoryId style="display:none">
             <table class="table">
                 <thead class="thead-dark">
                     <tr>
@@ -152,7 +162,7 @@
 
                 @foreach (var item in Model.Gerechts)
                 {
-                    if (item.Categorie == categorie)
+                    if (item.Category == categorie)
                     {
                         <tbody>
                             <tr>
@@ -169,8 +179,8 @@
                                     <form asp-action="Gerechten">
                                         @{
                                             int? aantal;
-                                            aantal= Model.Aantalmatcher(item.GerechtId, ViewBag.data);
-                                      
+                                            aantal = Model.AantalmatcherGerecht(item.GerechtId, ViewBag.data);
+
                                         }
                                         <input type="number" name="aantal" value="@aantal" />
                                         <input type="hidden" name="gerechtId" value="@item.GerechtId" />
@@ -180,6 +190,42 @@
                                     </form>
                                     <form asp-action="AddFav" asp-controller="Klants">
                                         <input type="hidden" name="gerechtId" value="@item.GerechtId" />
+                                        <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+                                        <button type="submit" value="AddFav">Toevoegen aan favorieten</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    }
+                }
+
+                @foreach (var item in Model.Dranken)
+                {
+                    if (item.Category == categorie)
+                    {
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>                              
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Prijs) $
+                                </td>
+                                <td>
+                                    <form asp-action="Dranken">
+                                        @{
+                                            int? aantal;
+                                            aantal = Model.AantalmatcherDrank(item.DrankId, ViewBag.data);
+
+                                        }
+                                        <input type="number" name="aantal" value="@aantal" />
+                                        <input type="hidden" name="drankId" value="@item.DrankId" />
+                                        <input type="hidden" name="bestellingId" value="@ViewBag.data" />
+                                        <button type="submit" value="Dranken">+</button>
+                                        aantal: @aantal
+                                    </form>
+                                    <form asp-action="AddFav" asp-controller="Klants">
+                                        <input type="hidden" name="drankId" value="@item.DrankId" />
                                         <input type="hidden" name="bestellingId" value="@ViewBag.data" />
                                         <button type="submit" value="AddFav">Toevoegen aan favorieten</button>
                                     </form>
@@ -206,6 +252,7 @@
     <script src="~/js/menu.js"></script>
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
+
 
 @*<table class="table">
         <thead class="thead-dark">
@@ -270,3 +317,4 @@
             }
         }
     </table>*@
+

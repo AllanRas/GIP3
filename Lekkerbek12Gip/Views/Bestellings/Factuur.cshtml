@@ -1,105 +1,105 @@
-﻿@model Lekkerbek12Gip.Models.Bestelling
-@{ Layout = "_PrintLayout"; }
+﻿@*@model Lekkerbek12Gip.Models.Bestelling
+    @{ Layout = "_PrintLayout"; }
 
-<section id="factuurklant">
-    <address>        
-        @Model.Klant.Name
-        <br />
-        @Model.Klant.Adress
-        <br />
-        @Model.Klant.emailadres
-    </address>
-</section>
+    <section id="factuurklant">
+        <address>
+            @Model.Klant.Name
+            <br />
+            @Model.Klant.Adress
+            <br />
+            @Model.Klant.emailadres
+        </address>
+    </section>
 
-<section id="factuurinfo">
-    <dl>
-        <dt>
-            Factuurdatum:
-        </dt>
-        <dd>
-            @DateTime.Now.ToShortDateString()
-        </dd>
-        <dt>
-            Factuurnummer:
-        </dt>
-        <dd>
-            @Model.BestellingId
-        </dd>
-    </dl>
-</section>
-<section id="factuurdetail">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Gerecht</th>
-                <th>Prijs</th>
-                <th>Aantal</th>
-                <th>Subtotaal</th>
-            </tr>
-        </thead>
-                
-        <tbody>
-            @{decimal intPrijs = 0; }
-            @{ foreach (var besteldGerecht in Model.BestellingGerechten)
-                {
-                    intPrijs += besteldGerecht.Aantal * besteldGerecht.Gerecht.Prijs;
-
-<tr>
-    <td>@besteldGerecht.Gerecht.Naam</td>
-    <td>€ @besteldGerecht.Gerecht.Prijs</td>
-    <td>@besteldGerecht.Aantal.ToString()</td>
-    <td>@(besteldGerecht.Aantal * besteldGerecht.Gerecht.Prijs)</td>
-</tr>} }
-        </tbody>
-    </table>
-</section>
-<div class="row">
-    <section class="col-6" id="factuurkorting">
+    <section id="factuurinfo">
         <dl>
             <dt>
-                Korting:
+                Factuurdatum:
             </dt>
             <dd>
-
-                <div>€ @(Model.Korting * intPrijs / 100)</div>
-
+                @DateTime.Now.ToShortDateString()
+            </dd>
+            <dt>
+                Factuurnummer:
+            </dt>
+            <dd>
+                @Model.BestellingId
             </dd>
         </dl>
     </section>
-    <section class="col-6" id="prijsexclbtw">
-        <dl>
-            <dt>
-                Prijs excl. btw:
-            </dt>
-            <dd>
-                @{decimal prijsExclbtw = 0;}
-                @foreach (Gerecht g in Model.Gerechten)
-                {
-                    decimal prijsPerGerecht;
-                    if(g.Categorie == Gerecht.Categorieen.BierenFles || g.Categorie == Gerecht.Categorieen.BierenVat 
-                        || g.Categorie == Gerecht.Categorieen.Huiswijnen || g.Categorie == Gerecht.Categorieen.Trappist ||
-                        g.Categorie == Gerecht.Categorieen.WijnenSugRood || g.Categorie == Gerecht.Categorieen.WijnenSugWit)
+    <section id="factuurdetail">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Gerecht</th>
+                    <th>Prijs</th>
+                    <th>Aantal</th>
+                    <th>Subtotaal</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @{decimal intPrijs = 0; }
+                @{ foreach (var besteldGerecht in Model.BestellingGerechten)
                     {
-                        prijsPerGerecht = g.Prijs * Model.BestellingGerechten.FirstOrDefault(x => x.GerechtId == g.GerechtId).Aantal / (decimal)1.21;
-                    }
-                    else
+                        intPrijs += besteldGerecht.Aantal * besteldGerecht.Gerecht.Prijs;
+
+    <tr>
+        <td>@besteldGerecht.Gerecht.Naam</td>
+        <td>€ @besteldGerecht.Gerecht.Prijs</td>
+        <td>@besteldGerecht.Aantal.ToString()</td>
+        <td>@(besteldGerecht.Aantal * besteldGerecht.Gerecht.Prijs)</td>
+    </tr>} }
+            </tbody>
+        </table>
+    </section>
+    <div class="row">
+        <section class="col-6" id="factuurkorting">
+            <dl>
+                <dt>
+                    Korting:
+                </dt>
+                <dd>
+
+                    <div>€ @(Model.Korting * intPrijs / 100)</div>
+
+                </dd>
+            </dl>
+        </section>
+        <section class="col-6" id="prijsexclbtw">
+            <dl>
+                <dt>
+                    Prijs excl. btw:
+                </dt>
+                <dd>
+                    @{decimal prijsExclbtw = 0;}
+                    @foreach (Gerecht g in Model.Gerechten)
                     {
-                        prijsPerGerecht = g.Prijs * Model.BestellingGerechten.FirstOrDefault(x => x.GerechtId == g.GerechtId).Aantal / (decimal)1.06;
+                        decimal prijsPerGerecht;
+                        if(g.Categorie == Gerecht.Categorieen.BierenFles || g.Categorie == Gerecht.Categorieen.BierenVat
+                            || g.Categorie == Gerecht.Categorieen.Huiswijnen || g.Categorie == Gerecht.Categorieen.Trappist ||
+                            g.Categorie == Gerecht.Categorieen.WijnenSugRood || g.Categorie == Gerecht.Categorieen.WijnenSugWit)
+                        {
+                            prijsPerGerecht = g.Prijs * Model.BestellingGerechten.FirstOrDefault(x => x.GerechtId == g.GerechtId).Aantal / (decimal)1.21;
+                        }
+                        else
+                        {
+                            prijsPerGerecht = g.Prijs * Model.BestellingGerechten.FirstOrDefault(x => x.GerechtId == g.GerechtId).Aantal / (decimal)1.06;
+                        }
+                        prijsExclbtw += prijsPerGerecht;
                     }
-                    prijsExclbtw += prijsPerGerecht;
-                }
-                € @Math.Round(prijsExclbtw,2);
-            </dd>
-        </dl>
-    </section>
-    <section class="col-6" id="factuurtotaal">
-        <dl>
-            <dt>
-                Totaal:
-            </dt>
-            <dd>
-                € @ViewBag.Prijs
-            </dd>
-        </dl>
-    </section>
-</div>
+                    € @Math.Round(prijsExclbtw,2);
+                </dd>
+            </dl>
+        </section>
+        <section class="col-6" id="factuurtotaal">
+            <dl>
+                <dt>
+                    Totaal:
+                </dt>
+                <dd>
+                    € @ViewBag.Prijs
+                </dd>
+            </dl>
+        </section>
+    </div>*@

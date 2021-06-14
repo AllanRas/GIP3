@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Lekkerbek12Gip.Models.Bestelling>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Maak nieuwe chef aan</a>
+</p>
+
+@foreach (Bestelling.BestelStatus status in Enum.GetValues(typeof(Bestelling.BestelStatus)))
+{
+    <h2>@status</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Gerechten)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SpecialeWensen)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AfhaalTijd)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Chef.ChefName)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                @if (item.BestelingStatus == status && item.IsConfirmed == true)
+                {
+                    if (!(item.BestelingStatus == Bestelling.BestelStatus.NotReady))
+                    {
+                        <tr>
+                            <td>
+                                @foreach (var waarde in item.Gerechten)
+                                {
+                                    <div>
+                                        @waarde.Naam
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SpecialeWensen)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AfhaalTijd)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Chef.ChefName)
+                            </td>
+                            <td>
+                                @if (item.BestelingStatus == Bestelling.BestelStatus.Done && item.Chef != null)
+                                {
+                                    <a class="btn btn-success disabled" asp-action="Leveren" asp-route-id="@item.BestellingId">Geleverd</a>
+
+                                }
+                                else if (item.Chef == null)
+                                {
+                                    <a class="btn btn-success disabled" asp-action="Leveren" asp-route-id="@item.BestellingId">Leveren</a>
+
+                                }
+                                else
+                                {
+                                    <a class="btn btn-success" asp-controller="Bestellings" asp-action="Leveren" asp-route-id="@item.BestellingId">Leveren</a>
+
+                                }
+                                @{
+                                    var bestel = Model.OrderBy(m => m.AfhaalTijd).FirstOrDefault(x => x.BestelingStatus == Bestelling.BestelStatus.NotReady && x.AfhaalTijd > DateTime.Now && x.IsConfirmed == true);
+                                    if (bestel == null)
+                                    {
+                                        bestel = item;
+                                    }
+                                }
+
+                                @if (item.AfhaalTijd == bestel.AfhaalTijd && item.Chef == null)
+                                {
+                                    <a class="btn btn-success " asp-action="addChef" asp-route-id="@item.BestellingId">Chef toevoegen</a>
+
+                                }
+                                else if (item.Chef != null)
+                                {
+                                    <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toegevoegd</a>
+
+                                }
+                                else
+                                {
+                                    <a class="btn btn-success disabled" asp-action="addChef" asp-route-id="@item.BestellingId">Chef toevoegen</a>
+                                }
+
+                            </td>
+
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+}

@@ -36,8 +36,16 @@ namespace Lekkerbek12Gip.Controllers
         public async Task<IActionResult> Gerechten(int bestellingId, int gerechtId, int aantal)
         {
             await _besteldeGerectenService.Gerechten(bestellingId, gerechtId, aantal);
-
+            ViewData["data"] = bestellingId;
             return RedirectToAction();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Dranken(int bestellingId, int drankId, int aantal)
+        {
+            await _besteldeGerectenService.Dranken(bestellingId, drankId, aantal);
+            ViewData["data"] = bestellingId;
+            return RedirectToAction("Gerechten",new { id=bestellingId});
         }
         [AllowAnonymous]
         [HttpPost, ActionName("ConfirmBestelling")]

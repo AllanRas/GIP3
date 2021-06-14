@@ -24,6 +24,7 @@ namespace Lekkerbek12Gip.Services.Concrete
 
         public async Task<Bestelling> bestellingCreate(Bestelling bestelling)
         {
+
             var klant = await _klantsService.Get(x => x.KlantId == bestelling.KlantId);
 
             var bestellingCount = GetAllBestellingwithInclude(klant: klant).Result.Count();
@@ -38,7 +39,7 @@ namespace Lekkerbek12Gip.Services.Concrete
             {
                 bestelling.Korting = 10;
             }
-
+            
             await Add(bestelling);
             return bestelling;
 
@@ -49,12 +50,15 @@ namespace Lekkerbek12Gip.Services.Concrete
             var bestellingList = _context.Bestellings
                    .Include(x => x.Klant)
                    .Include(x => x.Gerechten)
+                   .Include(x=>x.Dranken)
                    .Include(x => x.Chef)
+                   .Include(x=>x.BestellingDranks)
                    .Include(x => x.BestellingGerechten)
                    .OrderBy(x => x.Afgerekend)
                    .ThenByDescending(x => x.AfhaalTijd);
             if (user != null && user.IsInRole("Admin"))
             {
+
                 return await bestellingList.ToListAsync();
             }
             else if (user != null && user.IsInRole("Klant"))

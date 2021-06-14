@@ -49,6 +49,7 @@ namespace Lekkerbek12Gip
             services.AddTransient<IEventsService, EventService>();
             services.AddTransient<IChefsService, ChefService>();
             services.AddTransient<IBesteldeGerectenService, BesteldeGerechtenService>();
+            services.AddTransient<ICategoryService, CategoryService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -91,7 +92,7 @@ namespace Lekkerbek12Gip
         }
 
 
-        readonly string[] ROLES = new string[] { "Admin", "Klant", "Kassamedewerker" };
+        readonly string[] ROLES = new string[] { "Admin", "Klant", "Kassamedewerker", "Chef" };
         // Gebaseerd op https://dotnetdetail.net/role-based-authorization-in-asp-net-core-3-0/
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {

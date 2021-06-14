@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Lekkerbek12Gip.Models.Product;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,13 +16,16 @@ namespace Lekkerbek12Gip.Models
         }
         public DbSet<Bestelling> Bestellings { get; set; }
         public DbSet<Klant> Klants { get; set; }
-        public DbSet<Gerecht> Gerechten { get; set; }      
-        public DbSet<Chef> Chefs { get; set; }     
+        public DbSet<Gerecht> Gerechten { get; set; }
+        public DbSet<Chef> Chefs { get; set; }
         public DbSet<BestellingGerechten> BestellingGerechten { get; set; }
-        public DbSet<PlanningsModule> PlanningsModules { get; set; } 
+        public DbSet<PlanningsModule> PlanningsModules { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<ChefPlanningsModule> ChefPlanningsModules { get; set; }
         public DbSet<Firma> Firmas { get; set; }
+        public DbSet<Drank> Dranken { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<BestellingDrank> BestellingDranks{ get; set; }
         public DbSet<GerechtKlantFavoriet> GerechtKlantFavorieten { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,7 +38,7 @@ namespace Lekkerbek12Gip.Models
                     bg => bg.HasOne(prop => prop.Bestelling).WithMany().HasForeignKey(prop => prop.BestellingId),
                     bg =>
                     {
-                        bg.HasKey(prop => new { prop.BestellingId, prop.GerechtId});
+                        bg.HasKey(prop => new { prop.BestellingId, prop.GerechtId });
                         bg.Property(prop => prop.Aantal).HasDefaultValueSql("0");
                     }
               );
@@ -62,7 +66,20 @@ namespace Lekkerbek12Gip.Models
                     }
               );
 
+            modelBuilder.Entity<Bestelling>()
+               .HasMany<Drank>(b => b.Dranken)
+               .WithMany(g => g.Bestellingen)
+               .UsingEntity<BestellingDrank>(
+                   bg => bg.HasOne(prop => prop.Drank).WithMany().HasForeignKey(prop => prop.DrankId),
+                   bg => bg.HasOne(prop => prop.Bestelling).WithMany().HasForeignKey(prop => prop.BestellingId),
+                   bg =>
+                   {
+                       bg.HasKey(prop => new { prop.BestellingId, prop.DrankId });
+                       bg.Property(prop => prop.Aantal).HasDefaultValueSql("0");
+                   }
+             );
             base.OnModelCreating(modelBuilder);
         }
+
     }
 }

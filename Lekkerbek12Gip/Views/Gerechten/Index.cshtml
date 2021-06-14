@@ -1,63 +1,64 @@
-﻿@model IEnumerable<Lekkerbek12Gip.Models.Gerecht>
+﻿@model Lekkerbek12Gip.ViewModel.Gerechten.GerechtenIndexModel
 
-@{
-    ViewData["Title"] = "Index";
-}
+    @{
+        ViewData["Title"] = "Index";
+    }
 
-<h1>Menu</h1>
+    <h1>Menu</h1>
 
-@if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
-{
-    <p>
-        <a asp-action="Create">Nieuw gerecht aanmaken</a>
-    </p>
-}
-@foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
-{
-    <h3>@categorie</h3>
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Naam)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Omschrijving)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Prijs)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                if (item.Categorie == categorie)
+    @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+    {
+        
+        <p>
+            <a asp-action="Create">Nieuw gerecht aanmaken</a>
+        </p>
+    }
+    @foreach (var categorie in Model.Categories)
+    {
+        <h3>@categorie.Name</h3>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gerechts[0].Naam)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gerechts[0].Omschrijving)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gerechts[0].Prijs)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Gerechts)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Naam)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Omschrijving)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Prijs)€
-                        </td>
-                        <td>
-                            @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
-                            {
+                    if (item.Category == categorie)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Naam)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Omschrijving)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Prijs)€
+                            </td>
+                            <td>
+                                @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+                                {
 
-                                <a asp-action="Edit" asp-route-id="@item.GerechtId">Bewerken</a> @Html.Raw(" | ")
-                                <a asp-action="Details" asp-route-id="@item.GerechtId"> Details </a>@Html.Raw(" | ")
-                                <a asp-action="Delete" asp-route-id="@item.GerechtId"> Verwijderen </a>
-                            }
-                        </td>
-                    </tr>
+                                    <a asp-action="Edit" asp-route-id="@item.GerechtId">Bewerken</a> @Html.Raw(" | ")
+                                    <a asp-action="Details" asp-route-id="@item.GerechtId"> Details </a>@Html.Raw(" | ")
+                                    <a asp-action="Delete" asp-route-id="@item.GerechtId"> Verwijderen </a>
+                                }
+                            </td>
+                        </tr>
+                    }
                 }
-            }
-        </tbody>
-    </table>
-}
+            </tbody>
+        </table>
+    }
 

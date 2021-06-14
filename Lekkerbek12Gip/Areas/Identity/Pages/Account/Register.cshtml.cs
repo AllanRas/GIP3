@@ -31,7 +31,7 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
             Microsoft.AspNetCore.Identity.UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,LekkerbekContext context)
+            IEmailSender emailSender, LekkerbekContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -88,6 +88,10 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
                         await _userManager.AddToRoleAsync(user, "Admin");
                     else if (user.Email.ToLower().Equals("Kassamedewerker@hotmail.com".ToLower()))
                         await _userManager.AddToRoleAsync(user, "Kassamedewerker");
+                    else if (user.Email.ToLower().Equals("Chef@hotmail.com".ToLower()))
+                    {
+                        await _userManager.AddToRoleAsync(user, "Chef");
+                    }
                     else
                     {
                         await _userManager.AddToRoleAsync(user, "Klant");
