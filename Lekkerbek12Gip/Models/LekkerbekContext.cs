@@ -23,6 +23,7 @@ namespace Lekkerbek12Gip.Models
         public DbSet<ChefPlanningsModule> ChefPlanningsModules { get; set; }
         public DbSet<Firma> Firmas { get; set; }
         public DbSet<GerechtKlantFavoriet> GerechtKlantFavorieten { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
