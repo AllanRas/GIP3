@@ -13,12 +13,11 @@ namespace Lekkerbek12Gip.Controllers
 {
     public class ChefsController : Controller
     {
-        private readonly LekkerbekContext _context;
         private readonly IBestellingsService _bestellingsService;
         private readonly IChefsService _chefsService;
-        public ChefsController(LekkerbekContext context, IBestellingsService bestellingsService, IChefsService chefsService)
+        public ChefsController(IBestellingsService bestellingsService, IChefsService chefsService)
         {
-            _context = context;
+
             _bestellingsService = bestellingsService;
             _chefsService = chefsService;
         }
@@ -49,7 +48,7 @@ namespace Lekkerbek12Gip.Controllers
 
                 ViewData["ChefId"] = User.Identity.Name;
             }
-            ViewData["ChefSelect"] = new SelectList(_context.Chefs.ToList(), "ChefId", "ChefName");
+            ViewData["ChefSelect"] = new SelectList(await _chefsService.GetList(), "ChefId", "ChefName");
 
             return View(bestelling);
         }
@@ -82,23 +81,12 @@ namespace Lekkerbek12Gip.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    bestelling.IsConfirmed = true;
-                    bestelling.BestelingStatus = Bestelling.BestelStatus.GettingReady;
-                    await _bestellingsService.Update(bestelling);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BestellingExists(bestelling.BestellingId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                bestelling.IsConfirmed = true;
+                bestelling.BestelingStatus = Bestelling.BestelStatus.GettingReady;
+                await _bestellingsService.Update(bestelling);
+
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ChefName"] = new SelectList(await _chefsService.GetList(), "ChefId", "ChefName");
@@ -106,54 +94,23 @@ namespace Lekkerbek12Gip.Controllers
         }
 
 
-        //public async Task<IActionResult> Leveren(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Chefs
 
-        //    var bestelling = await _bestellingsService.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
+        public async Task<IActionResult> AssignChef()
+        {
 
-        //    if (bestelling == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(await _chefsService.GetChefIndexViewModel());
 
-        //    return View(bestelling);
-        //}
-
-
-        //// POST: Bestellingen/Leveren/5
-        //[HttpPost, ActionName("Leveren")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Leveren(int id)
-        //{
-        //    var bestelling = await _bestellingsService.Get(x => x.BestellingId == id);
-
-        //    bestelling.BestelingStatus = Bestelling.BestelStatus.Done;
-        //   await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-
+        }
         // GET: Chefs
 
         public async Task<IActionResult> Index()
         {
 
-            //var timeOneDay = DateTime.Today.AddDays(1).AddSeconds(-1);
+            return View(await _chefsService.GetList());
 
-            //var lekkerbekContext = _context.Bestellings.Include(x => x.Gerechten).Include(x => x.Chef).OrderBy(x => x.AfhaalTijd);
-            ////var lekkerbekContext = _context.Bestellings.Include(x => x.Gerechten).Include(x => x.Chef).Where(x => x.OrderDate <= timeOneDay && x.OrderDate >= DateTime.Today).OrderBy(x => x.OrderDate);
-
-            return View(await _chefsService.GetChefIndexViewModel());
         }
 
-        private bool BestellingExists(int id)
-        {
-            return _context.Bestellings.Any(e => e.BestellingId == id);
-        }
 
 
         // GET: Chefs/Details/5
@@ -164,8 +121,8 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var chef = await _context.Chefs
-                .FirstOrDefaultAsync(m => m.ChefId == id);
+            var chef = await _chefsService.Get(m => m.ChefId == id);
+
             if (chef == null)
             {
                 return NotFound();
@@ -185,12 +142,11 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ChefId,ChefName")] Chef chef)
+        public async Task<IActionResult> Create([Bind("ChefId,Email,ChefName")] Chef chef)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(chef);
-                await _context.SaveChangesAsync();
+                await _chefsService.Add(chef);
                 return RedirectToAction(nameof(Index));
             }
             return View(chef);
@@ -204,11 +160,12 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var chef = await _context.Chefs.FindAsync(id);
+            var chef = await _chefsService.Get(x => x.ChefId == id);
             if (chef == null)
             {
                 return NotFound();
             }
+            ViewData["Email"] = chef.Email;
             return View(chef);
         }
 
@@ -217,7 +174,7 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ChefId,ChefName")] Chef chef)
+        public async Task<IActionResult> Edit(int id, [Bind("ChefId,Email,ChefName")] Chef chef)
         {
             if (id != chef.ChefId)
             {
@@ -226,24 +183,12 @@ namespace Lekkerbek12Gip.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(chef);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ChefExists(chef.ChefId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                await _chefsService.Update(chef);
+
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Email"] = chef.Email;
             return View(chef);
         }
 
@@ -255,8 +200,8 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var chef = await _context.Chefs
-                .FirstOrDefaultAsync(m => m.ChefId == id);
+            var chef = await _chefsService.Get(m => m.ChefId == id);
+
             if (chef == null)
             {
                 return NotFound();
@@ -270,15 +215,11 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var chef = await _context.Chefs.FindAsync(id);
-            _context.Chefs.Remove(chef);
-            await _context.SaveChangesAsync();
+            var chef = await _chefsService.Get(x => x.ChefId == id);
+
+            await _chefsService.Delete(chef);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ChefExists(int id)
-        {
-            return _context.Chefs.Any(e => e.ChefId == id);
-        }
     }
 }

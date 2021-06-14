@@ -11,6 +11,7 @@ namespace Lekkerbek12Gip.Models
         public int ChefId { get; set; }
         [Required(ErrorMessage = "Naam is verplicht")]
         public string ChefName { get; set; }
+        [Required(ErrorMessage = "Email is verplicht")]
         public string Email { get; set; }
         public virtual ICollection<Bestelling> Bestellings { get; set; }
         public virtual ICollection<PlanningsModule> Plannings { get; set; }
