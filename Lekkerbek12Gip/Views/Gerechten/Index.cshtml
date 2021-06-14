@@ -8,10 +8,14 @@
 
     @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
     {
-        
-        <p>
-            <a asp-action="Create">Nieuw gerecht aanmaken</a>
-        </p>
+<div style="display:flex; justify-content:space-between">
+    <p>
+        <a asp-action="Create">Nieuw gerecht aanmaken</a>
+    </p>
+    <p>
+        <a asp-controller="Categories" asp-action="Create">Nieuw Category aanmaken</a>
+    </p>
+</div>
     }
     @foreach (var categorie in Model.Categories)
     {

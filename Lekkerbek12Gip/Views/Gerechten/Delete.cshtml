@@ -1,4 +1,4 @@
-﻿@*@model Lekkerbek12Gip.Models.Gerecht
+﻿@model Lekkerbek12Gip.Models.Gerecht
 
     @{
         ViewData["Title"] = "Delete";
@@ -30,10 +30,10 @@
                 @Html.DisplayFor(model => model.Prijs)
             </dd>
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Categorie)
+                @Html.DisplayNameFor(model => model.Category.Name)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Categorie)
+                @Html.DisplayFor(model => model.Category.Name)
             </dd>
         </dl>
 
@@ -42,4 +42,4 @@
             <input type="submit" value="Verwijderen" class="btn btn-danger" /> |
             <a asp-action="Index">Terug naar menu</a>
         </form>
-    </div>*@
+    </div>

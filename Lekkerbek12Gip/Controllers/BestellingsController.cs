@@ -90,13 +90,14 @@ namespace Lekkerbek12Gip.Controllers
                 //you shouldn't be able to PICK UP an order when there is an event taking place
                 if (bestelling.AfhaalTijd > item.Start && bestelling.AfhaalTijd < item.End)
                     ModelState.AddModelError(nameof(bestelling.AfhaalTijd), "afhaaltijd is geplaatst tijdens een event, gelieve een andere tijd te nemen.");
-            }
-            if (ModelState.IsValid)
-            {
-                if (bestelling.AfhaalTijd < DateTime.Now)
+            } 
+            if (bestelling.AfhaalTijd < DateTime.Now)
                 {
                     return NotFound();
                 }
+            if (ModelState.IsValid)
+            {
+               
                 await _bestellingsService.bestellingCreate(bestelling);
 
                 if (User.IsInRole("Klant"))

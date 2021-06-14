@@ -139,7 +139,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var gerecht = await _context.Gerechten
+            var gerecht = await _context.Gerechten.Include(x=>x.Category)
                 .FirstOrDefaultAsync(m => m.GerechtId == id);
             if (gerecht == null)
             {
