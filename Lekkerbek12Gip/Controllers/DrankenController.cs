@@ -7,23 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
 using Lekkerbek12Gip.Models.Product;
+using Lekkerbek12Gip.Services.Interfaces;
 
 namespace Lekkerbek12Gip.Controllers
 {
     public class DrankenController : Controller
     {
         private readonly LekkerbekContext _context;
+        private readonly IDrankenService _drankenService;
 
-        public DrankenController(LekkerbekContext context)
+        public DrankenController(LekkerbekContext context, IDrankenService drankenService)
         {
+            _drankenService = drankenService;
             _context = context;
         }
 
         // GET: Dranken
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Dranken.Include(d => d.Category);
-            return View(await lekkerbekContext.ToListAsync());
+            return View(await _drankenService.GetAllDrankenWithInclude());
         }
 
         // GET: Dranken/Details/5
@@ -34,9 +36,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var drank = await _context.Dranken
-                .Include(d => d.Category)
-                .FirstOrDefaultAsync(m => m.DrankId == id);
+            var drank = await _drankenService.GetDrankWithIncludeFilter(x => x.DrankId == id);
             if (drank == null)
             {
                 return NotFound();
@@ -46,9 +46,9 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Dranken/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name");
+            ViewData["CategoryId"] = new SelectList(await _drankenService.GetList(), "CategoryId", "Name");
             return View();
         }
 
@@ -63,8 +63,7 @@ namespace Lekkerbek12Gip.Controllers
             {
                 //var cat= _context.Categories.FirstOrDefault(x => x.CategoryId == drank.CategoryId);
                 // drank.Category = cat;
-                _context.Add(drank);
-                await _context.SaveChangesAsync();
+                await _drankenService.Add(drank);
                 return RedirectToAction("Index", "Gerechten");
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name");
@@ -79,7 +78,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var drank = await _context.Dranken.FindAsync(id);
+            var drank = await _drankenService.GetDrankWithIncludeFilter(x => x.DrankId == id);
             if (drank == null)
             {
                 return NotFound();
@@ -102,22 +101,9 @@ namespace Lekkerbek12Gip.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(drank);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DrankExists(drank.DrankId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                await _drankenService.Update(drank);
+
                 return RedirectToAction("Index", "Gerechten");
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", drank.CategoryId);
@@ -132,9 +118,8 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var drank = await _context.Dranken
-                .Include(d => d.Category)
-                .FirstOrDefaultAsync(m => m.DrankId == id);
+            var drank = await _drankenService.GetDrankWithIncludeFilter(x => x.DrankId == id);
+
             if (drank == null)
             {
                 return NotFound();
@@ -148,15 +133,9 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var drank = await _context.Dranken.FindAsync(id);
-            _context.Dranken.Remove(drank);
-            await _context.SaveChangesAsync();
+            var drank = await _drankenService.GetDrankWithIncludeFilter(x => x.DrankId == id);
+            await _drankenService.Delete(drank);
             return RedirectToAction("Index", "Gerechten");
-        }
-
-        private bool DrankExists(int id)
-        {
-            return _context.Dranken.Any(e => e.DrankId == id);
         }
     }
 }
