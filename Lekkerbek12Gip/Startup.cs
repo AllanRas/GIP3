@@ -44,6 +44,7 @@ namespace Lekkerbek12Gip
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<LekkerbekContext>();
             services.AddTransient<IBestellingsService, BestellingsService>();
+            services.AddTransient<IFirmaService, FirmaService>();
             services.AddTransient<IGerechtenService, GerechtenService>();
             services.AddTransient<IKlantsService, KlantService>();
             services.AddTransient<IEventsService, EventService>();
