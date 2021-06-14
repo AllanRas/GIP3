@@ -22,11 +22,15 @@ namespace Lekkerbek12Gip.Services.Concrete
         public async Task<GerechtenIndexModel> GerechtenIndexModel()
         {
             GerechtenIndexModel indexModel = new GerechtenIndexModel();
-            indexModel.Gerechts =await _context.Gerechten
-                .Include(x=>x.Category)
+            indexModel.Gerechts = await _context.Gerechten
+                .Include(x => x.Category)
                 .ToListAsync();
-            indexModel.Categories =(List<Category>)await _categoryService.GetList();
+            indexModel.Categories = (List<Category>)await _categoryService.GetList();
+            indexModel.Dranken = await _context.Dranken
+                .Include(x => x.Category)
+                .ToListAsync();
             return indexModel;
+
         }
     }
 }

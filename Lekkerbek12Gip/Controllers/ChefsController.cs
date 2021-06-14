@@ -49,7 +49,7 @@ namespace Lekkerbek12Gip.Controllers
 
                 ViewData["ChefId"] = User.Identity.Name;
             }
-
+            ViewData["ChefSelect"] = new SelectList(_context.Chefs.ToList(), "ChefId", "ChefName");
 
             return View(bestelling);
         }
@@ -61,13 +61,13 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddChef(int id, [Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting,IsConfirmed")] Bestelling bestelling)
         {
-            if (true)
+            int numberOfChef = 0;
+            if (bestelling.ChefId != null)
             {
+                // numberOfChef = _chefsService.GetNumberOfBestellingForAChef(bestelling.ChefId, id);
 
             }
 
-            var numberOfChef = _chefsService.GetNumberOfChefs(x => x.ChefId == bestelling.ChefId &&
-           x.OrderDate >= DateTime.Now.AddDays(-1) && x.OrderDate < DateTime.Now && x.BestelingStatus == Bestelling.BestelStatus.GettingReady);
 
             if (id != bestelling.BestellingId)
             {

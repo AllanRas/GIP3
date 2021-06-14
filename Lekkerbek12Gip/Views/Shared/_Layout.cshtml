@@ -25,11 +25,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Dranken" asp-action="Index">Dranken</a>
-                            
+
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
-                        </li>
+
                         @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
                         {
                             <li class="nav-item">
@@ -43,6 +41,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="PlanningsModules" asp-action="Index">Planning</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
                             </li>
                         }
                         else if (User.IsInRole("Klant"))

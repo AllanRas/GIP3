@@ -34,7 +34,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Gerechten/Details/5
-       
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -53,7 +53,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Gerechten/Create
-       
+
         public async Task<IActionResult> Create()
         {
             ViewData["Categories"] = new SelectList(await _categoryService.GetList(), "CategoryId", "Name");
@@ -63,7 +63,7 @@ namespace Lekkerbek12Gip.Controllers
         // POST: Gerechten/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GerechtId,Naam,Omschrijving,Prijs,CategoryId")] Gerecht gerecht)
@@ -79,7 +79,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Gerechten/Edit/5
-        
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -92,13 +92,14 @@ namespace Lekkerbek12Gip.Controllers
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
             return View(gerecht);
         }
 
         // POST: Gerechten/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GerechtId,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
@@ -128,6 +129,7 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
             return View(gerecht);
         }
 
@@ -139,7 +141,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var gerecht = await _context.Gerechten.Include(x=>x.Category)
+            var gerecht = await _context.Gerechten.Include(x => x.Category)
                 .FirstOrDefaultAsync(m => m.GerechtId == id);
             if (gerecht == null)
             {

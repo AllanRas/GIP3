@@ -12,14 +12,15 @@ namespace Lekkerbek12Gip.Models.Product
         public string Name { get; set; }
         public int? CategoryId { get; set; }
         public decimal Prijs { get; set; }
+        public string Omschrijving { get; set; }
         public virtual Category Category { get; set; }
         public virtual ICollection<Bestelling> Bestellingen { get; set; }
 
-        public decimal WithBtwPrijs => Prijs-(Prijs * GetBelasting() / 100);
+        public decimal WithBtwPrijs => Prijs - (Prijs * GetBelasting() / 100);
 
         public int GetBelasting()
         {
-            if (Category != null&& Category.Name == "Alcohol")
+            if (Category != null && Category.Name == "Alcohol")
             {
                 return 21;
             }

@@ -57,15 +57,15 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DrankId,Name,CategoryId,Prijs")] Drank drank)
+        public async Task<IActionResult> Create([Bind("DrankId,Name,Omschrijving,CategoryId,Prijs")] Drank drank)
         {
             if (ModelState.IsValid)
             {
-               //var cat= _context.Categories.FirstOrDefault(x => x.CategoryId == drank.CategoryId);
-               // drank.Category = cat;
+                //var cat= _context.Categories.FirstOrDefault(x => x.CategoryId == drank.CategoryId);
+                // drank.Category = cat;
                 _context.Add(drank);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Gerechten");
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name");
             return View(drank);
@@ -118,7 +118,7 @@ namespace Lekkerbek12Gip.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Gerechten");
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", drank.CategoryId);
             return View(drank);
@@ -151,7 +151,7 @@ namespace Lekkerbek12Gip.Controllers
             var drank = await _context.Dranken.FindAsync(id);
             _context.Dranken.Remove(drank);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Gerechten");
         }
 
         private bool DrankExists(int id)
