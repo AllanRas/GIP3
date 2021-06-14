@@ -53,7 +53,7 @@ namespace Lekkerbek12Gip.Services.Concrete
                    .Include(x => x.BestellingGerechten)
                    .OrderBy(x => x.Afgerekend)
                    .ThenByDescending(x => x.AfhaalTijd);
-            if (user != null && user.IsInRole("Admin"))
+            if (user != null && (user.IsInRole("Admin")||user.IsInRole("Kassamedewerker")))
             {
                 return await bestellingList.ToListAsync();
             }
