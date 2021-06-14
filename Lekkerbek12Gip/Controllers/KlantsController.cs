@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
 using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Authorization;
+using Lekkerbek12Gip.Services.Interfaces;
 
 namespace Lekkerbek12Gip.Controllers
 {
@@ -15,16 +16,19 @@ namespace Lekkerbek12Gip.Controllers
     public class KlantsController : Controller
     {
         private readonly LekkerbekContext _context;
-
-        public KlantsController(LekkerbekContext context)
+        private readonly IKlantsService _klantService;
+        private readonly IFirmaService _firmaService;
+        public KlantsController(LekkerbekContext context, IKlantsService klantService, IFirmaService firmaService)
         {
             _context = context;
+            _klantService = klantService;
+            _firmaService = firmaService;
         }
 
         // GET: Klants
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Klants.ToListAsync());
+            return View(await _klantService.GetList());
         }
 
         // GET: Klants/Details/5
@@ -35,8 +39,8 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var klant = await _context.Klants
-                .FirstOrDefaultAsync(m => m.KlantId == id);
+            var klant = await _klantService.Get(m => m.KlantId == id);
+                
             if (klant == null)
             {
                 return NotFound();
@@ -64,10 +68,9 @@ namespace Lekkerbek12Gip.Controllers
             {
                 klant.Firma = firma;
                 firma.Klant = klant;
-                firma.KlantId = klant.KlantId;
-                _context.Add(firma);
-                _context.Add(klant);
-                await _context.SaveChangesAsync();
+                //firma.KlantId = klant.KlantId;
+                await _klantService.Add(klant);
+                await _firmaService.Add(firma);
                 return RedirectToAction(nameof(Index));
             }
             return View(klant);
@@ -79,15 +82,16 @@ namespace Lekkerbek12Gip.Controllers
         {
             if(id == null && User.IsInRole("Klant"))
             {
-              var klantId =_context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name).KlantId;
-                id = klantId;
+              var klantt = await _klantService.Get(x => x.emailadres == User.Identity.Name);
+              var klantId = klantt.KlantId;
+              id = klantId;
             }
             if (id == null)
             {
                 return NotFound();
             }
-            var firma = await _context.Firmas.FirstOrDefaultAsync(x => x.KlantId == id);
-            var klant = await _context.Klants.FindAsync(id);
+            var firma = await _firmaService.Get(x => x.KlantId == id);
+            var klant = await _klantService.Get(x => x.KlantId == id);
             klant.Firma = firma;
             if (klant == null)
             {
@@ -113,14 +117,14 @@ namespace Lekkerbek12Gip.Controllers
             {
                 try
                 {
-                    var f = await _context.Firmas.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId);
+                    var f = await _firmaService.Get(x => x.KlantId == klant.KlantId);
                     if (f != null) 
                     { 
                     f.BtwNummer = firma.BtwNummer;
                     f.FirmaNaam = firma.FirmaNaam;
                     }
-                    _context.Update(klant);
-                    await _context.SaveChangesAsync();
+                    await _klantService.Update(klant);
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -154,8 +158,8 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var klant = await _context.Klants
-                .FirstOrDefaultAsync(m => m.KlantId == id);
+            var klant = await _klantService
+                .Get(m => m.KlantId == id);
             if (klant == null)
             {
                 return NotFound();
