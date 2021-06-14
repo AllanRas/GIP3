@@ -65,15 +65,14 @@ namespace Lekkerbek12Gip.Controllers
         {
 
             if (ModelState.IsValid)
-            {
-                klant.Firma = firma;
+            {   
                 firma.Klant = klant;
+                klant.Firma = firma;
                 //firma.KlantId = klant.KlantId;
                 await _klantService.Add(klant);
-                await _firmaService.Add(firma);
                 return RedirectToAction(nameof(Index));
             }
-            return View(klant);
+            return View();
         }
 
         // GET: Klants/Edit/5
