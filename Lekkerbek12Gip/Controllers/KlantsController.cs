@@ -79,7 +79,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             if(id == null && User.IsInRole("Klant"))
             {
-              var klantId =_context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name).KlantId;
+                var klantId =_context.Klants.FirstOrDefault(x => x.emailadres == User.Identity.Name).KlantId;
                 id = klantId;
             }
             if (id == null)
@@ -119,6 +119,7 @@ namespace Lekkerbek12Gip.Controllers
                     f.BtwNummer = firma.BtwNummer;
                     f.FirmaNaam = firma.FirmaNaam;
                     }
+                    _context.Update(f);
                     _context.Update(klant);
                     await _context.SaveChangesAsync();
                 }
