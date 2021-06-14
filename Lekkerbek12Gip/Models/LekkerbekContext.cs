@@ -27,6 +27,7 @@ namespace Lekkerbek12Gip.Models
         public DbSet<Category> Categories { get; set; }
         public DbSet<BestellingDrank> BestellingDranks{ get; set; }
         public DbSet<GerechtKlantFavoriet> GerechtKlantFavorieten { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
