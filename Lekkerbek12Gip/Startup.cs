@@ -52,6 +52,7 @@ namespace Lekkerbek12Gip
             services.AddTransient<IBesteldeGerectenService, BesteldeGerechtenService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddTransient<IDrankenService, DrankenService>();
             services.AddControllersWithViews();
             services.AddRazorPages();
             //services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
 using Microsoft.AspNetCore.Authorization;
+using Lekkerbek12Gip.Services.Interfaces;
 
 namespace Lekkerbek12Gip.Controllers
 {
@@ -14,16 +15,17 @@ namespace Lekkerbek12Gip.Controllers
     public class CategoriesController : Controller
     {
         private readonly LekkerbekContext _context;
-       
-        public CategoriesController(LekkerbekContext context)
+        private readonly ICategoryService _categoryService;
+        public CategoriesController(LekkerbekContext context, ICategoryService categoryService)
         {
+            _categoryService = categoryService;
             _context = context;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await _categoryService.GetList());
         }
 
         // GET: Categories/Details/5
@@ -34,8 +36,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var category = await _categoryService.Get(x => x.CategoryId == id);
             if (category == null)
             {
                 return NotFound();
@@ -59,8 +60,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                await _categoryService.Add(category);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -74,7 +74,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryService.Get(x => x.CategoryId == id);
             if (category == null)
             {
                 return NotFound();
@@ -96,22 +96,8 @@ namespace Lekkerbek12Gip.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.CategoryId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                await _categoryService.Update(category);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -125,8 +111,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var category = await _categoryService.Get(x => x.CategoryId == id);
             if (category == null)
             {
                 return NotFound();
@@ -140,15 +125,9 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            var category = await _categoryService.Get(x => x.CategoryId == id);
+            await _categoryService.Delete(category);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.CategoryId == id);
         }
     }
 }
