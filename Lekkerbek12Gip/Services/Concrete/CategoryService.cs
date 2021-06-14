@@ -17,12 +17,5 @@ namespace Lekkerbek12Gip.Services.Concrete
         {
             _context = context;
         }
-
-        public async Task<Category> GetCategoryWithIncludeFilter(Expression<Func<Category, bool>> filter)
-        {
-            var category = await _context.Categories
-           .FirstOrDefaultAsync(filter);
-            return category;
-        }
     }
 }

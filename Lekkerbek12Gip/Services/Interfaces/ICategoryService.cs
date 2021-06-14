@@ -9,6 +9,5 @@ namespace Lekkerbek12Gip.Services.Interfaces
 {
     public interface ICategoryService : IEntityRepositoryBase<Category>
     {
-        Task<Category> GetCategoryWithIncludeFilter(Expression<Func<Category, bool>> filter);
     }
 }

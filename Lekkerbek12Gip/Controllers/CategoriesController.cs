@@ -36,7 +36,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var category = await _categoryService.GetCategoryWithIncludeFilter(x => x.CategoryId == id);
+            var category = await _categoryService.Get(x => x.CategoryId == id);
             if (category == null)
             {
                 return NotFound();
@@ -74,7 +74,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var category = await _categoryService.GetCategoryWithIncludeFilter(x => x.CategoryId == id);
+            var category = await _categoryService.Get(x => x.CategoryId == id);
             if (category == null)
             {
                 return NotFound();
@@ -111,7 +111,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var category = await _categoryService.GetCategoryWithIncludeFilter(x => x.CategoryId == id);
+            var category = await _categoryService.Get(x => x.CategoryId == id);
             if (category == null)
             {
                 return NotFound();
@@ -125,7 +125,7 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _categoryService.GetCategoryWithIncludeFilter(x => x.CategoryId == id);
+            var category = await _categoryService.Get(x => x.CategoryId == id);
             await _categoryService.Delete(category);
             return RedirectToAction(nameof(Index));
         }
