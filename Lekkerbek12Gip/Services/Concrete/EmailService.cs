@@ -33,6 +33,7 @@ namespace Lekkerbek12Gip.Services.Concrete
            
             var from = _configuration.GetSection("Email").GetSection("From").Value;
             var password = _configuration.GetSection("Email").GetSection("Password").Value;
+            if (klant.emailadres != null) { 
             MailMessage mail = new MailMessage();
             mail.To.Add(klant.emailadres);
             mail.From = new MailAddress(from);
@@ -45,6 +46,7 @@ namespace Lekkerbek12Gip.Services.Concrete
             smtp.Credentials = new System.Net.NetworkCredential(from, password);
             smtp.EnableSsl = true;
             smtp.Send(mail);
+            }
         }
     }
 }

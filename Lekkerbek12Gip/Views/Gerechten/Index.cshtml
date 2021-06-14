@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Lekkerbek12Gip.Models.Gerecht>
+﻿@model Lekkerbek12Gip.ViewModel.Gerechten.GerechtenIndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -8,32 +8,40 @@
 
 @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
 {
-    <p>
-        <a asp-action="Create">Nieuw gerecht aanmaken</a>
-    </p>
+    <div style="display:flex; justify-content:space-between">
+        <p>
+            <a asp-action="Create">Nieuw gerecht aanmaken</a>
+        </p>
+        <p>
+            <a asp-controller="Dranken" asp-action="Create">Nieuw drank aanmaken</a>
+        </p>
+        <p>
+            <a asp-controller="Categories" asp-action="Create">Nieuw Category aanmaken</a>
+        </p>
+    </div>
 }
-@foreach (Gerecht.Categorieen categorie in Enum.GetValues(typeof(Gerecht.Categorieen)))
+@foreach (var categorie in Model.Categories)
 {
-    <h3>@categorie</h3>
+    <h3>@categorie.Name</h3>
     <table class="table">
         <thead class="thead-dark">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Naam)
+                    @Html.DisplayNameFor(model => model.Gerechts[0].Naam)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Omschrijving)
+                    @Html.DisplayNameFor(model => model.Gerechts[0].Omschrijving)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Prijs)
+                    @Html.DisplayNameFor(model => model.Gerechts[0].Prijs)
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Gerechts)
             {
-                if (item.Categorie == categorie)
+                if (item.Category == categorie)
                 {
                     <tr>
                         <td>
@@ -52,6 +60,32 @@
                                 <a asp-action="Edit" asp-route-id="@item.GerechtId">Bewerken</a> @Html.Raw(" | ")
                                 <a asp-action="Details" asp-route-id="@item.GerechtId"> Details </a>@Html.Raw(" | ")
                                 <a asp-action="Delete" asp-route-id="@item.GerechtId"> Verwijderen </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            @foreach (var item in Model.Dranken)
+            {
+                if (item.Category == categorie)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Omschrijving)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Prijs)€
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+                            {
+
+                                <a asp-controller="Dranken" asp-action="Edit" asp-route-id="@item.DrankId">Bewerken</a> @Html.Raw(" | ")
+                                <a asp-controller="Dranken" asp-action="Details" asp-route-id="@item.DrankId"> Details </a>@Html.Raw(" | ")
+                                <a asp-controller="Dranken" asp-action="Delete" asp-route-id="@item.DrankId"> Verwijderen </a>
                             }
                         </td>
                     </tr>

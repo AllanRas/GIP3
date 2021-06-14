@@ -39,17 +39,15 @@ namespace Lekkerbek12Gip.Services.Concrete
 
             return chefIndexViewModel;
         }
-        public int GetNumberOfChefs(Expression<Func<Bestelling, bool>> filter = null)
+        public int GetNumberOfBestellingForAChef(int? id, int bestellingId)
         {
-            if (filter == null)
-            {
-                return _context.Chefs.Count();
-            }
-            else
-            {
-                return _context.Chefs.Where(filter).Count();
-            }
-
+            var bestelling = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId);
+            var bestellings = _context.Bestellings.Where(x => x.OrderDate > bestelling.OrderDate.AddHours(-1) && x.OrderDate < bestelling.OrderDate);
+            var chefs = bestellings.Where(x => x.ChefId == id).Count();
+            return chefs;
         }
+
+
+
     }
 }

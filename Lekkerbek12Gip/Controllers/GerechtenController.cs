@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
 using Microsoft.AspNetCore.Authorization;
+using Lekkerbek12Gip.Services.Interfaces;
 
 namespace Lekkerbek12Gip.Controllers
 {
@@ -15,21 +16,25 @@ namespace Lekkerbek12Gip.Controllers
     public class GerechtenController : Controller
     {
         private readonly LekkerbekContext _context;
+        private readonly IGerechtenService _gerechtenService;
+        private readonly ICategoryService _categoryService;
 
-        public GerechtenController(LekkerbekContext context)
+        public GerechtenController(LekkerbekContext context, IGerechtenService gerechtenService, ICategoryService categoryService)
         {
             _context = context;
+            _gerechtenService = gerechtenService;
+            _categoryService = categoryService;
         }
 
         // GET: Gerechten
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Gerechten.ToListAsync());
+            return View(await _gerechtenService.GerechtenIndexModel());
         }
 
         // GET: Gerechten/Details/5
-       
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -48,20 +53,20 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Gerechten/Create
-       
-        public IActionResult Create()
+
+        public async Task<IActionResult> Create()
         {
-           
+            ViewData["Categories"] = new SelectList(await _categoryService.GetList(), "CategoryId", "Name");
             return View();
         }
 
         // POST: Gerechten/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GerechtId,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
+        public async Task<IActionResult> Create([Bind("GerechtId,Naam,Omschrijving,Prijs,CategoryId")] Gerecht gerecht)
         {
             if (ModelState.IsValid)
             {
@@ -69,11 +74,12 @@ namespace Lekkerbek12Gip.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Categories"] = new SelectList(await _categoryService.GetList(), "CategoryId", "Name");
             return View(gerecht);
         }
 
         // GET: Gerechten/Edit/5
-        
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,13 +92,14 @@ namespace Lekkerbek12Gip.Controllers
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
             return View(gerecht);
         }
 
         // POST: Gerechten/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GerechtId,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
@@ -122,6 +129,7 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
             return View(gerecht);
         }
 
@@ -133,7 +141,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var gerecht = await _context.Gerechten
+            var gerecht = await _context.Gerechten.Include(x => x.Category)
                 .FirstOrDefaultAsync(m => m.GerechtId == id);
             if (gerecht == null)
             {

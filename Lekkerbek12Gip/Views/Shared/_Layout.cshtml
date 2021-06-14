@@ -18,11 +18,16 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <a asp-controller="Home" asp-action="Index"><img width="50px" height="50px" src="/img/Lekkerbek.png" alt="Lekkerbek"/></a>
+                    <a asp-controller="Home" asp-action="Index"><img width="50px" height="50px" src="/img/Lekkerbek.png" alt="Lekkerbek" /></a>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Gerechten" asp-action="Index">Menu</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Dranken" asp-action="Index">Dranken</a>
+
+                        </li>
+
                         @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
                         {
                             <li class="nav-item">
@@ -36,6 +41,12 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="PlanningsModules" asp-action="Index">Planning</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Chefs" asp-action="AssignChef">Assign Chef</a>
                             </li>
                         }
                         else if (User.IsInRole("Klant"))

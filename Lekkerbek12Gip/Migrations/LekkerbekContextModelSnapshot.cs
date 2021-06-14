@@ -16,7 +16,7 @@ namespace Lekkerbek12Gip.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
@@ -68,6 +68,31 @@ namespace Lekkerbek12Gip.Migrations
                     b.ToTable("Bestellings");
                 });
 
+            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingDrank", b =>
+                {
+                    b.Property<int?>("BestellingId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DrankId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Aantal")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("0");
+
+                    b.Property<int?>("BestellingId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("BestellingId", "DrankId");
+
+                    b.HasIndex("BestellingId1");
+
+                    b.HasIndex("DrankId");
+
+                    b.ToTable("BestellingDranks");
+                });
+
             modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerechten", b =>
                 {
                     b.Property<int?>("BestellingId")
@@ -93,6 +118,21 @@ namespace Lekkerbek12Gip.Migrations
                     b.ToTable("BestellingGerechten");
                 });
 
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("Lekkerbek12Gip.Models.Chef", b =>
                 {
                     b.Property<int>("ChefId")
@@ -102,6 +142,9 @@ namespace Lekkerbek12Gip.Migrations
 
                     b.Property<string>("ChefName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ChefId");
@@ -190,7 +233,7 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Categorie")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Naam")
@@ -203,6 +246,8 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("GerechtId");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Gerechten");
                 });
@@ -274,6 +319,32 @@ namespace Lekkerbek12Gip.Migrations
                     b.HasKey("PlanningsModuleId");
 
                     b.ToTable("PlanningsModules");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Product.Drank", b =>
+                {
+                    b.Property<int>("DrankId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Omschrijving")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Prijs")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("DrankId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Dranken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -497,6 +568,29 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Klant");
                 });
 
+            modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingDrank", b =>
+                {
+                    b.HasOne("Lekkerbek12Gip.Models.Bestelling", "Bestelling")
+                        .WithMany()
+                        .HasForeignKey("BestellingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Lekkerbek12Gip.Models.Bestelling", null)
+                        .WithMany("BestellingDranks")
+                        .HasForeignKey("BestellingId1");
+
+                    b.HasOne("Lekkerbek12Gip.Models.Product.Drank", "Drank")
+                        .WithMany()
+                        .HasForeignKey("DrankId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bestelling");
+
+                    b.Navigation("Drank");
+                });
+
             modelBuilder.Entity("Lekkerbek12Gip.Models.BestellingGerechten", b =>
                 {
                     b.HasOne("Lekkerbek12Gip.Models.Bestelling", "Bestelling")
@@ -559,6 +653,15 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Klant");
                 });
 
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
+                {
+                    b.HasOne("Lekkerbek12Gip.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("Lekkerbek12Gip.Models.GerechtKlantFavoriet", b =>
                 {
                     b.HasOne("Lekkerbek12Gip.Models.Gerecht", "Gerecht")
@@ -580,6 +683,15 @@ namespace Lekkerbek12Gip.Migrations
                     b.Navigation("Gerecht");
 
                     b.Navigation("Klant");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Product.Drank", b =>
+                {
+                    b.HasOne("Lekkerbek12Gip.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -635,6 +747,8 @@ namespace Lekkerbek12Gip.Migrations
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.Bestelling", b =>
                 {
+                    b.Navigation("BestellingDranks");
+
                     b.Navigation("BestellingGerechten");
                 });
 

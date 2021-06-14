@@ -35,7 +35,6 @@ namespace Lekkerbek12Gip.Controllers
 
         public async Task<IActionResult> Index()
         {
-            
             return View(await _bestellingsService.GetAllBestellingwithInclude(User));
 
         }
@@ -56,6 +55,7 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var bestelling = await _bestellingsService.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
+            var pro = bestelling.Products;
             if (bestelling == null)
             {
                 return NotFound();
@@ -91,13 +91,14 @@ namespace Lekkerbek12Gip.Controllers
                 //you shouldn't be able to PICK UP an order when there is an event taking place
                 if (bestelling.AfhaalTijd > item.Start && bestelling.AfhaalTijd < item.End)
                     ModelState.AddModelError(nameof(bestelling.AfhaalTijd), "afhaaltijd is geplaatst tijdens een event, gelieve een andere tijd te nemen.");
-            }
-            if (ModelState.IsValid)
-            {
-                if (bestelling.AfhaalTijd < DateTime.Now)
+            } 
+            if (bestelling.AfhaalTijd < DateTime.Now)
                 {
                     return NotFound();
                 }
+            if (ModelState.IsValid)
+            {
+               
                 await _bestellingsService.bestellingCreate(bestelling);
 
                 if (User.IsInRole("Klant"))
@@ -108,10 +109,6 @@ namespace Lekkerbek12Gip.Controllers
                 return RedirectToAction(nameof(Index));
 
             }
-            var klant = await _klantsService.Get(x => x.emailadres == User.Identity.Name);
-
-            if (klant != null) ViewData["Klant"] = klant;
-
             ViewData["KlantSelect"] = new SelectList(await _klantsService.GetList(), "KlantId", "Name");
             return View(bestelling);
         }

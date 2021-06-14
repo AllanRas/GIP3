@@ -1,58 +1,48 @@
 ﻿@model Lekkerbek12Gip.Models.Gerecht
 
-@{
-    ViewData["Title"] = "Create";
-}
+    @{
+        ViewData["Title"] = "Create";
+        var categories =(IEnumerable<SelectListItem>)ViewData["Categories"];
+    }
 
-<h1>Gerecht</h1>
+    <h1>Gerecht</h1>
 
-<h4>Aanmaken</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Naam" class="control-label"></label>
-                <input asp-for="Naam" class="form-control" />
-                <span asp-validation-for="Naam" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Omschrijving" class="control-label"></label>
-                <input asp-for="Omschrijving" class="form-control" />
-                <span asp-validation-for="Omschrijving" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Prijs" class="control-label"></label>
-                <input asp-for="Prijs" class="form-control" />
-                <span asp-validation-for="Prijs" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Categorie" class="control-label"></label>
-                <select asp-for="Categorie" class="form-control">
-                    <option>Sandwiches</option>
-                    <option>Salades</option>
-                    <option>Vleesgerechten</option>
-                    <option>Visgerechten</option>
-                    <option>Frisdranken</option>
-                    <option>BierenVat</option>
-                    <option>BierenFles</option>
-                    <option>Trappist</option>
-                    <option>Huiswijnen</option>
-                    <option>WijnenSugWit</option>
-                    <option>WijnenSugRood</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Aanmaken" class="btn btn-primary" />
-            </div>
-        </form>
+    <h4>Aanmaken</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Naam" class="control-label"></label>
+                    <input asp-for="Naam" class="form-control" />
+                    <span asp-validation-for="Naam" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Omschrijving" class="control-label"></label>
+                    <input asp-for="Omschrijving" class="form-control" />
+                    <span asp-validation-for="Omschrijving" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Prijs" class="control-label"></label>
+                    <input asp-for="Prijs" class="form-control" />
+                    <span asp-validation-for="Prijs" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label"></label>
+                    <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
+                  
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Aanmaken" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-<div>
-    <a asp-action="Index">Terug naar menu</a>
-</div>
+    <div>
+        <a asp-action="Index">Terug naar menu</a>
+    </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

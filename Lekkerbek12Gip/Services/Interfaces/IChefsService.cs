@@ -10,7 +10,7 @@ namespace Lekkerbek12Gip.Services.Interfaces
 {
     public interface IChefsService : IEntityRepositoryBase<Chef>
     {
-        int GetNumberOfChefs(Expression<Func<Bestelling, bool>> filter = null);
+        int GetNumberOfBestellingForAChef(int? id, int bestellingId);
         Task<ChefIndexViewModel> GetChefIndexViewModel();
     }
 }
