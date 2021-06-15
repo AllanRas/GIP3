@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Overzicht Bestelling voor chefs</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Chef Aanmaken</a>
 </p>
 @foreach (Bestelling.BestelStatus status in Enum.GetValues(typeof(Bestelling.BestelStatus)))
 {
@@ -34,7 +34,6 @@
             </tr>
         </thead>
 
-
         @foreach (var bestelling in Model.ReturnStatusList(status))
         {
 
@@ -58,11 +57,14 @@
                         @Html.DisplayFor(modelItem => bestelling.Chef.ChefName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => bestelling.BestelingStatus)
-                    </td>
-                    <td>
-                        <a class="btn btn-success" asp-controller="Bestellings" asp-action="Leveren" asp-route-id="@bestelling.BestellingId">Leveren</a>
-                        <a class="btn btn-success " asp-action="addChef" asp-route-id="@bestelling.BestellingId">Chef toevoegen</a>
+                        @if (bestelling.BestelingStatus == Bestelling.BestelStatus.NotReady && bestelling.IsConfirmed == true)
+                        {
+                            <a class="btn btn-success" asp-action="addChef" asp-route-id="@bestelling.BestellingId">Chef toevoegen</a>
+                        }
+                        else if (bestelling.BestelingStatus == Bestelling.BestelStatus.GettingReady && bestelling.IsConfirmed == true)
+                        {
+                            <a class="btn btn-success" asp-controller="Bestellings" asp-action="Leveren" asp-route-id="@bestelling.BestellingId">Leveren</a>
+                        }
                     </td>
                 </tr>
             </tbody>

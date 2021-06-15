@@ -87,7 +87,7 @@ namespace Lekkerbek12Gip.Controllers
                 await _bestellingsService.Update(bestelling);
 
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("AssignChef", "Chefs");
             }
             ViewData["ChefName"] = new SelectList(await _chefsService.GetList(), "ChefId", "ChefName");
             return View(bestelling);

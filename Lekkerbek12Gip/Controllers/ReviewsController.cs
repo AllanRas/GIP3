@@ -11,25 +11,26 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
-    
+
+    [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
     public class ReviewsController : Controller
     {
         private readonly IReviewService _reviewService;
         private readonly IKlantsService _klantsService;
 
+       
         public ReviewsController(LekkerbekContext context, IReviewService reviewService, IKlantsService klantsService)
         {
             _klantsService = klantsService;
             _reviewService = reviewService;
         }
-
+        [AllowAnonymous]
         // GET: Reviews
         public async Task<IActionResult> Index()
         {
             return View(await _reviewService.GetAllReviews());
         }
 
-        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // GET: Reviews/Create
         public IActionResult Create()
         {
@@ -45,7 +46,6 @@ namespace Lekkerbek12Gip.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // POST: Reviews/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -63,7 +63,6 @@ namespace Lekkerbek12Gip.Controllers
             return View(review);
         }
 
-        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // GET: Reviews/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -86,7 +85,6 @@ namespace Lekkerbek12Gip.Controllers
             return View(review);
         }
 
-        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // POST: Reviews/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -123,7 +121,6 @@ namespace Lekkerbek12Gip.Controllers
             return View(review);
         }
 
-        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // GET: Reviews/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -146,7 +143,6 @@ namespace Lekkerbek12Gip.Controllers
             return View(review);
         }
 
-        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // POST: Reviews/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

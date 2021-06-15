@@ -20,7 +20,7 @@ namespace Lekkerbek12Gip.Services.Concrete
             _context = context;
         }
 
-        public async Task<ChefIndexViewModel> GetChefIndexViewModel()
+        public Task<ChefIndexViewModel> GetChefIndexViewModel()
         {
             ChefIndexViewModel chefIndexViewModel = new ChefIndexViewModel
             {
@@ -37,7 +37,7 @@ namespace Lekkerbek12Gip.Services.Concrete
                 .OrderBy(x => x.AfhaalTijd).ToList(),
             };
 
-            return chefIndexViewModel;
+            return Task.FromResult(chefIndexViewModel);
         }
         public int GetNumberOfBestellingForAChef(int? id, int bestellingId)
         {

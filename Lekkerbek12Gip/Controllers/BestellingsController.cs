@@ -253,7 +253,7 @@ namespace Lekkerbek12Gip.Controllers
 
             bestelling.BestelingStatus = Bestelling.BestelStatus.Done;
             await _bestellingsService.Update(bestelling);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("AssignChef", "Chefs");
         }
 
 

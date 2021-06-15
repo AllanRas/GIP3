@@ -43,7 +43,7 @@ namespace Lekkerbek12Gip.Services.Concrete
         {
             var reviewList = _context.Reviews
                 .Include(x => x.Klant)
-                .OrderBy(x => x.TimeOfReview);
+                .OrderByDescending(x => x.TimeOfReview);
             return await reviewList.ToListAsync();
         }
 
