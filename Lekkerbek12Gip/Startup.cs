@@ -50,6 +50,7 @@ namespace Lekkerbek12Gip
             services.AddTransient<IEventsService, EventService>();
             services.AddTransient<IChefsService, ChefService>();
             services.AddTransient<IBesteldeGerectenService, BesteldeGerechtenService>();
+            services.AddTransient<IReviewService, ReviewService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddTransient<IDrankenService, DrankenService>();
