@@ -38,9 +38,9 @@
                                     <span class="far fa-user"></span>@item.ChefName
                                 </label>
 
-                            <select  asp-items=@Html.GetEnumSelectList(typeof(ChefPlanningsModule.ChefStatus))></select>
+                            @*<select  asp-items=@Html.GetEnumSelectList(typeof(ChefPlanningsModule.ChefStatus))></select>*@
                            
-                                <select id="chefList" name="statu" class="form-control">
+                                <select id="chefList" name="statu"  class="form-control">
                                     <option value="Werken">Werken</option>
                                     <option value="Ziek">Ziek</option>
                                     <option value="Toestemming">Toestemming</option>

@@ -12,26 +12,25 @@ namespace Lekkerbek12Gip.Controllers
 {
     public class PlanningsModulesController : Controller
     {
-        private readonly LekkerbekContext _context;
+    
         private readonly IPlanningModuleService _planningService;
         private readonly IChefsService _chefsService;
+        private readonly IEventsService _eventsService;
 
 
-        public PlanningsModulesController(LekkerbekContext context, IPlanningModuleService planningService, IChefsService chefsService)
+
+        public PlanningsModulesController(LekkerbekContext context, IPlanningModuleService planningService, IChefsService chefsService, IEventsService eventsService)
         {
-            _context = context;
+          
             _planningService = planningService;
             _chefsService = chefsService;
+            _eventsService = eventsService;
         }
 
         // GET: PlanningsModules
         public async Task<IActionResult> Index()
         {
-                        
-            //var indexlist = _context.PlanningsModules
-            //    .Include(x => x.chefs)
-            //    .Include(x=>x.Bestellings)
-            //    .Include(x=>x.ChefPlanningsModules);          
+                                 
             return View(await _planningService.GetAllBestellingwithInclude());
         }
 
@@ -66,68 +65,18 @@ namespace Lekkerbek12Gip.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PlanningsModuleId,ChefId,Description,OpeningsUren,SluitenUren")] PlanningsModule planningsModule, string[] statu)
-        { 
-         
+        {
+
             if (await _planningService.Get(x => x.OpeningsUren.Date == planningsModule.OpeningsUren.Date) != null)
             {
                 ModelState.AddModelError(nameof(planningsModule.OpeningsUren), "Er is al een plan posted");
-            }            
-
-            var list = _context.Bestellings
-                .Where(x => x.AfhaalTijd.Date == planningsModule.OpeningsUren.Date);
-            planningsModule.Bestellings = list.ToList();
-
-            var chefs = _context.Chefs.ToList(); 
-          
-           
-                        
+            }
             if (ModelState.IsValid)
             {
-                int i = 0;
-                foreach (var item in chefs)
-                    {               
-                       if(statu[i] == "Werken") 
-                        {                                        
-                            ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
-                            {
-                                Chef = item,
-                                ChefStatu = ChefPlanningsModule.ChefStatus.Werken,
-                                PlanningsModule=planningsModule
-                            };
-                        planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);                        
-
-                    }
-                       else if(statu[i] == "Ziek") 
-                            {
-                            ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
-                            {
-                                Chef = item,
-                                ChefStatu = ChefPlanningsModule.ChefStatus.Ziek,
-                                PlanningsModule = planningsModule
-                            };
-                        planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);
-                        
-                    }
-                       else if (statu[i] == "Toestemming")
-                        {
-                            ChefPlanningsModule chefPlanningsModule = new ChefPlanningsModule
-                            {
-                                Chef = item,
-                                ChefStatu = ChefPlanningsModule.ChefStatus.Toestemming,
-                                PlanningsModule = planningsModule
-                            };
-                     
-                        planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);
-
-                    }
-                    
-                        i++;
-                    } //
-                _context.Add(planningsModule);
-                await _context.SaveChangesAsync();
+                await _planningService.CreatePlan(planningsModule, statu);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Chefs"] = _context.Chefs.ToList();
+            ViewData["Chefs"] = await _chefsService.GetList();       
             return View(planningsModule);
         }
 
@@ -139,7 +88,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var planningsModule = await _context.PlanningsModules.FindAsync(id);
+            var planningsModule = await _planningService.Get(x=>x.PlanningsModuleId==id);
             if (planningsModule == null)
             {
                 return NotFound();
@@ -163,12 +112,12 @@ namespace Lekkerbek12Gip.Controllers
             {
                 try
                 {
-                    _context.Update(planningsModule);
-                    await _context.SaveChangesAsync();
+                   await  _planningService.Update(planningsModule);
+           
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PlanningsModuleExists(planningsModule.PlanningsModuleId))
+                    if (!await PlanningsModuleExists(planningsModule.PlanningsModuleId))
                     {
                         return NotFound();
                     }
@@ -193,8 +142,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(eventX);
-                await _context.SaveChangesAsync();
+                await _eventsService.Add(eventX);       
                 return RedirectToAction(nameof(Index));
             }
             return View(eventX);
@@ -203,39 +151,15 @@ namespace Lekkerbek12Gip.Controllers
         //Get Warning and
         public  List<DateTime> Warning()
         {
-            var indexlist = _context.PlanningsModules
-                .Include(x => x.chefs)
-                .Include(x => x.Bestellings)
-                .Include(x => x.ChefPlanningsModules).ToList();
-                           
-            List<DateTime> days = new List<DateTime>();
-            foreach (var item in indexlist)
-            {
-              
-                var chefsCount =item.ChefPlanningsModules
-                    .Where(x=>x.ChefStatu==ChefPlanningsModule.ChefStatus.Werken)
-                    .Count();
-
-                if (item.Bestellings.Count > 0)
-                {
-                    var MaxBestellingPerHour = item.Bestellings
-                   .GroupBy(x => x.AfhaalTijd.Hour)
-                   .Max(x => x.Count());
-                    if (MaxBestellingPerHour > (chefsCount * 4))
-                    {
-                        days.Add(item.OpeningsUren.Date);
-                    }
-                }
-            }          
-            return days;
+                 
+            return  _planningService.Warning();
         }
 
         //Get Events
         public async Task<List<Event>> Event()
         {
-            await _context.SaveChangesAsync();
-
-            return await _context.Events.ToListAsync();
+            var events = await _eventsService.GetList();
+            return events.ToList();
         }
 
         // GET: PlanningsModules/Delete/5
@@ -246,8 +170,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var planningsModule = await _context.PlanningsModules
-                .FirstOrDefaultAsync(m => m.PlanningsModuleId == id);
+            var planningsModule = await _planningService.Get(m => m.PlanningsModuleId == id);
             if (planningsModule == null)
             {
                 return NotFound();
@@ -261,19 +184,17 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var planningsModule = await _context.PlanningsModules
-                .Include(x => x.chefs)
-                .Include(x=>x.Bestellings)
-                .FirstOrDefaultAsync(x => x.PlanningsModuleId == id); 
-          
-            _context.PlanningsModules.Remove(planningsModule);
-            await _context.SaveChangesAsync();
+         
+          var  planningsModule =await _planningService.GetPlanningwithIncludeFilter(x => x.PlanningsModuleId == id);
+          await  _planningService.Delete(planningsModule);
+        
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PlanningsModuleExists(int id)
+        private async Task<bool> PlanningsModuleExists(int id)
         {
-            return _context.PlanningsModules.Any(e => e.PlanningsModuleId == id);
+            var pl = await _planningService.Get(e => e.PlanningsModuleId == id);
+            return pl==null?true:false;
         }
     }
 }

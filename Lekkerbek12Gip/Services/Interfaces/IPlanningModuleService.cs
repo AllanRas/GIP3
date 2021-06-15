@@ -11,5 +11,7 @@ namespace Lekkerbek12Gip.Services.Interfaces
     {
         Task<IEnumerable<PlanningsModule>> GetAllBestellingwithInclude();
         Task<PlanningsModule> GetPlanningwithIncludeFilter(Expression<Func<PlanningsModule, bool>> Filter);
+        Task CreatePlan(PlanningsModule planningsModule,string[] statu);
+        List<DateTime> Warning();
     }
 }
