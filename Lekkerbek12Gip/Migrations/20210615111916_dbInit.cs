@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Lekkerbek12Gip.Migrations
 {
-    public partial class dbinit : Migration
+    public partial class dbInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -98,7 +98,8 @@ namespace Lekkerbek12Gip.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ChefId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OpeningsUren = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    OpeningsUren = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SluitenUren = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

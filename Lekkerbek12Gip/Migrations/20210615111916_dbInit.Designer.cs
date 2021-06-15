@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek12Gip.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20210615001642_dbinit")]
-    partial class dbinit
+    [Migration("20210615111916_dbInit")]
+    partial class dbInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -317,6 +317,9 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OpeningsUren")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("SluitenUren")
                         .HasColumnType("datetime2");
 
                     b.HasKey("PlanningsModuleId");

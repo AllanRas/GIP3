@@ -51,13 +51,14 @@
             });
         });
 
-       
+
        $('#custtable tbody').on('click', 'tr', function (e) {
  e.preventDefault();
  var id = $("td:first", this).text();
-
+        var url =`Klants/Delete/${id}`
  if ($(e.target).is("a.del")) {
-    $.get('@Url.Action("Delete","Klants")', { id: id } , function (data) {
+
+    $.get(url, { id: id } , function (data) {
         $("body").html(data);
     });
         return;
@@ -111,30 +112,30 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.KlantId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GetrouwheidsScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Geboortedatum)
-            </td>
-            <td>
-                <a href="https://www.google.com/intl/tr/gmail/about/">@Html.DisplayFor(modelItem => item.emailadres)</a>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.KlantId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GetrouwheidsScore)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Geboortedatum)
+                </td>
+                <td>
+                    <a href="https://www.google.com/intl/tr/gmail/about/">@Html.DisplayFor(modelItem => item.emailadres)</a>
 
-            </td>
-            <td>
-            </td>
-           
-        </tr>
+                </td>
+                <td>
+                </td>
+
+            </tr>
         }
     </tbody>
 </table>
