@@ -189,13 +189,13 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         [HttpGet]
-        public IActionResult LoadAllCustomers()
+        public async Task<IActionResult> LoadAllCustomers()
         {
             try
             {
                 // getting all Customer data
-                var customerData = (from c in _context.Klants
-                                    select c).ToList<Klant>();
+                var customerData = await _klantService.GetList();
+
                 //Returning Json Data
                 return Json(new { data = customerData });
             }
@@ -209,45 +209,17 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddFav(int gerechtId, int bestellingId)
         {
-            var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == gerechtId);
-            var klantid = _context.Bestellings.Include(x => x.Klant).FirstOrDefault(x => x.BestellingId == bestellingId).KlantId;
-            var klant = _context.Klants.Include(x => x.Fav).FirstOrDefault(x => x.KlantId == klantid);
-            var favGerecht = await _context.GerechtKlantFavorieten.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId && x.GerechtId == gerecht.GerechtId);
-            var bestId = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId).BestellingId;
 
-            if (favGerecht == null)
-            {
-                GerechtKlantFavoriet klantFavoriet = new GerechtKlantFavoriet
-                {
-                    GerechtId = gerecht.GerechtId,
-                    KlantId = klant.KlantId,
-                    Gerecht = gerecht,
-                    Klant = klant
-                };
-                _context.GerechtKlantFavorieten.Add(klantFavoriet);
-                klant.Fav.Add(gerecht);
-
-            }
-            await _context.SaveChangesAsync();
-            return Redirect("~/BesteldeGerechten/Gerechten/" + bestId);
+            await _klantService.AddFav(gerechtId, bestellingId);
+            return Redirect("~/BesteldeGerechten/Gerechten/" + bestellingId);
         }
 
         public async Task<IActionResult> DelFav(int gerechtId, int bestellingId)
         {
-            var gerecht = _context.Gerechten.FirstOrDefault(x => x.GerechtId == gerechtId);
-            var klantid = _context.Bestellings.Include(x => x.Klant).FirstOrDefault(x => x.BestellingId == bestellingId).KlantId;
-            var klant = _context.Klants.Include(x => x.Fav).FirstOrDefault(x => x.KlantId == klantid);
-            var bestId = _context.Bestellings.FirstOrDefault(x => x.BestellingId == bestellingId).BestellingId;
 
-            var favGerecht = await _context.GerechtKlantFavorieten.FirstOrDefaultAsync(x => x.KlantId == klant.KlantId && x.GerechtId == gerecht.GerechtId);
+            await _klantService.DelFav(gerechtId, bestellingId);
 
-            if (favGerecht != null)
-            {
-                _context.GerechtKlantFavorieten.Remove(favGerecht);
-            }
-            await _context.SaveChangesAsync();
-
-            return Redirect("~/BesteldeGerechten/Gerechten/" + bestId);
+            return Redirect("~/BesteldeGerechten/Gerechten/" + bestellingId);
         }
 
 

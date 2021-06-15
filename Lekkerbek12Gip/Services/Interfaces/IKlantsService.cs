@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace Lekkerbek12Gip.Services.Interfaces
 {
-    public interface IKlantsService:IEntityRepositoryBase<Klant>
+    public interface IKlantsService : IEntityRepositoryBase<Klant>
     {
         // Viewbag get _context.Klants
         IEnumerable<Klant> GetKlantenIE();
+        Task AddFav(int gerechtId, int bestellingId);
+        Task DelFav(int gerechtId, int bestellingId);
+
     }
 }
