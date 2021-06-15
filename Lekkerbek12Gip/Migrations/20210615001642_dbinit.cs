@@ -74,17 +74,20 @@ namespace Lekkerbek12Gip.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Firmas",
+                name: "Klants",
                 columns: table => new
                 {
-                    FirmaId = table.Column<int>(type: "int", nullable: false)
+                    KlantId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirmaNaam = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BtwNummer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Adress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GetrouwheidsScore = table.Column<int>(type: "int", nullable: false),
+                    Geboortedatum = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    emailadres = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Firmas", x => x.FirmaId);
+                    table.PrimaryKey("PK_Klants", x => x.KlantId);
                 });
 
             migrationBuilder.CreateTable(
@@ -253,27 +256,86 @@ namespace Lekkerbek12Gip.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Klants",
+                name: "Firmas",
                 columns: table => new
                 {
-                    KlantId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Adress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GetrouwheidsScore = table.Column<int>(type: "int", nullable: false),
-                    Geboortedatum = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    emailadres = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirmaId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirmaNaam = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BtwNummer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    KlantId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Klants", x => x.KlantId);
+                    table.PrimaryKey("PK_Firmas", x => x.FirmaId);
                     table.ForeignKey(
-                        name: "FK_Klants_Firmas_FirmaId",
-                        column: x => x.FirmaId,
-                        principalTable: "Firmas",
-                        principalColumn: "FirmaId",
+                        name: "FK_Firmas_Klants_KlantId",
+                        column: x => x.KlantId,
+                        principalTable: "Klants",
+                        principalColumn: "KlantId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    ReviewId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    KlantId = table.Column<int>(type: "int", nullable: false),
+                    ReviewMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Score = table.Column<int>(type: "int", nullable: false),
+                    TimeOfReview = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.ReviewId);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Klants_KlantId",
+                        column: x => x.KlantId,
+                        principalTable: "Klants",
+                        principalColumn: "KlantId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bestellings",
+                columns: table => new
+                {
+                    BestellingId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BestelingStatus = table.Column<int>(type: "int", nullable: false),
+                    KlantId = table.Column<int>(type: "int", nullable: false),
+                    ChefId = table.Column<int>(type: "int", nullable: true),
+                    SpecialeWensen = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Afgerekend = table.Column<bool>(type: "bit", nullable: false),
+                    AfhaalTijd = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Korting = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PlanningsModuleId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bestellings", x => x.BestellingId);
+                    table.ForeignKey(
+                        name: "FK_Bestellings_Chefs_ChefId",
+                        column: x => x.ChefId,
+                        principalTable: "Chefs",
+                        principalColumn: "ChefId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Bestellings_Klants_KlantId",
+                        column: x => x.KlantId,
+                        principalTable: "Klants",
+                        principalColumn: "KlantId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bestellings_PlanningsModules_PlanningsModuleId",
+                        column: x => x.PlanningsModuleId,
+                        principalTable: "PlanningsModules",
+                        principalColumn: "PlanningsModuleId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -331,46 +393,6 @@ namespace Lekkerbek12Gip.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bestellings",
-                columns: table => new
-                {
-                    BestellingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BestelingStatus = table.Column<int>(type: "int", nullable: false),
-                    KlantId = table.Column<int>(type: "int", nullable: false),
-                    ChefId = table.Column<int>(type: "int", nullable: true),
-                    SpecialeWensen = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Afgerekend = table.Column<bool>(type: "bit", nullable: false),
-                    AfhaalTijd = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Korting = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PlanningsModuleId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bestellings", x => x.BestellingId);
-                    table.ForeignKey(
-                        name: "FK_Bestellings_Chefs_ChefId",
-                        column: x => x.ChefId,
-                        principalTable: "Chefs",
-                        principalColumn: "ChefId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Bestellings_Klants_KlantId",
-                        column: x => x.KlantId,
-                        principalTable: "Klants",
-                        principalColumn: "KlantId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Bestellings_PlanningsModules_PlanningsModuleId",
-                        column: x => x.PlanningsModuleId,
-                        principalTable: "PlanningsModules",
-                        principalColumn: "PlanningsModuleId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GerechtKlantFavorieten",
                 columns: table => new
                 {
@@ -395,28 +417,6 @@ namespace Lekkerbek12Gip.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_GerechtKlantFavorieten_Klants_KlantId",
-                        column: x => x.KlantId,
-                        principalTable: "Klants",
-                        principalColumn: "KlantId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    ReviewId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    KlantId = table.Column<int>(type: "int", nullable: false),
-                    ReviewMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Score = table.Column<int>(type: "int", nullable: false),
-                    TimeOfReview = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.ReviewId);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Klants_KlantId",
                         column: x => x.KlantId,
                         principalTable: "Klants",
                         principalColumn: "KlantId",
@@ -582,6 +582,13 @@ namespace Lekkerbek12Gip.Migrations
                 column: "PlanningsModuleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Firmas_KlantId",
+                table: "Firmas",
+                column: "KlantId",
+                unique: true,
+                filter: "[KlantId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Gerechten_CategoryId",
                 table: "Gerechten",
                 column: "CategoryId");
@@ -595,11 +602,6 @@ namespace Lekkerbek12Gip.Migrations
                 name: "IX_GerechtKlantFavorieten_KlantId",
                 table: "GerechtKlantFavorieten",
                 column: "KlantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Klants_FirmaId",
-                table: "Klants",
-                column: "FirmaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_KlantId",
@@ -637,6 +639,9 @@ namespace Lekkerbek12Gip.Migrations
                 name: "Events");
 
             migrationBuilder.DropTable(
+                name: "Firmas");
+
+            migrationBuilder.DropTable(
                 name: "GerechtKlantFavorieten");
 
             migrationBuilder.DropTable(
@@ -668,9 +673,6 @@ namespace Lekkerbek12Gip.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "Firmas");
         }
     }
 }
