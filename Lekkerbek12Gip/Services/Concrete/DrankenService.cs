@@ -21,7 +21,7 @@ namespace Lekkerbek12Gip.Services.Concrete
 
         public async Task<IEnumerable<Drank>> GetAllDrankenWithInclude()
         {
-            var dranken = _context.Dranken.Include(d => d.Category);
+            var dranken = await _context.Dranken.Include(d => d.Category).ToListAsync();
 
             return dranken;
         }

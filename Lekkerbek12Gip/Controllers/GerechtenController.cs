@@ -15,13 +15,11 @@ namespace Lekkerbek12Gip.Controllers
     [Authorize(Roles = "Admin,Kassamedewerker")]
     public class GerechtenController : Controller
     {
-        private readonly LekkerbekContext _context;
         private readonly IGerechtenService _gerechtenService;
         private readonly ICategoryService _categoryService;
 
-        public GerechtenController(LekkerbekContext context, IGerechtenService gerechtenService, ICategoryService categoryService)
+        public GerechtenController(IGerechtenService gerechtenService, ICategoryService categoryService)
         {
-            _context = context;
             _gerechtenService = gerechtenService;
             _categoryService = categoryService;
         }
@@ -42,8 +40,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var gerecht = await _context.Gerechten
-                .FirstOrDefaultAsync(m => m.GerechtId == id);
+            var gerecht = await _gerechtenService.Get(m => m.GerechtId == id);
             if (gerecht == null)
             {
                 return NotFound();
@@ -70,8 +67,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(gerecht);
-                await _context.SaveChangesAsync();
+                await _gerechtenService.Add(gerecht);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Categories"] = new SelectList(await _categoryService.GetList(), "CategoryId", "Name");
@@ -87,12 +83,12 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var gerecht = await _context.Gerechten.FindAsync(id);
+            var gerecht = await _gerechtenService.Get(m => m.GerechtId == id);
             if (gerecht == null)
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
+            ViewData["CategoryId"] = new SelectList(await _categoryService.GetList(), "CategoryId", "CategoryId");
             return View(gerecht);
         }
 
@@ -102,7 +98,7 @@ namespace Lekkerbek12Gip.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GerechtId,Naam,Omschrijving,Prijs,Categorie")] Gerecht gerecht)
+        public async Task<IActionResult> Edit(int id, [Bind("GerechtId,Naam,Omschrijving,Prijs,CategoryId")] Gerecht gerecht)
         {
             if (id != gerecht.GerechtId)
             {
@@ -111,25 +107,11 @@ namespace Lekkerbek12Gip.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(gerecht);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GerechtExists(gerecht.GerechtId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                await _gerechtenService.Update(gerecht);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
+            ViewData["CategoryId"] = new SelectList(await _categoryService.GetList(), "CategoryId", "CategoryId");
             return View(gerecht);
         }
 
@@ -141,8 +123,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var gerecht = await _context.Gerechten.Include(x => x.Category)
-                .FirstOrDefaultAsync(m => m.GerechtId == id);
+            var gerecht = await _gerechtenService.GetGerechtWithIncludeFilter(x => x.GerechtId == id);
             if (gerecht == null)
             {
                 return NotFound();
@@ -156,15 +137,10 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var gerecht = await _context.Gerechten.FindAsync(id);
-            _context.Gerechten.Remove(gerecht);
-            await _context.SaveChangesAsync();
+            var gerecht = await _gerechtenService.GetGerechtWithIncludeFilter(x => x.GerechtId == id);
+            await _gerechtenService.Delete(gerecht);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GerechtExists(int id)
-        {
-            return _context.Gerechten.Any(e => e.GerechtId == id);
-        }
     }
 }

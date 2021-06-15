@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Gerechten";
- 
+
 }
 <img id="logo" src="~/img/Lekkerbek.jpeg" />
 <h1>Menu</h1>
@@ -86,7 +86,8 @@
                             total += sum;
                             <li class="list-group-item">(@item.Aantal) @item.Gerecht.Naam @sum </li>
                         }
-                        @if (Model.ToegevoegdDranken != null) { 
+                        @if (Model.ToegevoegdDranken != null)
+                        {
                             foreach (var item in Model.ToegevoegdDranken)
                             {
                                 var sum = item.Aantal * item.Drank.Prijs;
@@ -112,7 +113,7 @@
 
 <select id="categories">
 
-    <option selected=@Model.Categories[0]>Salades</option>
+    <option value=@Model.Categories[0].CategoryId selected=@Model.Categories[0]>Salades</option>
 
     @foreach (var categorie in Model.Categories)
     {
@@ -157,7 +158,7 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Prijs) $
                                 </td>
-                                <td>
+                                <td width="20%">
                                     <form asp-action="Gerechten">
                                         @{
                                             int? aantal;
@@ -189,11 +190,14 @@
                             <tr>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Name)
-                                </td>                              
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Omschrijving)
+                                </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Prijs) $
                                 </td>
-                                <td>
+                                <td width="20%">
                                     <form asp-action="Dranken">
                                         @{
                                             int? aantal;

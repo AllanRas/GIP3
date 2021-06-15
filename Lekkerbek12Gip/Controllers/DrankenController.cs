@@ -13,14 +13,13 @@ namespace Lekkerbek12Gip.Controllers
 {
     public class DrankenController : Controller
     {
-        private readonly LekkerbekContext _context;
+
         private readonly IDrankenService _drankenService;
         private readonly ICategoryService _categoryService;
 
         public DrankenController(LekkerbekContext context, IDrankenService drankenService, ICategoryService category)
         {
             _drankenService = drankenService;
-            _context = context;
             _categoryService = category;
         }
 

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Lekkerbek12Gip.Services.Concrete
@@ -31,6 +32,14 @@ namespace Lekkerbek12Gip.Services.Concrete
                 .ToListAsync();
             return indexModel;
 
+        }
+
+        public async Task<Gerecht> GetGerechtWithIncludeFilter(Expression<Func<Gerecht, bool>> filter)
+        {
+            var drank = await _context.Gerechten
+                .Include(d => d.Category)
+                .FirstOrDefaultAsync(filter);
+            return drank;
         }
     }
 }

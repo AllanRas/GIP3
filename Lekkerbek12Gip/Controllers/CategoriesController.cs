@@ -14,12 +14,12 @@ namespace Lekkerbek12Gip.Controllers
     [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
-        private readonly LekkerbekContext _context;
+
         private readonly ICategoryService _categoryService;
-        public CategoriesController(LekkerbekContext context, ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-            _context = context;
+
         }
 
         // GET: Categories
