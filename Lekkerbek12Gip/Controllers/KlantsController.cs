@@ -65,7 +65,7 @@ namespace Lekkerbek12Gip.Controllers
         {
 
             if (ModelState.IsValid)
-            {   
+            {
                 firma.Klant = klant;
                 klant.Firma = firma;
                 //firma.KlantId = klant.KlantId;
@@ -173,7 +173,7 @@ namespace Lekkerbek12Gip.Controllers
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             //var klant = await _context.Klants.Include(x => x.Firma).FirstOrDefaultAsync(x => x.KlantId == id);
-            var klant = await _context.Klants.FirstOrDefaultAsync(x => x.KlantId == id);
+            var klant = await _klantService.Get(k => k.KlantId == id);
 
             if (klant != null)
             {

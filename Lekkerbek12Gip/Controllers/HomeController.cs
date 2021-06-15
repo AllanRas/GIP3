@@ -14,12 +14,10 @@ namespace Lekkerbek12Gip.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly LekkerbekContext _context;
 
-        public HomeController(ILogger<HomeController> logger, LekkerbekContext context)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _context = context;
         }
 
         public IActionResult Index()
