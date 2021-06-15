@@ -44,7 +44,8 @@
                         var format = "DD/ MM /YYYY";
                         var date = moment(data);
                         return date.format(format);
-                    }}],
+                    }
+                }],
                 "serverSide": true,
                 "order": [0, "asc"],
                 "proccessing": true
@@ -52,21 +53,24 @@
         });
 
 
-       $('#custtable tbody').on('click', 'tr', function (e) {
- e.preventDefault();
- var id = $("td:first", this).text();
-        var url =`Klants/Delete/${id}`
- if ($(e.target).is("a.del")) {
+        $('#custtable tbody').on('click', 'tr', function (e) {
+            e.preventDefault();
+            var id = $("td:first", this).text();
 
-    $.get(url, { id: id } , function (data) {
-        $("body").html(data);
-    });
-        return;
-    }
-    $.get('@Url.Action("Edit","Klants")', { id: id }, function (data) {
-        $("body").html(data);
+            var url = `Klants/Delete/${id}`
+            var url2 = `Klants/Edit/${id}`
+
+            if ($(e.target).is("a.del")) {
+
+                $.get(url, { id: id }, function (data) {
+                    $("body").html(data);
+                });
+                return;
+            }
+            $.get(url2, { id: id }, function (data) {
+                $("body").html(data);
+            });
         });
-    });
 
     </script>
 }
