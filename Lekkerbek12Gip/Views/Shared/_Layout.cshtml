@@ -28,7 +28,7 @@
 
                         </li>
 
-                        @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Bestellings" asp-action="Index">Bestellingen</a>
@@ -49,6 +49,16 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Chefs" asp-action="AssignChef">Assign Chef</a>
                             </li>
                         }
+                        else if (User.IsInRole("Kassamedewerker"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Bestellings" asp-action="Index">Bestellingen</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Klants" asp-action="Index">Klanten</a>
+                            </li>
+
+                        }
                         else if (User.IsInRole("Klant"))
                         {
                             <li class="nav-item">
@@ -57,7 +67,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Klants" asp-action="Edit">Profiel</a>
                             </li>
-                            
+
                         }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Reviews" asp-action="Index">Reviews</a>

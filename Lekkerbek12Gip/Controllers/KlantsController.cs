@@ -12,7 +12,7 @@ using Lekkerbek12Gip.Services.Interfaces;
 
 namespace Lekkerbek12Gip.Controllers
 {
-    [Authorize(Roles = "Admin,Kassamedewerker")]
+    //[Authorize(Roles = "Admin,Kassamedewerker")]
     public class KlantsController : Controller
     {
         private readonly LekkerbekContext _context;
@@ -30,7 +30,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             return View(await _klantService.GetList());
         }
-
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // GET: Klants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -50,7 +50,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Klants/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Kassamedewerker")]
         public IActionResult Create()
         {
             return View();
@@ -141,7 +141,7 @@ namespace Lekkerbek12Gip.Controllers
             }
             return View(klant);
         }
-
+        [Authorize(Roles = "Admin,Klant")]
         // GET: Klants/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
