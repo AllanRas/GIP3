@@ -139,7 +139,7 @@
                                 @Html.Raw(" | ") <a asp-action="Gerechten" asp-controller="BesteldeGerechten" asp-route-id="@item.BestellingId">Gerechten Toevoegen </a>
                             }
                         }
-                        @if (User.IsInRole("Kassamedewerker"))
+                        @if (User.IsInRole("Kassamedewerker") || User.IsInRole("Admin"))
                         {
                             @Html.Raw(" | ") <a asp-action="KassaEmail" asp-route-id="@item.BestellingId">Send Email</a>
                         }

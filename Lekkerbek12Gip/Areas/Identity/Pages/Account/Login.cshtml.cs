@@ -23,7 +23,7 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
         private readonly ILogger<LoginModel> _logger;
         private readonly LekkerbekContext _context;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, 
+        public LoginModel(SignInManager<IdentityUser> signInManager,
             ILogger<LoginModel> logger,
             UserManager<IdentityUser> userManager,
             LekkerbekContext context)
@@ -80,7 +80,7 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        
+
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
@@ -89,12 +89,17 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                   var User= await _userManager.FindByEmailAsync(Input.Email);
-                   var isKlant = await _userManager.IsInRoleAsync(User, "Klant");
-                    if (isKlant) 
+                    var User = await _userManager.FindByEmailAsync(Input.Email);
+                    var isKlant = await _userManager.IsInRoleAsync(User, "Klant");
+                    var isChef = await _userManager.IsInRoleAsync(User, "Chef");
+                    if (isKlant)
                     {
-                       
+
                         return LocalRedirect("/Gerechten");
+                    }
+                    else if (isChef)
+                    {
+                        return LocalRedirect("/Chefs/AssignChef");
                     }
                     return LocalRedirect("/Bestellings");
                 }
