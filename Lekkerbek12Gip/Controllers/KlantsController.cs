@@ -65,7 +65,7 @@ namespace Lekkerbek12Gip.Controllers
         {
 
             if (ModelState.IsValid)
-            {   
+            {
                 firma.Klant = klant;
                 klant.Firma = firma;
                 //firma.KlantId = klant.KlantId;
