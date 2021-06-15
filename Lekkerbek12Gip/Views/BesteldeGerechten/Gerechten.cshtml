@@ -2,21 +2,7 @@
 
 @{
     ViewData["Title"] = "Gerechten";
-    //IEnumerable<BestellingGerechten> bestellingGerechten = ViewData["Aantal"] as IEnumerable<BestellingGerechten>;
-    //IEnumerable<GerechtKlantFavoriet> favgerechten = ViewData["FavGerechten"] as IEnumerable<GerechtKlantFavoriet>;
-    //List<Gerecht> favList = Model.favGerechten;
-    //if (Model.favGerechten != null)
-    //{
-    //    foreach (Gerecht fav in Model.favGerechten)
-    //    {
-    //        Gerecht gerecht = Model.Gerechts.Where(x => x.GerechtId == fav.GerechtId).FirstOrDefault();
-    //        if (gerecht != null)
-    //        {
-    //            favList.Add(gerecht);
-    //        }
-    //    }
-    //}
-    //IEnumerable<Gerecht> favorietePerKlantList = favList as IEnumerable<Gerecht>;
+ 
 }
 <img id="logo" src="~/img/Lekkerbek.jpeg" />
 <h1>Menu</h1>
@@ -122,9 +108,6 @@
         }
     </div>
 
-
-
-
 </div>
 
 <select id="categories">
@@ -134,7 +117,6 @@
     @foreach (var categorie in Model.Categories)
     {
         <option value=@categorie.CategoryId>@categorie.Name</option>
-
 
     }
 </select>
@@ -253,68 +235,4 @@
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
 
-
-@*<table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Naam)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Omschrijving)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Prijs)
-                </th>
-
-                <th></th>
-            </tr>
-        </thead>
-
-        @foreach (var item in Model)
-        {
-            if (item.Categorie == categorie)
-            {
-                <tbody>
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Naam)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Omschrijving)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Prijs) $
-                        </td>
-                        <td>
-                            <form asp-action="Gerechten">
-                                @{
-                                    int? aantal;
-                                    var bg = bestellingGerechten.Where(bg => (bg.GerechtId == item.GerechtId) && (bg.BestellingId == ViewBag.data)).FirstOrDefault();
-                                    if (bg == null)
-                                    {
-                                        aantal = 0;
-                                    }
-                                    else
-                                    {
-                                        aantal = bg.Aantal;
-                                    }
-                                }
-                                <input type="number" name="aantal" value="@aantal" />
-                                <input type="hidden" name="gerechtId" value="@item.GerechtId" />
-                                <input type="hidden" name="bestellingId" value="@ViewBag.data" />
-                                <button type="submit" value="Gerechten">+</button>
-                                aantal: @aantal
-                            </form>
-                            <form asp-action="AddFav">
-                                <input type="hidden" name="gerechtId" value="@item.GerechtId" />
-                                <input type="hidden" name="bestellingId" value="@ViewBag.data" />
-                                <button type="submit" value="AddFav">Toevoegen aan favorieten</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            }
-        }
-    </table>*@
 
