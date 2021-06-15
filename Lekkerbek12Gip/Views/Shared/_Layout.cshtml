@@ -68,6 +68,11 @@
                                 <a class="nav-link text-dark" asp-controller="Klants" asp-action="Edit">Profiel</a>
                             </li>
 
+                        }else if (User.IsInRole("Chef"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Chefs" asp-action="AssignChef">Assign Chef</a>
+                            </li>
                         }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Reviews" asp-action="Index">Reviews</a>

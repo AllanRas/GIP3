@@ -28,7 +28,7 @@
                             @if (User.Identity.Name == item.Klant.emailadres || User.IsInRole("Admin"))
                             {
                                 <a class="review-block-delete" asp-action="Delete" asp-route-id="@item.ReviewId"> Verwijderen </a>
-                                <a class="review-block-delete" asp-action="Edit" asp-route-id="@item.ReviewId"> Aanpassen</a>
+                                <a class="review-block-delete" asp-action="Edit" asp-route-id="@item.ReviewId"> Bewerken</a>
                             }
                         </div>
                         <div class="col-lg-9">
