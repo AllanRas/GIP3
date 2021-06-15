@@ -45,7 +45,7 @@ namespace Lekkerbek12Gip.Controllers
             return View(await _bestellingsService.GetAllBestellingwithInclude(User));
         }
 
-        [Authorize(Roles = "Kassamedewerker")]
+        [Authorize(Roles = "Kassamedewerker,Admin")]
         // GET: Bestellings/Details/5
         public async Task<IActionResult> Details(int? id)
         {

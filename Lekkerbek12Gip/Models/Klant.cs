@@ -12,11 +12,11 @@ namespace Lekkerbek12Gip.Models
         public int KlantId { get; set; }
         public Klant()
         {
-            if (Fav==null)
+            if (Fav == null)
             {
                 Fav = new List<Gerecht>();
             }
-           
+
         }
         [Required(ErrorMessage = "Naam is verplicht")]
         [Display(Name = "Naam")]
@@ -32,8 +32,8 @@ namespace Lekkerbek12Gip.Models
         [DataType(DataType.EmailAddress)]
         [Display(Name = "Emailadres")]
         public string emailadres { get; set; }
-        public int FirmaId { get; set; }
-        public virtual Firma Firma { get; set; }
+        //public int FirmaId { get; set; }
+        //public virtual Firma Firma { get; set; }
         public virtual ICollection<Bestelling> Bestellings { get; set; }
         public virtual ICollection<Gerecht> Fav { get; set; }
 

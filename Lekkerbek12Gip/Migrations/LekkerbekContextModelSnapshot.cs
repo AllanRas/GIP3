@@ -145,6 +145,7 @@ namespace Lekkerbek12Gip.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ChefId");
@@ -214,14 +215,7 @@ namespace Lekkerbek12Gip.Migrations
                     b.Property<string>("FirmaNaam")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("KlantId")
-                        .HasColumnType("int");
-
                     b.HasKey("FirmaId");
-
-                    b.HasIndex("KlantId")
-                        .IsUnique()
-                        .HasFilter("[KlantId] IS NOT NULL");
 
                     b.ToTable("Firmas");
                 });
@@ -345,6 +339,32 @@ namespace Lekkerbek12Gip.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Dranken");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Review", b =>
+                {
+                    b.Property<int>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("KlantId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReviewMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeOfReview")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("KlantId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -644,15 +664,6 @@ namespace Lekkerbek12Gip.Migrations
                         .HasForeignKey("PlanningsModuleId");
                 });
 
-            modelBuilder.Entity("Lekkerbek12Gip.Models.Firma", b =>
-                {
-                    b.HasOne("Lekkerbek12Gip.Models.Klant", "Klant")
-                        .WithOne("Firma")
-                        .HasForeignKey("Lekkerbek12Gip.Models.Firma", "KlantId");
-
-                    b.Navigation("Klant");
-                });
-
             modelBuilder.Entity("Lekkerbek12Gip.Models.Gerecht", b =>
                 {
                     b.HasOne("Lekkerbek12Gip.Models.Category", "Category")
@@ -692,6 +703,17 @@ namespace Lekkerbek12Gip.Migrations
                         .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Lekkerbek12Gip.Models.Review", b =>
+                {
+                    b.HasOne("Lekkerbek12Gip.Models.Klant", "Klant")
+                        .WithMany()
+                        .HasForeignKey("KlantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Klant");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -765,8 +787,6 @@ namespace Lekkerbek12Gip.Migrations
             modelBuilder.Entity("Lekkerbek12Gip.Models.Klant", b =>
                 {
                     b.Navigation("Bestellings");
-
-                    b.Navigation("Firma");
                 });
 
             modelBuilder.Entity("Lekkerbek12Gip.Models.PlanningsModule", b =>

@@ -45,9 +45,18 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Reviews/Create
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
-            ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "Name");
+            if (id != 0)
+            {
+                ViewData["KlantId"] = _context.Klants.FirstOrDefault(x => x.KlantId == id);
+
+            }
+            else
+            {
+                ViewData["KlantId"] = new SelectList(_context.Klants, "KlantId", "Name");
+
+            }
             return View();
         }
 

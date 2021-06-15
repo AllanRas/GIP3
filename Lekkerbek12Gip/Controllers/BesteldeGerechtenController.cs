@@ -15,11 +15,13 @@ namespace Lekkerbek12Gip.Controllers
     {
         private readonly IEmailService _emailService;
         private readonly IBesteldeGerectenService _besteldeGerectenService;
+        private readonly IKlantsService _klantsService;
 
-        public BesteldeGerechtenController(IEmailService emailService, IBesteldeGerectenService besteldeGerectenService)
+        public BesteldeGerechtenController(IEmailService emailService, IBesteldeGerectenService besteldeGerectenService, IKlantsService klantsService)
         {
             _emailService = emailService;
             _besteldeGerectenService = besteldeGerectenService;
+            _klantsService = klantsService;
         }
 
         [HttpGet]
@@ -45,7 +47,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             await _besteldeGerectenService.Dranken(bestellingId, drankId, aantal);
             ViewData["data"] = bestellingId;
-            return RedirectToAction("Gerechten",new { id=bestellingId});
+            return RedirectToAction("Gerechten", new { id = bestellingId });
         }
         [AllowAnonymous]
         [HttpPost, ActionName("ConfirmBestelling")]
@@ -55,6 +57,11 @@ namespace Lekkerbek12Gip.Controllers
 
             if (await _besteldeGerectenService.ConfirmBestelling(bestellingId, specialeWensen))
             {
+                if (User.IsInRole("Klant"))
+                {
+                    var klant = await _klantsService.Get(x => x.emailadres.ToLower() == User.Identity.Name.ToLower());
+                    return Redirect("~/Reviews/Create/" + klant.KlantId);
+                }
 
                 await _emailService.Send(new GemakteOrderMail(), bestellingId);
                 return Redirect("~/BesteldeGerechten/Gerechten/" + bestellingId);

@@ -40,7 +40,7 @@ namespace Lekkerbek12Gip.Controllers
             }
 
             var klant = await _klantService.Get(m => m.KlantId == id);
-                
+
             if (klant == null)
             {
                 return NotFound();
@@ -61,16 +61,16 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant,[Bind("FirmaNaam, BtwNummer")] Firma firma)
+        public async Task<IActionResult> Create([Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant, [Bind("FirmaNaam, BtwNummer")] Firma firma)
         {
 
             if (ModelState.IsValid)
             {
-                klant.Firma = firma;
-                firma.Klant = klant;
+                //klant.Firma = firma;
+                //firma.Klant = klant;
                 //firma.KlantId = klant.KlantId;
                 await _klantService.Add(klant);
-                await _firmaService.Add(firma);
+                // await _firmaService.Add(firma);
                 return RedirectToAction(nameof(Index));
             }
             return View(klant);
@@ -80,19 +80,19 @@ namespace Lekkerbek12Gip.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Edit(int? id)
         {
-            if(id == null && User.IsInRole("Klant"))
+            if (id == null && User.IsInRole("Klant"))
             {
-              var klantt = await _klantService.Get(x => x.emailadres == User.Identity.Name);
-              var klantId = klantt.KlantId;
-              id = klantId;
+                var klantt = await _klantService.Get(x => x.emailadres == User.Identity.Name);
+                var klantId = klantt.KlantId;
+                id = klantId;
             }
             if (id == null)
             {
                 return NotFound();
             }
-            var firma = await _firmaService.Get(x => x.KlantId == id);
+            var firma = await _firmaService.Get(x => x.FirmaId == id);
             var klant = await _klantService.Get(x => x.KlantId == id);
-            klant.Firma = firma;
+            // klant.Firma = firma;
             if (klant == null)
             {
                 return NotFound();
@@ -117,14 +117,14 @@ namespace Lekkerbek12Gip.Controllers
             {
                 try
                 {
-                    var f = await _firmaService.Get(x => x.KlantId == klant.KlantId);
-                    if (f != null) 
-                    { 
-                    f.BtwNummer = firma.BtwNummer;
-                    f.FirmaNaam = firma.FirmaNaam;
-                    }
+                    //var f = await _firmaService.Get(x => x.FirmaId == klant.KlantId);
+                    //if (f != null)
+                    //{
+                    //    f.BtwNummer = firma.BtwNummer;
+                    //    f.FirmaNaam = firma.FirmaNaam;
+                    //}
                     await _klantService.Update(klant);
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -145,8 +145,8 @@ namespace Lekkerbek12Gip.Controllers
                 {
                     return RedirectToAction("index", "Gerechten");
                 }
-                    return RedirectToAction(nameof(Index));
-                }
+                return RedirectToAction(nameof(Index));
+            }
             return View(klant);
         }
 
@@ -173,7 +173,9 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var klant = await _context.Klants.Include(x => x.Firma).FirstOrDefaultAsync(x => x.KlantId == id);
+            //var klant = await _context.Klants.Include(x => x.Firma).FirstOrDefaultAsync(x => x.KlantId == id);
+            var klant = await _context.Klants.FirstOrDefaultAsync(x => x.KlantId == id);
+
             if (klant != null)
             {
                 _context.Klants.Remove(klant);
@@ -271,8 +273,8 @@ namespace Lekkerbek12Gip.Controllers
                     customerData = (from c in _context.Klants
                                     where c.Name.ToLower().Contains(searchValue.ToLower())
                                    ||
-                                    c.Adress.ToLower().Contains(searchValue.ToLower())                                
-                                    
+                                    c.Adress.ToLower().Contains(searchValue.ToLower())
+
                                     select c);
                 }
                 //sorting
