@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
 using Lekkerbek12Gip.Models.Product;
 using Lekkerbek12Gip.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
+    [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
     public class DrankenController : Controller
     {
 
@@ -23,6 +25,7 @@ namespace Lekkerbek12Gip.Controllers
             _categoryService = category;
         }
 
+        [AllowAnonymous]
         // GET: Dranken
         public async Task<IActionResult> Index()
         {
@@ -46,6 +49,7 @@ namespace Lekkerbek12Gip.Controllers
             return View(drank);
         }
 
+       
         // GET: Dranken/Create
         public async Task<IActionResult> Create()
         {

@@ -5,11 +5,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Dranken</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+    {
+        <p>
+            <a asp-action="Create">Nieuwe drank toevoegen</a>
+        </p>
+    }
 <table class="table">
     <thead>
         <tr>
@@ -25,11 +28,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.WithBtwPrijs)
             </th>
-            <th></th>
+            @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            {
+                <th></th>
+            }
+
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -43,12 +51,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.WithBtwPrijs)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.DrankId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DrankId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DrankId">Delete</a>
-            </td>
+            @if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
+            {
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.DrankId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.DrankId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.DrankId">Delete</a>
+                </td>
+            }
         </tr>
-}
+        }
     </tbody>
 </table>
