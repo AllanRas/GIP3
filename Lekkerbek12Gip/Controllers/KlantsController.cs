@@ -125,6 +125,7 @@ namespace Lekkerbek12Gip.Controllers
                 }
                 else
                 {
+                    firma.KlantId = id;
                     await _firmaService.Add(firma);
                 }
                 await _klantService.Update(updateKlant);
