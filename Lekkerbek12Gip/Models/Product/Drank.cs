@@ -20,7 +20,7 @@ namespace Lekkerbek12Gip.Models.Product
 
         public int GetBelasting()
         {
-            if (Category != null && Category.Name == "Alcohol")
+            if (Omschrijving != null && Omschrijving == "Alcohol")
             {
                 return 21;
             }
