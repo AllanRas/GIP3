@@ -79,17 +79,20 @@ namespace Lekkerbek12Gip.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            
+            if (id == null && User.IsInRole("Klant"))
             {
-                return NotFound();
+                id = _klantService.Get(x => x.emailadres == User.Identity.Name).Result.KlantId;
             }
+
             var firma = await _firmaService.Get(x => x.KlantId == id);
             var klant = await _klantService.Get(x => x.KlantId == id);
-            klant.Firma = firma;
+            
             if (klant == null)
             {
                 return NotFound();
             }
+            klant.Firma = firma;
             return View(klant);
         }
 
@@ -101,20 +104,16 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant, [Bind("FirmaNaam, BtwNummer")] Firma firma)
         {
-            if (id != klant.KlantId && User.IsInRole("Klant"))
+            if (User.IsInRole("Klant"))
             {
-                return NotFound();
+                id = _klantService.Get(x => x.emailadres == User.Identity.Name).Result.KlantId;
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-
-                    var f = await _firmaService.Get(x => x.KlantId == klant.KlantId);
-                    if (f != null || f.BtwNummer == null || f.FirmaNaam == null)
+                    var f = await _firmaService.Get(x => x.KlantId == id);
+                    if (f != null)
                     {
-
                         f.BtwNummer = firma.BtwNummer;
                         f.FirmaNaam = firma.FirmaNaam;
                         f.KlantId = klant.KlantId;
@@ -122,22 +121,10 @@ namespace Lekkerbek12Gip.Controllers
                     }
                     else
                     {
-                        firma.KlantId = klant.KlantId;
                         await _firmaService.Add(firma);
                     }
                     await _klantService.Update(klant);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!KlantExists(klant.KlantId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                
                 if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
                 {
                     return RedirectToAction("Index", "Klants");
