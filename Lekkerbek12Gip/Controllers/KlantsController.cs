@@ -79,28 +79,20 @@ namespace Lekkerbek12Gip.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (User.IsInRole("Klant"))
-            {
-                var klantt = await _klantService.Get(x => x.emailadres == User.Identity.Name);
-                id = klantt.KlantId;
-                var firmaa = await _firmaService.Get(x => x.KlantId == id);
-                klantt.Firma = firmaa;
-                return View(klantt);
-             
-            }
             
-            if (id == null)
+            if (id == null && User.IsInRole("Klant"))
             {
-                return NotFound();
+                id = _klantService.Get(x => x.emailadres == User.Identity.Name).Result.KlantId;
             }
+
             var firma = await _firmaService.Get(x => x.KlantId == id);
             var klant = await _klantService.Get(x => x.KlantId == id);
-            klant.Firma = firma;
+            
             if (klant == null)
             {
                 return NotFound();
             }
-           
+            klant.Firma = firma;
             return View(klant);
         }
 
@@ -112,43 +104,31 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant, [Bind("FirmaNaam, BtwNummer")] Firma firma)
         {
-            if (id != klant.KlantId && !User.IsInRole("Klant"))
+            if (User.IsInRole("Klant"))
             {
-                return NotFound();
+                id = _klantService.Get(x => x.emailadres == User.Identity.Name).Result.KlantId;
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
+                var updateKlant = await _klantService.Get(x => x.KlantId == id);
+                updateKlant.Adress = klant.Adress;
+                updateKlant.Geboortedatum = klant.Geboortedatum;
+                updateKlant.Name = klant.Name;
 
-                    var f = await _firmaService.Get(x => x.KlantId == klant.KlantId);
-                    if (f != null && f.BtwNummer == null && f.FirmaNaam == null)
-                    {
-
-                        f.BtwNummer = firma.BtwNummer;
-                        f.FirmaNaam = firma.FirmaNaam;
-                        f.KlantId = klant.KlantId;
-                        await _firmaService.Update(f);
-                    }
-                    else
-                    {
-                        firma.KlantId = klant.KlantId;
-                        await _firmaService.Add(firma);
-                    }
-                    await _klantService.Update(klant);
-                }
-                catch (DbUpdateConcurrencyException)
+                var f = await _firmaService.Get(x => x.KlantId == id);
+                if (f != null)
                 {
-                    if (!KlantExists(klant.KlantId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    f.BtwNummer = firma.BtwNummer;
+                    f.FirmaNaam = firma.FirmaNaam;
+                    await _firmaService.Update(f);
                 }
+                else
+                {
+                    await _firmaService.Add(firma);
+                }
+                await _klantService.Update(updateKlant);
+                
                 if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
                 {
                     return RedirectToAction("Index", "Klants");

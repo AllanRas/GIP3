@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.css">
 <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" data-auto-replace-svg="nest"></script>
 <link href="~/css/Calendar.css" rel="stylesheet" />
-<h1>Index</h1>
+<h1>Planning</h1>
 
 
 
@@ -101,7 +101,7 @@
                 }}
             else
             {
-                <div>Niemand is toestemming</div>
+                <div>Niemand heeft toestemming</div>
             }
 
         </div>
@@ -111,19 +111,19 @@
             <div class="card-body">
                 <h6 class="card-title">@item.OpeningsUren.ToString("yyyy-MM-dd")</h6>
                 <p class="card-text">@Html.DisplayFor(modelitem => item.Description)</p>
-                <a asp-controller="Bestellings" class="card-link">Ga naar bestellings</a>                
+                <a asp-controller="Bestellings" class="card-link">Ga naar bestellingen</a>                
             </div>
         </div>
-        <p id="@item.OpeningsUren.ToString("dd-MM-yyyy")" class="alert alert-danger" style="display:none">er werd niet genoeg kok toegewezen</p>
+        <p id="@item.OpeningsUren.ToString("dd-MM-yyyy")" class="alert alert-danger" style="display:none">er werden niet genoeg koks toegewezen</p>
         <div class="EventButtons">
-            <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Edit</a> 
+            <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.PlanningsModuleId">Bewerken</a> 
             <a class="btn bg-warning" asp-action="Details" asp-route-id="@item.PlanningsModuleId">Details</a> 
-            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PlanningsModuleId">Delete</a>
+            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PlanningsModuleId">Verwijderen</a>
         </div>
 
     </div>      }
         <section id="Create">
-            <h2> No plan added yet for today </h2>
+            <h2> Nog geen planning toegevoegd voor vandaag. </h2>
             <a class="btn btn-success" asp-action="Create">Nieuw plan aanmaken</a>
         </section>
 
