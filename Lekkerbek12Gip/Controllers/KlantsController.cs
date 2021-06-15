@@ -170,7 +170,10 @@ namespace Lekkerbek12Gip.Controllers
 
             if (klant != null)
             {
-                await _firmaService.Delete(firma);
+                if (firma != null)
+                {
+                    await _firmaService.Delete(firma);
+                }
                 await _klantService.Delete(klant);
             }
             return RedirectToAction(nameof(Index));
