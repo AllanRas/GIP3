@@ -76,14 +76,32 @@ namespace TestProject1
                 emailadres = "Test@hotmail.com",
                 Adress = "TestAdres"
             };
+
+            Firma firma = new Firma
+            {
+                FirmaNaam = "TestFirmaNaam",
+                BtwNummer = "123456789101",
+            };
+
+            //ACT
+            IActionResult resultCreate = klantsController.Create(klant, firma).Result;
+            IActionResult resultGet = klantsController.Details(1).Result;
+            
+
+            //ASSERT
+            // Test if result is not null
+            Assert.IsNotNull(resultCreate);
+            Assert.IsNotNull(resultGet);
+
+            // Test if result gives back a view (html)
+            // create does not give back view, 
+            Assert.IsFalse(resultCreate is ViewResult);
+            Assert.IsTrue(resultGet is ViewResult);
+
+            // Add resultGet (klant) into view, check if Model from view is object klant
+            ViewResult viewResult = (ViewResult)resultGet;
+            Assert.IsTrue(viewResult.Model is Klant);
+
         }
-
-        [TestMethod]
-        public void Testtest()
-        {
-
-        }
-
-
     }
 }
