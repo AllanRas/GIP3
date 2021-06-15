@@ -59,7 +59,16 @@ namespace Lekkerbek12Gip.Controllers
                 await _reviewService.AddReview(review);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KlantId"] = new SelectList(_klantsService.GetKlantenIE(), "KlantId", "Name", review.KlantId);
+            if (User.IsInRole("Klant"))
+            {
+                var klant = _klantsService.Get(x => x.emailadres == User.Identity.Name);
+                ViewData["KlantId"] = klant.Result.KlantId;
+            }
+            else
+            {
+                ViewData["KlantId"] = new SelectList(_klantsService.GetKlantenIE(), "KlantId", "Name", review.KlantId);
+            }
+            
             return View(review);
         }
 
