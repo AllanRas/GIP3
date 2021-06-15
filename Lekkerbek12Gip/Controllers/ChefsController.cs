@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek12Gip.Controllers
 {
+    [Authorize(Roles = "Admin,Chef")]
     public class ChefsController : Controller
     {
         private readonly IBestellingsService _bestellingsService;

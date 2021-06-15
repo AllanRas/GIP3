@@ -100,8 +100,12 @@ namespace Lekkerbek12Gip.Areas.Identity.Pages.Account
                         if (user.Email == "Admin@hotmail.com".ToLower())
                             await _userManager.AddToRoleAsync(user, "Admin");
                         else if (user.Email == "Kassamedewerker@hotmail.com".ToLower())
-                        { 
-                            await _userManager.AddToRoleAsync(user, "Kassamedewerker"); 
+                        {
+                            await _userManager.AddToRoleAsync(user, "Kassamedewerker");
+                        }
+                        else if (user.Email == "Chef@hotmail.com".ToLower())
+                        {
+                            await _userManager.AddToRoleAsync(user, "Chef");
                         }
                         else
                         {

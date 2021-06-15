@@ -72,9 +72,9 @@ namespace Lekkerbek12Gip.Services.Concrete
                 {
 
                     bestelling.IsConfirmed = true;
-                    isSuccesfull = true;
+                    
                 }
-
+                    isSuccesfull = true;
             }
             bestelling.SpecialeWensen = specialeWensen;
             _context.Update(bestelling);

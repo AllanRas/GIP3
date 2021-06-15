@@ -12,7 +12,7 @@ using Lekkerbek12Gip.Services.Interfaces;
 namespace Lekkerbek12Gip.Controllers
 {
 
-    [Authorize(Roles = "Admin,Kassamedewerker")]
+    [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
     public class GerechtenController : Controller
     {
         private readonly IGerechtenService _gerechtenService;

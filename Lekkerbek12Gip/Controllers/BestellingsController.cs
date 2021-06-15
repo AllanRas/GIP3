@@ -13,7 +13,7 @@ using Lekkerbek12Gip.Models.Mails;
 
 namespace Lekkerbek12Gip.Controllers
 {
-    [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
+
     public class BestellingsController : Controller
     {
 
@@ -32,13 +32,14 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Bestellings
-
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         public async Task<IActionResult> Index()
         {
+
             return View(await _bestellingsService.GetAllBestellingwithInclude(User));
 
         }
-
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // GET: Bestellings/AfgerekendeBestellingen
         public async Task<IActionResult> AfgerekendeBestellingen()
         {
@@ -64,6 +65,7 @@ namespace Lekkerbek12Gip.Controllers
             return View(bestelling);
         }
 
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // GET: Bestellings/Create
         public async Task<IActionResult> Create()
         {
@@ -78,6 +80,7 @@ namespace Lekkerbek12Gip.Controllers
         // POST: Bestellings/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd,Korting")] Bestelling bestelling)
@@ -91,14 +94,14 @@ namespace Lekkerbek12Gip.Controllers
                 //you shouldn't be able to PICK UP an order when there is an event taking place
                 if (bestelling.AfhaalTijd > item.Start && bestelling.AfhaalTijd < item.End)
                     ModelState.AddModelError(nameof(bestelling.AfhaalTijd), "afhaaltijd is geplaatst tijdens een event, gelieve een andere tijd te nemen.");
-            } 
+            }
             if (bestelling.AfhaalTijd < DateTime.Now)
-                {
-                    return NotFound();
-                }
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
-               
+
                 await _bestellingsService.bestellingCreate(bestelling);
 
                 if (User.IsInRole("Klant"))
@@ -114,6 +117,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
 
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
 
         // GET: Bestellings/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -137,6 +141,8 @@ namespace Lekkerbek12Gip.Controllers
         // POST: Bestellings/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BestellingId,ChefId,KlantId,SpecialeWensen,OrderDate,Afgerekend,AfhaalTijd")] Bestelling bestelling)
@@ -153,7 +159,7 @@ namespace Lekkerbek12Gip.Controllers
             }
             return View(bestelling);
         }
-
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // GET: Bestellings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -170,7 +176,7 @@ namespace Lekkerbek12Gip.Controllers
 
             return View(bestelling);
         }
-
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // POST: Bestellings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -181,6 +187,7 @@ namespace Lekkerbek12Gip.Controllers
             return RedirectToAction(nameof(Index));
         }
         // GET: Bestellingen/Afrekenen/5
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         public async Task<IActionResult> Afrekenen(int? id)
         {
             if (id == null)
@@ -199,6 +206,7 @@ namespace Lekkerbek12Gip.Controllers
 
 
         // POST: Bestellingen/Afrekenen/5
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         [HttpPost, ActionName("Afrekenen")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Afrekenen(int id)
@@ -211,7 +219,7 @@ namespace Lekkerbek12Gip.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         public async Task<IActionResult> Factuur(int id)
         {
             var bestelling = await _bestellingsService.GetBestellingwithIncludeFilter(x => x.BestellingId == id);
@@ -225,7 +233,7 @@ namespace Lekkerbek12Gip.Controllers
                 return View(bestelling);
             }
         }
-
+        [Authorize(Roles = "Admin,Chef")]
         public async Task<IActionResult> Leveren(int? id)
         {
             if (id == null)
@@ -243,7 +251,7 @@ namespace Lekkerbek12Gip.Controllers
             return View(bestelling);
         }
 
-
+        [Authorize(Roles = "Admin,Chef")]
         // POST: Bestellingen/Leveren/5
         [HttpPost, ActionName("Leveren")]
         [ValidateAntiForgeryToken]
@@ -262,6 +270,12 @@ namespace Lekkerbek12Gip.Controllers
             var result = await _bestellingsService.Get(x => x.BestellingId == id);
             return result == null ? false : true;
 
+        }
+
+        public async Task<IActionResult> KassaEmail(int id)
+        {
+            await _emailService.Send(new GemakteOrderMail(), id);
+            return RedirectToAction(nameof(Index));
         }
 
     }
