@@ -111,19 +111,23 @@ namespace Lekkerbek12Gip.Controllers
 
             if (ModelState.IsValid)
             {
-                    var f = await _firmaService.Get(x => x.KlantId == id);
-                    if (f != null)
-                    {
-                        f.BtwNummer = firma.BtwNummer;
-                        f.FirmaNaam = firma.FirmaNaam;
-                        f.KlantId = klant.KlantId;
-                        await _firmaService.Update(f);
-                    }
-                    else
-                    {
-                        await _firmaService.Add(firma);
-                    }
-                    await _klantService.Update(klant);
+                var updateKlant = await _klantService.Get(x => x.KlantId == id);
+                updateKlant.Adress = klant.Adress;
+                updateKlant.Geboortedatum = klant.Geboortedatum;
+                updateKlant.Name = klant.Name;
+
+                var f = await _firmaService.Get(x => x.KlantId == id);
+                if (f != null)
+                {
+                    f.BtwNummer = firma.BtwNummer;
+                    f.FirmaNaam = firma.FirmaNaam;
+                    await _firmaService.Update(f);
+                }
+                else
+                {
+                    await _firmaService.Add(firma);
+                }
+                await _klantService.Update(updateKlant);
                 
                 if (User.IsInRole("Admin") || User.IsInRole("Kassamedewerker"))
                 {
