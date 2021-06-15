@@ -47,6 +47,7 @@ namespace Lekkerbek12Gip
             services.AddTransient<IFirmaService, FirmaService>();
             services.AddTransient<IGerechtenService, GerechtenService>();
             services.AddTransient<IKlantsService, KlantService>();
+            services.AddTransient<IPlanningModuleService, PlanningModuleService>();
             services.AddTransient<IEventsService, EventService>();
             services.AddTransient<IChefsService, ChefService>();
             services.AddTransient<IBesteldeGerectenService, BesteldeGerechtenService>();

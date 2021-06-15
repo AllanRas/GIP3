@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";   
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script src="https://kit.fontawesome.com/4bc2a17f71.js" crossorigin="anonymous"></script>
 <h1>Aanmaken</h1>
@@ -19,28 +19,34 @@
                 <input asp-for="OpeningsUren" class="form-control" />
                 <span asp-validation-for="OpeningsUren" class="text-danger"></span>
             </div>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>          
+            <div class="form-group">
+                <label asp-for="SluitenUren" class="control-label"></label>
+                <input asp-for="SluitenUren" class="form-control" />
+                <span asp-validation-for="SluitenUren" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div>
+                
+                
                 <h2>Chefs</h2>
                 @{ foreach (var item in chefs)
                     {
-                                <div class="justify-content-xl-between">
-                                                                       
-                                    <div class="form-group">
-                                        <label name="deger" class="control-label">                                       
-                                                 <span class="far fa-user"></span>@item.ChefName                                           
-                                        </label>
-                                        <select id="chefList" name="statu"  class="form-control">                                               
-                                            <option value="Werken">Werken</option>
-                                            <option value="Ziek">Ziek</option>
-                                            <option value="Toestemming">Toestemming</option>
-                                        </select>
+                        <div class="justify-content-xl-between">
 
+                            <div class="form-group">
+                                <label name="deger" class="control-label">
+                                    <span class="far fa-user"></span>@item.ChefName
+                                </label>
 
-                    </div>
-
-
-                </div>
+                            <select  asp-items=@Html.GetEnumSelectList(typeof(ChefPlanningsModule.ChefStatus))></select>
+                           
+                                <select id="chefList" name="statu" class="form-control">
+                                    <option value="Werken">Werken</option>
+                                    <option value="Ziek">Ziek</option>
+                                    <option value="Toestemming">Toestemming</option>
+                                </select>
+                            </div>
+                        </div>
                     }
                 }
             </div>

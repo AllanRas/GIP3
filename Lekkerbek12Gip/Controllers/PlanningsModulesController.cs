@@ -6,25 +6,33 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek12Gip.Models;
-
+using Lekkerbek12Gip.Services.Interfaces;
 
 namespace Lekkerbek12Gip.Controllers
 {
     public class PlanningsModulesController : Controller
     {
         private readonly LekkerbekContext _context;
+        private readonly IPlanningModuleService _planningService;
+        private readonly IChefsService _chefsService;
 
-        public PlanningsModulesController(LekkerbekContext context)
+
+        public PlanningsModulesController(LekkerbekContext context, IPlanningModuleService planningService, IChefsService chefsService)
         {
             _context = context;
+            _planningService = planningService;
+            _chefsService = chefsService;
         }
 
         // GET: PlanningsModules
         public async Task<IActionResult> Index()
         {
                         
-            var indexlist = _context.PlanningsModules.Include(x => x.chefs).Include(x=>x.Bestellings).Include(x=>x.ChefPlanningsModules);          
-            return View(await indexlist.ToListAsync());
+            //var indexlist = _context.PlanningsModules
+            //    .Include(x => x.chefs)
+            //    .Include(x=>x.Bestellings)
+            //    .Include(x=>x.ChefPlanningsModules);          
+            return View(await _planningService.GetAllBestellingwithInclude());
         }
 
 
@@ -36,8 +44,7 @@ namespace Lekkerbek12Gip.Controllers
                 return NotFound();
             }
 
-            var planningsModule = await _context.PlanningsModules
-                .FirstOrDefaultAsync(m => m.PlanningsModuleId == id);
+            var planningsModule = await _planningService.GetPlanningwithIncludeFilter(m => m.PlanningsModuleId == id);
             if (planningsModule == null)
             {
                 return NotFound();
@@ -47,9 +54,9 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: PlanningsModules/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["Chefs"] = _context.Chefs.ToList();
+            ViewData["Chefs"] = await _chefsService.GetList();   
             return View();
         }
 
@@ -58,10 +65,10 @@ namespace Lekkerbek12Gip.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PlanningsModuleId,ChefId,Description,OpeningsUren")] PlanningsModule planningsModule, string[] statu)
+        public async Task<IActionResult> Create([Bind("PlanningsModuleId,ChefId,Description,OpeningsUren,SluitenUren")] PlanningsModule planningsModule, string[] statu)
         { 
          
-            if (_context.PlanningsModules.FirstOrDefault(x => x.OpeningsUren.Date == planningsModule.OpeningsUren.Date) != null)
+            if (await _planningService.Get(x => x.OpeningsUren.Date == planningsModule.OpeningsUren.Date) != null)
             {
                 ModelState.AddModelError(nameof(planningsModule.OpeningsUren), "Er is al een plan posted");
             }            
@@ -71,11 +78,12 @@ namespace Lekkerbek12Gip.Controllers
             planningsModule.Bestellings = list.ToList();
 
             var chefs = _context.Chefs.ToList(); 
-            int i = 0;
+          
            
                         
             if (ModelState.IsValid)
             {
+                int i = 0;
                 foreach (var item in chefs)
                     {               
                        if(statu[i] == "Werken") 
@@ -108,6 +116,7 @@ namespace Lekkerbek12Gip.Controllers
                                 ChefStatu = ChefPlanningsModule.ChefStatus.Toestemming,
                                 PlanningsModule = planningsModule
                             };
+                     
                         planningsModule.ChefPlanningsModules.Add(chefPlanningsModule);
 
                     }

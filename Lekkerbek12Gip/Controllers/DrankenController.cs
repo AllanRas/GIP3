@@ -15,11 +15,13 @@ namespace Lekkerbek12Gip.Controllers
     {
         private readonly LekkerbekContext _context;
         private readonly IDrankenService _drankenService;
+        private readonly ICategoryService _categoryService;
 
-        public DrankenController(LekkerbekContext context, IDrankenService drankenService)
+        public DrankenController(LekkerbekContext context, IDrankenService drankenService, ICategoryService category)
         {
             _drankenService = drankenService;
             _context = context;
+            _categoryService = category;
         }
 
         // GET: Dranken
@@ -48,7 +50,7 @@ namespace Lekkerbek12Gip.Controllers
         // GET: Dranken/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["CategoryId"] = new SelectList(await _drankenService.GetList(), "CategoryId", "Name");
+            ViewData["CategoryId"] = new SelectList(await _categoryService.GetList(), "CategoryId", "Name");
             return View();
         }
 
@@ -66,7 +68,7 @@ namespace Lekkerbek12Gip.Controllers
                 await _drankenService.Add(drank);
                 return RedirectToAction("Index", "Gerechten");
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name");
+            ViewData["CategoryId"] = new SelectList(await _categoryService.GetList(), "CategoryId", "Name");
             return View(drank);
         }
 
@@ -83,7 +85,7 @@ namespace Lekkerbek12Gip.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
+            ViewData["CategoryId"] = new SelectList(await _categoryService.GetList(), "CategoryId", "Name");
             return View(drank);
         }
 
@@ -106,7 +108,7 @@ namespace Lekkerbek12Gip.Controllers
 
                 return RedirectToAction("Index", "Gerechten");
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", drank.CategoryId);
+            ViewData["CategoryId"] = new SelectList(await _categoryService.GetList(), "CategoryId", "Name", drank.CategoryId);
             return View(drank);
         }
 
