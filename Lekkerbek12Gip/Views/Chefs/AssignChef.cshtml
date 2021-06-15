@@ -65,6 +65,14 @@
                         {
                             <a class="btn btn-success" asp-controller="Bestellings" asp-action="Leveren" asp-route-id="@bestelling.BestellingId">Leveren</a>
                         }
+                        else if (bestelling.BestelingStatus != Bestelling.BestelStatus.Done)
+                        {
+                    <p>Wachten op bevestiging</p>
+                        }
+                        else
+                        {
+                    <p>Geleverd</p>
+                        }
                     </td>
                 </tr>
             </tbody>
