@@ -79,19 +79,13 @@ namespace Lekkerbek12Gip.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null && User.IsInRole("Klant"))
-            {
-                var klantt = await _klantService.Get(x => x.emailadres == User.Identity.Name);
-                var klantId = klantt.KlantId;
-                id = klantId;
-            }
             if (id == null)
             {
                 return NotFound();
             }
-            var firma = await _firmaService.Get(x => x.FirmaId == id);
+            var firma = await _firmaService.Get(x => x.KlantId == id);
             var klant = await _klantService.Get(x => x.KlantId == id);
-            // klant.Firma = firma;
+            klant.Firma = firma;
             if (klant == null)
             {
                 return NotFound();
@@ -107,7 +101,7 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant, [Bind("FirmaNaam, BtwNummer")] Firma firma)
         {
-            if (id != klant.KlantId && !User.IsInRole("Klant"))
+            if (id != klant.KlantId && User.IsInRole("Klant"))
             {
                 return NotFound();
             }
@@ -116,14 +110,22 @@ namespace Lekkerbek12Gip.Controllers
             {
                 try
                 {
-                    //var f = await _firmaService.Get(x => x.FirmaId == klant.KlantId);
-                    //if (f != null)
-                    //{
-                    //    f.BtwNummer = firma.BtwNummer;
-                    //    f.FirmaNaam = firma.FirmaNaam;
-                    //}
-                    await _klantService.Update(klant);
 
+                    var f = await _firmaService.Get(x => x.KlantId == klant.KlantId);
+                    if (f != null || f.BtwNummer == null || f.FirmaNaam == null)
+                    {
+
+                        f.BtwNummer = firma.BtwNummer;
+                        f.FirmaNaam = firma.FirmaNaam;
+                        f.KlantId = klant.KlantId;
+                        await _firmaService.Update(f);
+                    }
+                    else
+                    {
+                        firma.KlantId = klant.KlantId;
+                        await _firmaService.Add(firma);
+                    }
+                    await _klantService.Update(klant);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
