@@ -1,6 +1,10 @@
 ﻿using Lekkerbek12Gip.Controllers;
 using Lekkerbek12Gip.Models;
+using Lekkerbek12Gip.Services.Concrete;
 using Lekkerbek12Gip.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -8,37 +12,78 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace TestProject1
 {
   
-   public class ContrTest
+    [TestClass]
+    public class ContrTest
     {
-        public readonly Mock<IBestellingsService> _store = new();
-        public readonly Mock<IEmailService> _storee = new();
-        public readonly Mock<IKlantsService> _storek = new();
-        public readonly Mock<IEventsService> _storeEvent = new();
-
-
-        [Fact]
-       async Task test1()
+        [TestMethod]
+        public void TestIndexKlant()
         {
-            BestellingsController controller = new BestellingsController(_store.Object, _storee.Object, _storek.Object, _storeEvent.Object);
-                Bestelling bestelling = new Bestelling { KlantId=1,AfhaalTijd=DateTime.Now.AddDays(1)};
-            var userMock = new Mock<IPrincipal>();
-            userMock.Setup(p => p.IsInRole("Admin")).Returns(true);
-            userMock.Setup(p => p.IsInRole("Klant")).Returns(false);
-            
-            _store.Setup(x => x.bestellingCreate(bestelling)).ReturnsAsync(bestelling);
-                         
-            await controller.Create(bestelling);
-             _store.Verify(x=>x.bestellingCreate(bestelling),Times.Once);
+            // ARRANGE
+            // InMemory db
+            var builder = new DbContextOptionsBuilder<LekkerbekContext>();
+            builder.UseInMemoryDatabase("LekkerbekGip12");
+            LekkerbekContext ctx = new LekkerbekContext(builder.Options);
 
-          
-           
-          _store.Verify(x => x.bestellingCreate(bestelling),Times.Never);
-          
+            //service
+            KlantService ks = new KlantService(ctx);
+            FirmaService fs = new FirmaService(ctx);
+
+            //Controllers
+            KlantsController klantsController = new KlantsController(ctx,ks,fs);
+
+            // ACT
+            // test the return of index
+            IActionResult result = klantsController.Index().Result;
+
+            // ASSERT
+            // test if result is not null
+            Assert.IsNotNull(result);
+            
+            // test if result is a view (html)
+            Assert.IsTrue(result is ViewResult);
+            
+            //Add result into view, check if Model from view is IEnumerable klant
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsTrue(viewResult.Model is IEnumerable<Klant>);
         }
+
+        [TestMethod]
+        public void TestCreateKlant()
+        {
+
+            // ARRANGE
+            // InMemory db
+            var builder = new DbContextOptionsBuilder<LekkerbekContext>();
+            builder.UseInMemoryDatabase("LekkerbekGip12");
+            LekkerbekContext ctx = new LekkerbekContext(builder.Options);
+
+            //service
+            KlantService ks = new KlantService(ctx);
+            FirmaService fs = new FirmaService(ctx);
+
+
+            //Controllers
+            KlantsController klantsController = new KlantsController(ctx, ks, fs);
+
+            // objects setup
+            Klant klant = new Klant
+            {
+                Name = "TestNaam",
+                emailadres = "Test@hotmail.com",
+                Adress = "TestAdres"
+            };
+        }
+
+        [TestMethod]
+        public void Testtest()
+        {
+
+        }
+
+
     }
 }

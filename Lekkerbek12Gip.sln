@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lekkerbek12Gip", "Lekkerbek12Gip\Lekkerbek12Gip.csproj", "{CF082D9D-F488-4148-A423-BAADF8DBDA88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "TestProject1\TestProject1.csproj", "{993B3E1B-AEA6-4CBC-94DC-D1E86FB5718E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "TestProject1\TestProject1.csproj", "{993B3E1B-AEA6-4CBC-94DC-D1E86FB5718E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
