@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Lekkerbek12Gip.Controllers
 {
+    [Authorize(Roles = "Admin,Klant")]
     public class BesteldeGerechtenController : Controller
     {
         private readonly IEmailService _emailService;
@@ -60,6 +61,7 @@ namespace Lekkerbek12Gip.Controllers
                 if (User.IsInRole("Klant"))
                 {
                     var klant = await _klantsService.Get(x => x.emailadres.ToLower() == User.Identity.Name.ToLower());
+                    await _emailService.Send(new GemakteOrderMail(), bestellingId);
                     return Redirect("~/Reviews/Create/" + klant.KlantId);
                 }
 

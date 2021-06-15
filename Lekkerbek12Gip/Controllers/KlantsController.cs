@@ -12,7 +12,7 @@ using Lekkerbek12Gip.Services.Interfaces;
 
 namespace Lekkerbek12Gip.Controllers
 {
-    [Authorize(Roles = "Admin,Kassamedewerker")]
+    //[Authorize(Roles = "Admin,Kassamedewerker")]
     public class KlantsController : Controller
     {
         private readonly LekkerbekContext _context;
@@ -30,7 +30,7 @@ namespace Lekkerbek12Gip.Controllers
         {
             return View(await _klantService.GetList());
         }
-
+        [Authorize(Roles = "Admin,Kassamedewerker,Klant")]
         // GET: Klants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -50,7 +50,7 @@ namespace Lekkerbek12Gip.Controllers
         }
 
         // GET: Klants/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Kassamedewerker")]
         public IActionResult Create()
         {
             return View();
@@ -79,6 +79,16 @@ namespace Lekkerbek12Gip.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Edit(int? id)
         {
+            if (User.IsInRole("Klant"))
+            {
+                var klantt = await _klantService.Get(x => x.emailadres == User.Identity.Name);
+                id = klantt.KlantId;
+                var firmaa = await _firmaService.Get(x => x.KlantId == id);
+                klantt.Firma = firmaa;
+                return View(klantt);
+             
+            }
+            
             if (id == null)
             {
                 return NotFound();
@@ -90,6 +100,7 @@ namespace Lekkerbek12Gip.Controllers
             {
                 return NotFound();
             }
+           
             return View(klant);
         }
 
@@ -101,7 +112,7 @@ namespace Lekkerbek12Gip.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("KlantId,Name,Adress,GetrouwheidsScore,Geboortedatum,emailadres")] Klant klant, [Bind("FirmaNaam, BtwNummer")] Firma firma)
         {
-            if (id != klant.KlantId && User.IsInRole("Klant"))
+            if (id != klant.KlantId && !User.IsInRole("Klant"))
             {
                 return NotFound();
             }
@@ -112,7 +123,7 @@ namespace Lekkerbek12Gip.Controllers
                 {
 
                     var f = await _firmaService.Get(x => x.KlantId == klant.KlantId);
-                    if (f != null || f.BtwNummer == null || f.FirmaNaam == null)
+                    if (f != null && f.BtwNummer == null && f.FirmaNaam == null)
                     {
 
                         f.BtwNummer = firma.BtwNummer;
@@ -150,7 +161,7 @@ namespace Lekkerbek12Gip.Controllers
             }
             return View(klant);
         }
-
+        [Authorize(Roles = "Admin,Klant")]
         // GET: Klants/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

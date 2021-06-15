@@ -263,6 +263,11 @@ namespace Lekkerbek12Gip.Controllers
             return result == null ? false : true;
 
         }
+        public async Task<IActionResult> KassaEmail(int id)
+        {
+            await _emailService.Send(new GemakteOrderMail(),id);
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }
