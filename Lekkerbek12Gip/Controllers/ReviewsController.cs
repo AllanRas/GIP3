@@ -19,7 +19,7 @@ namespace Lekkerbek12Gip.Controllers
         private readonly IKlantsService _klantsService;
 
        
-        public ReviewsController(LekkerbekContext context, IReviewService reviewService, IKlantsService klantsService)
+        public ReviewsController(IReviewService reviewService, IKlantsService klantsService)
         {
             _klantsService = klantsService;
             _reviewService = reviewService;

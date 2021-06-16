@@ -66,10 +66,10 @@ namespace Lekkerbek12Gip.Controllers
                 }
 
                 await _emailService.Send(new GemakteOrderMail(), bestellingId);
-                return Redirect("~/BesteldeGerechten/Gerechten/" + bestellingId);
+                return Redirect("~/Bestellings/");
 
             }
-            return Redirect("~/Bestellings/");
+            return Redirect("~/BesteldeGerechten/Gerechten/"+bestellingId);
         }
     }
 }
